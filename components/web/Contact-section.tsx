@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useState } from "react"
+import Image from "next/image"
 
 export function ContactSection() {
   const [agreed, setAgreed] = useState(false)
@@ -89,7 +90,7 @@ export function ContactSection() {
 
           {/* Property Image */}
           <div className="relative h-[400px] lg:h-[600px] rounded-lg overflow-hidden shadow-lg">
-            <img src="/modern-luxury-house-exterior-at-dusk.jpg" alt="Modern luxury property" className="w-full h-full object-cover" />
+            <Image src="/modern-luxury-house-exterior-at-dusk.jpg" alt="Modern luxury property" width={1000} height={1000} className="w-full h-full object-cover" />
           </div>
         </div>
       </div>

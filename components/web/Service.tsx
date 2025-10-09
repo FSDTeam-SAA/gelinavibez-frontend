@@ -1,14 +1,7 @@
 import type React from "react"
-import { FileText, Home, Wrench, Upload, CheckCircle, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { FileText, Home, Wrench, Upload} from "lucide-react"
 import { ServiceCard } from "./ServiceCard"
 
-interface ServiceCardProps {
-  icon: React.ReactNode
-  title: string
-  features: string[]
-  buttonText: string
-}
 
 // function ServiceCard({ icon, title, features, buttonText }: ServiceCardProps) {
 //   return (
