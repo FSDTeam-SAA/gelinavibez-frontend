@@ -6,7 +6,7 @@ export function HeroSection() {
     <section className="relative h-[600px] lg:h-[800px] flex items-center justify-center overflow-hidden ">
       {/* Background Image */}
       <div className="absolute inset-0">
-        <img src="/assets/hero.jpg" alt="Hero Background" className="w-full h-full " />
+        <Image src="/assets/hero.jpg" alt="Hero Background" width={1000} height={1000} className="w-full h-full " />
       </div>
          <div className="absolute inset-0 bg-[#0F3D61]/40" />
 
