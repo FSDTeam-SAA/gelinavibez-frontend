@@ -14,6 +14,7 @@ export interface PropertyCardProps {
   beds: number
   baths: number
   sqft: string
+  type: string
   description: string
   onButtonClick?: () => void
 }
@@ -29,6 +30,7 @@ export function PropertyCard({
   baths,
   sqft,
   description,
+  type,
   onButtonClick,
 }: PropertyCardProps) {
   return (
@@ -49,42 +51,45 @@ export function PropertyCard({
         {/* Title and Price */}
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-[#0F3D61] text-[28px] font-bold">{title}</h4>
-          <span className="text-[#1a4d6d] font-semibold whitespace-nowrap ml-2">{price}</span>
+          <span className="text-[#766346] text-base font-semibold whitespace-nowrap ml-2">{price}</span>
         </div>
 
         {/* Address */}
-        <p className="text-gray-600 text-sm mb-4">{address}</p>
+        <p className="text-[#666666] text-base font-normal mb-4">{address}</p>
 
         {/* Date and Time */}
-        <div className="flex items-center gap-4 text-sm text-gray-700 mb-4">
+        <div className="flex justify-between  items-center gap-4 text-[18px] text-[#0F3D61] font-bold mb-4">
+          <div>
           <span>{date}</span>
-          <span>•</span>
+          <span>-</span>
           <span>{time}</span>
+          </div>
+          <span className="text-[#333333]">{type}</span>
         </div>
 
         {/* Description */}
-        <p className="text-gray-700 text-sm mb-6 line-clamp-2">{description}</p>
+        <h3 className="text-[#333333] text-base mb-6 leading-[150%] ">{description}</h3>
 
         {/* Property Stats */}
-        <div className="flex items-center gap-6 mb-6 text-gray-700">
+        <div className="flex items-center gap-6 mb-6 text-[#666666] ">
           <div className="flex items-center gap-2">
             <Bed className="h-4 w-4" />
-            <span className="text-sm">{beds} Bed</span>
+            <span className="text-base">{beds} Bed</span>
           </div>
           <div className="flex items-center gap-2">
             <Bath className="h-4 w-4" />
-            <span className="text-sm">{baths} Bathroom</span>
+            <span className="text-base">{baths} Bathroom</span>
           </div>
           <div className="flex items-center gap-2">
             <Square className="h-4 w-4" />
-            <span className="text-sm">{sqft}</span>
+            <span className="text-base">{sqft}</span>
           </div>
         </div>
 
         {/* See Details Button */}
         <Button
           onClick={onButtonClick}
-          className="w-full bg-[#1a4d6d] hover:bg-[#0f3a52] text-white font-semibold py-6 flex items-center justify-center gap-2"
+          className="w-full bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[48px] rounded-[8px] text-white font-semibold py-6 flex items-center justify-center gap-2"
         >
           See Details
           <ArrowRight className="h-4 w-4" />

@@ -3,38 +3,6 @@ import { FileText, Home, Wrench, Upload} from "lucide-react"
 import { ServiceCard } from "./ServiceCard"
 
 
-// function ServiceCard({ icon, title, features, buttonText }: ServiceCardProps) {
-//   return (
-//     <div className="bg-[#1a4d6d] rounded-lg overflow-hidden flex flex-col h-full">
-//       {/* Tan border at top */}
-//       <div className="h-2 bg-[#d4b896]" />
-
-//       <div className="p-6 lg:p-8 flex flex-col flex-1">
-//         {/* Icon */}
-//         <div className="text-white mb-6 flex justify-center">{icon}</div>
-
-//         {/* Title */}
-//         <h3 className="text-white text-xl lg:text-2xl font-semibold text-center mb-8">{title}</h3>
-
-//         {/* Features */}
-//         <ul className="space-y-4 mb-8 flex-1">
-//           {features.map((feature, index) => (
-//             <li key={index} className="flex items-start gap-3 text-white text-sm lg:text-base">
-//               <CheckCircle className="h-5 w-5 text-white flex-shrink-0 mt-0.5" />
-//               <span>{feature}</span>
-//             </li>
-//           ))}
-//         </ul>
-
-//         {/* Button */}
-//         <Button className="w-full bg-[#d4b896] hover:bg-[#c4a886] text-[#1a4d6d] font-semibold py-6 text-base flex items-center justify-center gap-2">
-//           {buttonText}
-//           <ArrowRight className="h-4 w-4" />
-//         </Button>
-//       </div>
-//     </div>
-//   )
-// }
 
 export function ServicesSection() {
   const services = [
