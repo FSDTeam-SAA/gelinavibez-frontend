@@ -18,13 +18,13 @@ const playfair = Playfair_Display_SC({
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "600"],
+  weight: ["400","500", "600","700"],
   display: "swap",
   variable: "--font-poppins",
 });
 
 export const metadata = {
-  title: "Your App",
+  title: "Bridge Point Solution",
   description: "Next.js 14 App with custom fonts",
 };
 

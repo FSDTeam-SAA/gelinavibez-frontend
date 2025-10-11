@@ -49,11 +49,11 @@ export function ContactSection() {
   };
 
   return (
-    <section className="py-16 lg:py-24">
+    <section className="py-16 lg:py-24 bg-[#e8e8e8]">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-0 items-stretch rounded-[20px] shadow-lg overflow-hidden">
           {/* Contact Form */}
-          <div className="bg-white p-8 lg:p-12 flex flex-col justify-center">
+          <div className=" p-8 lg:p-12 flex flex-col justify-center">
             <h1 className="text-[#0F3D61] text-3xl lg:text-[40px] font-normal mb-2">
               Get In Touch
             </h1>
@@ -61,7 +61,10 @@ export function ContactSection() {
               Our friendly team would love to hear from you.
             </p>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 flex-grow">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="space-y-6 flex-grow"
+            >
               {/* Name Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -120,7 +123,9 @@ export function ContactSection() {
                   className="w-full border border-[#C0C3C1] rounded-[4px] h-[48px] placeholder:text-base placeholder:text-[#B6B6B6]"
                 />
                 {errors.email && (
-                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
 
@@ -134,13 +139,19 @@ export function ContactSection() {
                 </label>
                 <Input
                   id="phone"
-                  type="tel"
+                  type="number"
                   placeholder="+1234567890"
                   {...register("phone")}
-                  className="w-full border border-[#C0C3C1] rounded-[4px] h-[48px] placeholder:text-base placeholder:text-[#B6B6B6]"
+                  className="w-full border border-[#C0C3C1] rounded-[4px] h-[48px] placeholder:text-base placeholder:text-[#B6B6B6] 
+  [&::-webkit-inner-spin-button]:appearance-none 
+  [&::-webkit-outer-spin-button]:appearance-none 
+  [appearance:textfield]"
                 />
+
                 {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.phone.message}
+                  </p>
                 )}
               </div>
 
@@ -160,7 +171,9 @@ export function ContactSection() {
                   className="w-full resize-none border border-[#C0C3C1] rounded-[4px] placeholder:text-base placeholder:text-[#B6B6B6]"
                 />
                 {errors.message && (
-                  <p className="text-red-500 text-sm mt-1">{errors.message.message}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.message.message}
+                  </p>
                 )}
               </div>
 
@@ -174,11 +187,17 @@ export function ContactSection() {
                 />
                 <label htmlFor="terms" className="text-sm text-[#8E938F]">
                   You agree to our friendly{" "}
-                  <a href="#" className="text-[#0F3D61] underline font-semibold">
+                  <a
+                    href="#"
+                    className="text-[#0F3D61] underline font-semibold"
+                  >
                     Terms & Conditions
                   </a>{" "}
                   and{" "}
-                  <a href="#" className="text-[#0F3D61] underline font-semibold">
+                  <a
+                    href="#"
+                    className="text-[#0F3D61] underline font-semibold"
+                  >
                     Privacy Policy
                   </a>
                   .
