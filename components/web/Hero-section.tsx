@@ -8,7 +8,7 @@ export function HeroSection() {
       <div className="absolute inset-0">
         <Image src="/assets/hero.jpg" alt="Hero Background" width={1000} height={1000} className="w-full h-full " />
       </div>
-         <div className="absolute inset-0 bg-[#0F3D61]/40" />
+         <div className="absolute inset-0 bg-[#00000066]/40" />
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 container mx-auto">
@@ -26,7 +26,7 @@ export function HeroSection() {
         <p className="text-[#DAE0E4] text-base lg:text-lg mb-12 max-w-2xl mx-auto">Building Bridge & Connecting Futures</p>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-4 items-center   bg-[#EFDACB] py-4 rounded-[8px]">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-4 items-center   bg-[#EFDACB] py-4 rounded-[8px] mt-[100px]">
           <Button className="w-full sm:w-auto bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[74px] !rounded-[4px]  border-2 border-[#d4b896] px-8 py-6 text-base lg:text-2xl flex items-center gap-3 font-bold text-[#EFDACB]">
             <Image src="/assets/icon3.png" alt="Search Icon" width={1000} height={1000} className="w-[48px] h-[48px]" />
             Find an Apartment
