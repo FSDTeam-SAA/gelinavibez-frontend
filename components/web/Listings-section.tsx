@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { PropertyCard } from "./PropertyCard"
+import { PropertyCard } from "../card/PropertyCard"
+
 
 
 
