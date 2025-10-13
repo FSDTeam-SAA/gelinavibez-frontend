@@ -51,7 +51,7 @@ export function Navbar() {
 
           {/* Log Out Button */}
           <Button className="hidden lg:block text-[#0F3D61] text-[18px] bg-[#EFDACB] hover:bg-[#c4a886] font-semibold px-[42px] h-[48px] rounded-[8px]">
-            Log Out
+            Sing In
           </Button>
 
           {/* Mobile Menu Button */}
