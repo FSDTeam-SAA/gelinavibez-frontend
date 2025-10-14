@@ -1,4 +1,5 @@
-import MiniBanner from '@/components/web/MIniBanner'
+
+import MiniBanner from '@/components/Shared/MiniBanner'
 import Terms from '@/components/web/Terms'
 import React from 'react'
 

@@ -1,9 +1,10 @@
 
-import { ContactSection } from "@/components/web/Contact-section"
+import Community from "@/components/Shared/Community"
+import { ContactSection } from "@/components/Shared/ContactSection"
 import { HeroSection } from "@/components/web/Hero-section"
 import { ListingsSection } from "@/components/web/Listings-section"
 import { ServicesSection } from "@/components/web/Service"
-import Commnunity from "@/components/web/Commnunity"
+
 
 export default function Home() {
   return (
@@ -12,7 +13,7 @@ export default function Home() {
       <HeroSection />
       <ServicesSection />
       <ListingsSection/>
-      <Commnunity/>
+      <Community/>
       <ContactSection />
      
     </main>

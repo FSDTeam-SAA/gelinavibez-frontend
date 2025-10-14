@@ -1,8 +1,8 @@
+import Community from '@/components/Shared/Community'
+import { ContactSection } from '@/components/Shared/ContactSection'
 import Aboutpayment from '@/components/web/About-payment'
 import AboutUs from '@/components/web/AboutUs'
 import { Banner } from '@/components/web/Banner'
-import Community from '@/components/web/Commnunity'
-import { ContactSection } from '@/components/web/Contact-section'
 import Whats_Different from '@/components/web/Whats_Different'
 import React from 'react'
 
