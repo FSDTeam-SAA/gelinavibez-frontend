@@ -1,6 +1,7 @@
-import { ContactSection } from '@/components/web/Contact-section'
+import { ContactSection } from '@/components/Shared/ContactSection'
+import MiniBanner from '@/components/Shared/MiniBanner'
 import Contact_Information from '@/components/web/Contact_Information'
-import MiniBanner from '@/components/web/MIniBanner'
+
 import React from 'react'
 
 const page = () => {

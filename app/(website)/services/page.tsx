@@ -4,7 +4,8 @@ import SignatureServices from './_components/SignatureServices'
 import DistinguishedExperts from './_components/DistinguishedExperts'
 import ContractorForm from './_components/ContractorForm'
 import Masterpieces from './_components/Masterpieces'
-import Community from '@/components/web/Commnunity'
+import Community from '@/components/Shared/Community'
+
 
 const page = () => {
   return (

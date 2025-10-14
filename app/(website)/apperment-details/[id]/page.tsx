@@ -1,7 +1,8 @@
 import React from 'react'
 import PropertyListing from './_components/PropertyListing'
-import Community from '@/components/web/Commnunity'
+
 import { YouMayLike } from './_components/YouMayLike'
+import Community from '@/components/Shared/Community'
 
 const page = () => {
   return (

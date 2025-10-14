@@ -7,7 +7,7 @@ const services = [
     description:
       "We create homes that embody elegance, comfort, and lasting value. Every project combines modern functionality with timeless craftsmanship, designed to enhance everyday living with luxury and sophistication.",
     icon: Home,
-    featured: true,
+    featured: false,
   },
   {
     title: "Commercial Construction",
@@ -50,10 +50,10 @@ export default function SignatureServices() {
   return (
     <section className="bg-[#e8e8e8] py-16 px-1 md:px-8 lg:px-16 mt-[120px]">
       <div className="container ">
-        <h1 className="font-serif text-3xl md:text-[40px] lg:text-[40px] text-[#0F3D61] font-normal  mb-4">
+        <h1 className="font-serif text-3xl md:text-[40px] lg:text-[40px] text-[#0F3D61] font-normal mb-4">
           OUR SIGNATURE SERVICES
         </h1>
-        <p className="text-[18px] text-[#929292] font-normal  mb-[60px]  ">
+        <p className="text-[18px] text-[#929292] font-normal mb-[60px]">
           A curated selection of expert solutions tailored to elevate every project with precision and sophistication.
         </p>
 
@@ -65,18 +65,18 @@ export default function SignatureServices() {
                 key={index}
                 className={`${
                   service.featured ? "bg-[#0F3D61] text-white" : "bg-[#F9F6F1] text-[#1a3a52]"
-                } border-none shadow-md hover:shadow-lg transition-shadow`}
+                } border-none shadow-md hover:bg-[#0F3D61] hover:text-white transition-shadow transition-colors group`}
               >
                 <CardContent className="p-6">
                   <div
                     className={`w-14 h-14 rounded-full ${
-                      service.featured ? "bg-white/20" : "bg-[#0F3D61]"
-                    } flex items-center justify-center mb-4`}
+                      service.featured ? "bg-white" : "bg-[#0F3D61]"
+                    } flex items-center justify-center mb-4 group-hover:bg-white`}
                   >
-                    <Icon className={`w-7 h-7 ${service.featured ? "text-[#F9F6F1]" : "text-[#F9F6F1]"}`} />
+                    <Icon className={`w-7 h-7 ${service.featured ? "text-[#0F3D61]" : "text-[#F9F6F1]"} group-hover:text-[#0F3D61]`} />
                   </div>
                   <h4 className="text-xl font-bold mb-3">{service.title}</h4>
-                  <p className={`text-sm  font-normal ${service.featured ? "text-[#E7E7E7]" : "text-[#616161]"}`}>
+                  <p className={`text-sm font-normal ${service.featured ? "text-white" : "text-[#616161]"} group-hover:text-white`}>
                     {service.description}
                   </p>
                 </CardContent>
