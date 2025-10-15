@@ -59,7 +59,7 @@ export default function LoginForm() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter Password..."
-                  className="bg-transparent border-[#C0C3C1] text-white placeholder:text-white/40 pl-5 focus:border-white/40 h-12 rounded-full pr-12 placeholder:text-[#F9F6F1] text-[#F9F6F1]"
+                  className="bg-transparent border-[#C0C3C1]  placeholder:text-white/40 pl-5 focus:border-white/40 h-12 rounded-full pr-12 placeholder:text-[#F9F6F1] text-[#F9F6F1]"
                 />
                 <button
                   type="button"
