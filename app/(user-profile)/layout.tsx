@@ -1,24 +1,23 @@
 
-"use client"
-import { useState } from "react"
-import { Sidebar } from "./_components/Sidebar"
-import { Header } from "./_components/Header"
+
+
+'use client';
+import { ReactNode } from "react";
+import { Sidebar } from "./_components/Sidebar";
+import { Header } from "./_components/Header";
 import "../globals.css";
+import RouteProtector from "./_components/RouteProtector";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
-  const handleMenuToggle = () => setIsMobileMenuOpen((prev) => !prev)
-  const handleCloseMenu = () => setIsMobileMenuOpen(false)
-
+export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-[#F8F9FA]">
-      <Sidebar isMobileMenuOpen={isMobileMenuOpen} onClose={handleCloseMenu} />
-      <div className="flex-1 flex flex-col">
-        <Header onMenuClick={handleMenuToggle} />
-        <main className="flex-1 p-6">
-          {children}</main>
+    <RouteProtector allowedRoles={["admin"]}>
+      <div className="flex min-h-screen bg-[#F8F9FA]">
+        <Sidebar />
+        <div className="flex-1 flex flex-col">
+          <Header />
+          <main className="flex-1 p-6">{children}</main>
+        </div>
       </div>
-    </div>
-  )
+    </RouteProtector>
+  );
 }
