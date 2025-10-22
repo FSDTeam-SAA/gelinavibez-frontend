@@ -1,5 +1,5 @@
 import type React from "react"
-import { FileText, Home, Wrench, Upload} from "lucide-react"
+import { FileText, Home, Wrench, Upload } from "lucide-react"
 import { ServiceCard } from "./ServiceCard"
 
 
@@ -16,6 +16,7 @@ export function ServicesSection() {
         "Apply online with our simple form",
       ],
       buttonText: "Apply",
+      hrf: "/service-request"
     },
     {
       icon: <Home className="h-12 w-12" />,
@@ -27,6 +28,7 @@ export function ServicesSection() {
         "Schedule and track open house events",
       ],
       buttonText: "See Property",
+      hrf: "/service-request"
     },
     {
       icon: <Wrench className="h-12 w-12" />,
@@ -38,17 +40,19 @@ export function ServicesSection() {
         "Build trust through reviews and reliable support",
       ],
       buttonText: "See Service",
+      hrf: "/service-request"
     },
     {
       icon: <Upload className="h-12 w-12" />,
-      title: "Upload Documents",
+      title: "Extermination Service",
       features: [
-        "Provide professional repair and maintenance solutions",
-        "Manage and track service requests with ease",
-        "Showcase expertise through detailed contractor profiles",
-        "Build trust using reviews and reliable support",
+        "Deliver Comprehensive Pest Control Solutions",
+        "Ensure Safe and Eco-Friendly Treatments",
+        "Offer Timely Response and Ongoing Support",
+        "Build Confidence Through Expertise and Transparency",
       ],
-      buttonText: "Upload Now",
+      buttonText: "Get quote",
+      hrf: "/service-request"
     },
   ]
 
