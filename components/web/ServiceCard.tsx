@@ -3,11 +3,13 @@
 import { ReactNode } from "react"
 import { CheckCircle, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export interface ServiceCardProps {
   icon: ReactNode
   title: string
   features: string[]
+  hrf: string
   buttonText: string
   onButtonClick?: () => void
 }
@@ -17,6 +19,7 @@ export function ServiceCard({
   title,
   features,
   buttonText,
+  hrf,
   onButtonClick,
 }: ServiceCardProps) {
   return (
@@ -47,6 +50,7 @@ export function ServiceCard({
         </ul>
 
         {/* Button */}
+       <Link href={hrf}>
         <Button
           onClick={onButtonClick}
           className="w-full bg-[#EFDACB] hover:bg-[#EFDACB]/90 text-[#0F3D61] font-semibold py-6 text-base flex items-center justify-center gap-2 rounded-[6px]"
@@ -54,6 +58,7 @@ export function ServiceCard({
           {buttonText}
           <ArrowRight className="h-4 w-4 text-[#0F3D61]" />
         </Button>
+       </Link>
       </div>
     </div>
   )
