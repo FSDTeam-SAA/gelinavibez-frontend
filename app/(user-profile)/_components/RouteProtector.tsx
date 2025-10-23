@@ -15,7 +15,7 @@ export default function RouteProtector({ children,  }: RouteProtectorProps) {
 
 
    if(!user){
-    router.push('/')
+    router.push('/property')
    }
   
 
