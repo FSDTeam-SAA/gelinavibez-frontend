@@ -9,6 +9,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Image from "next/image";
 import { useState } from "react";
+import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 // Define validation schema using Zod
 const formSchema = z.object({
@@ -22,6 +25,23 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
+
+// API function to post contact form data using fetch
+const postContactData = async (data: FormData) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/contact`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to send message");
+  }
+
+  return response.json();
+};
 
 export function ContactSection() {
   const [agreed, setAgreed] = useState(false);
@@ -42,10 +62,22 @@ export function ContactSection() {
     },
   });
 
+  // Tanstack Query mutation for form submission
+  const { mutate, isPending } = useMutation({
+    mutationFn: postContactData,
+    onSuccess: () => {
+      toast.success("Message sent successfully!");
+      reset();
+      setAgreed(false);
+    },
+    onError: (error) => {
+      toast.error("Failed to send message. Please try again.");
+      console.error("Submission error:", error);
+    },
+  });
+
   const onSubmit = (data: FormData) => {
-    console.log("Form Data:", data);
-    reset(); // Reset form after submission
-    setAgreed(false); // Reset checkbox
+    mutate(data);
   };
 
   return (
@@ -53,7 +85,7 @@ export function ContactSection() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-0 items-stretch rounded-[20px] shadow-lg overflow-hidden">
           {/* Contact Form */}
-          <div className=" p-8 lg:p-12 flex flex-col justify-center">
+          <div className="p-8 lg:p-12 flex flex-col justify-center">
             <h1 className="text-[#0F3D61] text-3xl lg:text-[40px] font-normal mb-2">
               Get In Touch
             </h1>
@@ -147,7 +179,6 @@ export function ContactSection() {
   [&::-webkit-outer-spin-button]:appearance-none 
   [appearance:textfield]"
                 />
-
                 {errors.phone && (
                   <p className="text-red-500 text-sm mt-1">
                     {errors.phone.message}
@@ -187,19 +218,19 @@ export function ContactSection() {
                 />
                 <label htmlFor="terms" className="text-sm text-[#8E938F]">
                   You agree to our friendly{" "}
-                  <a
-                    href="#"
+                  <Link
+                    href="/terms"
                     className="text-[#0F3D61] underline font-semibold"
                   >
                     Terms & Conditions
-                  </a>{" "}
+                  </Link>{" "}
                   and{" "}
-                  <a
-                    href="#"
+                  <Link
+                    href="/privacy"
                     className="text-[#0F3D61] underline font-semibold"
                   >
                     Privacy Policy
-                  </a>
+                  </Link>
                   .
                 </label>
               </div>
@@ -207,10 +238,10 @@ export function ContactSection() {
               {/* Submit Button */}
               <Button
                 type="submit"
-                disabled={!agreed}
+                disabled={!agreed || isPending}
                 className="w-full bg-[#0F3D61] hover:bg-[#0F3D61]/90 rounded-[8px] text-[#F8F9FA] font-medium h-[48px] text-base disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Send Message
+                {isPending ? "Sending..." : "Send Message"}
               </Button>
             </form>
           </div>

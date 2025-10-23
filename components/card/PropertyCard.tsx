@@ -1,23 +1,24 @@
-"use client"
+"use client";
 
-import { Bed, Bath, Square, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
-import Link from "next/link"
+import { Bed, Bath, Square, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
 
 export interface PropertyCardProps {
-  image: string
-  title: string
-  address: string
-  price: string
-  date: string
-  time: string
-  beds: number
-  baths: number
-  sqft: string
-  type: string
-  description: string
-  onButtonClick?: () => void
+  image: string;
+  title: string;
+  address: string;
+  price: string;
+  date: string;
+  time: string;
+  beds: number;
+  baths: number;
+  sqft: string;
+  type: string;
+  id: string;
+  description: string;
+  onButtonClick?: () => void;
 }
 
 export function PropertyCard({
@@ -32,6 +33,7 @@ export function PropertyCard({
   sqft,
   description,
   type,
+  id,
   onButtonClick,
 }: PropertyCardProps) {
   return (
@@ -60,7 +62,9 @@ export function PropertyCard({
         </div>
 
         {/* Address */}
-        <p className="text-[#666666] text-sm sm:text-base font-normal mb-4">{address}</p>
+        <p className="text-[#666666] text-sm sm:text-base font-normal mb-4">
+          {address}
+        </p>
 
         {/* Date and Time */}
         <div className="flex flex-wrap justify-between items-center gap-2 sm:gap-4 text-sm sm:text-[16px] md:text-[18px] text-[#0F3D61] font-bold mb-4">
@@ -94,16 +98,16 @@ export function PropertyCard({
         </div>
 
         {/* See Details Button */}
-        <Link href="/apperment-details/1">
-        <Button
-          onClick={onButtonClick}
-          className="w-full bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[42px] sm:h-[46px] md:h-[48px] rounded-[8px] text-white font-semibold py-6 flex items-center justify-center gap-2 text-sm sm:text-base"
-        >
-          See Details
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+        <Link href={`/apperment-details/${id}`}>
+          <Button
+            onClick={onButtonClick}
+            className="w-full bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[42px] sm:h-[46px] md:h-[48px] rounded-[8px] text-white font-semibold py-6 flex items-center justify-center gap-2 text-sm sm:text-base"
+          >
+            See Details
+            <ArrowRight className="h-4 w-4" />
+          </Button>
         </Link>
       </div>
     </div>
-  )
+  );
 }

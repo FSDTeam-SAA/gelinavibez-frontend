@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,12 +14,82 @@ import { AuthLayout } from "@/components/web/AuthLayout";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  // Load saved credentials if "Remember Me" was previously checked
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("savedEmail");
+    const savedPassword = localStorage.getItem("savedPassword");
+    if (savedEmail && savedPassword) {
+      setEmail(savedEmail);
+      setPassword(savedPassword);
+      setRememberMe(true);
+    }
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validation
+    if (!email.trim()) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+    if (!password.trim()) {
+      toast.error("Please enter your password.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+        callbackUrl: "/",
+      });
+
+      // Check login response
+      if (res?.error) {
+        toast.error("Invalid email or password. Please try again.");
+        return;
+      }
+
+      // Handle "Remember Me"
+      if (rememberMe) {
+        localStorage.setItem("savedEmail", email);
+        localStorage.setItem("savedPassword", password);
+      } else {
+        localStorage.removeItem("savedEmail");
+        localStorage.removeItem("savedPassword");
+      }
+
+      // ✅ Show success toast and delay redirect
+      toast.success("Login successful 🎉", {
+        duration: 2000, // show toast for 2 seconds
+      });
+
+      setTimeout(() => {
+        router.push(res?.url || "/");
+      }, 2000); // redirect after toast finishes
+    } catch (err) {
+      console.error("Login error:", err);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <AuthLayout>
       <div className="w-full max-w-[624px]">
-        <div className=" bg-[#FFFFFF1A]/10 border border-white/10 p-8 md:p-10 rounded-[6px]">
+        <div className="bg-[#FFFFFF1A]/10 border border-white/10 p-8 md:p-10 rounded-[6px]">
           {/* Header */}
           <div className="mb-10">
             <h1 className="font-serif text-4xl md:text-5xl font-normal text-[#C5A574] mb-2">
@@ -29,7 +101,7 @@ export default function LoginForm() {
           </div>
 
           {/* Form */}
-          <form className="space-y-6 ">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div className="space-y-2">
               <Label
@@ -42,14 +114,17 @@ export default function LoginForm() {
                 id="email"
                 type="email"
                 placeholder="Enter your email..."
-                className="bg-transparent border-[#C0C3C1]  placeholder:text-white/40 focus:border-white/40  pl-5 h-12 rounded-full placeholder:text-[#F9F6F1] text-[#F9F6F1]"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-transparent border-[#C0C3C1] placeholder:text-white/40 focus:border-white/40 pl-5 h-12 rounded-full placeholder:text-[#F9F6F1] text-[#F9F6F1]"
+                required
               />
             </div>
 
             {/* Password Field */}
             <div className="space-y-2">
               <Label
-                htmlFor="email"
+                htmlFor="password"
                 className="text-[#F5F5F5] text-base font-medium"
               >
                 Password *
@@ -59,7 +134,10 @@ export default function LoginForm() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter Password..."
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="bg-transparent border-[#C0C3C1] text-white placeholder:text-white/40 pl-5 focus:border-white/40 h-12 rounded-full pr-12 placeholder:text-[#F9F6F1] text-[#F9F6F1]"
+                  required
                 />
                 <button
                   type="button"
@@ -104,9 +182,10 @@ export default function LoginForm() {
             {/* Sign In Button */}
             <Button
               type="submit"
+              disabled={loading}
               className="w-full h-12 bg-[#D4AF7A] hover:bg-[#C5A574] font-medium rounded-full transition-colors text-[18px] text-white"
             >
-              Sign In
+              {loading ? "Logging in..." : "Sign In"}
             </Button>
           </form>
 

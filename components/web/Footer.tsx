@@ -57,12 +57,12 @@ export function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-white flex-shrink-0 mt-0.5" />
-                <span className="text-[#F8F9FA] text-base font-medium ">123 Finance Street Douala, Cameroon</span>
+                <span className="text-[#F8F9FA] text-base font-medium ">418 Broadway suite 6217, Albany,N.Y.12207</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-white flex-shrink-0" />
                 <a href="tel:+237123456789" className="text-[#F8F9FA] text-base font-medium hover:text-[#d4b896] transition-colors ">
-                  +237 123 456 789
+                  +315-533-3918
                 </a>
               </li>
               <li className="flex items-center gap-3">
@@ -71,7 +71,7 @@ export function Footer() {
                   href="mailto:info@creditmatch.com"
                   className="text-[#F8F9FA] text-base font-medium hover:text-[#d4b896] transition-colors "
                 >
-                  info@creditmatch.com
+                 Info@mybridgepointsolutions.com
                 </a>
               </li>
             </ul>

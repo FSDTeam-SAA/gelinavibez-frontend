@@ -27,12 +27,12 @@ export function ServiceCard({
       {/* Tan border at top */}
       <div className="h-2 bg-[#C5A574]" />
 
-      <div className="p-6 lg:p-8 flex flex-col flex-1">
+      <div className="p-6 lg:p-5 flex flex-col flex-1">
         {/* Icon */}
         <div className="text-white mb-6 flex justify-center">{icon}</div>
 
         {/* Title */}
-        <h4 className="text-[#EFDACB] text-xl lg:text-[32px] font-semibold text-center mb-[56px]">
+        <h4 className="text-[#EFDACB] text-xl lg:text-[32px] font-semibold text-center mb-[56px] text-nowrap">
           {title}
         </h4>
 
