@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -9,27 +11,39 @@ import { AuthLayout } from "@/components/web/AuthLayout"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
 
-    try {
-      // Simulate API call (replace with your actual API call)
-      // await forgotPasswordAPI(email)
-      
-      // For now, just redirect on success
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate network delay
-      
-      // Redirect to verify-email page
-      router.push("/verify-email")
-    } catch (error) {
-      console.error("Forgot password error:", error)
-      // Handle error (you can add toast notification here)
-    } finally {
-      setIsLoading(false)
+  const forgotPasswordMutation = useMutation({
+    mutationFn: async (email: string) => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null)
+        throw new Error(errorData?.message || "Failed to send reset email")
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      toast.success("Password reset email sent successfully!")
+      router.push(`/verify-email?email=${encodeURIComponent(email)}`)
+    },
+    onError: () => {
+      toast.error("Something went wrong. Please try again.")
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (email) {
+      forgotPasswordMutation.mutate(email)
     }
   }
 
@@ -62,28 +76,19 @@ export default function ForgotPasswordPage() {
                 placeholder="Enter your email..."
                 className="bg-transparent border-[#C0C3C1] placeholder:text-white/40 focus:border-white/40 pl-5 h-12 rounded-full placeholder:text-[#F9F6F1] text-[#F9F6F1]"
                 required
+                disabled={forgotPasswordMutation.isPending}
               />
             </div>
 
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={isLoading || !email}
+              disabled={forgotPasswordMutation.isPending || !email}
               className="w-full h-12 bg-[#D4AF7A] hover:bg-[#C5A574] font-medium rounded-full transition-colors text-[18px] text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Sending..." : "Submit"}
+              {forgotPasswordMutation.isPending ? "Sending..." : "Submit"}
             </Button>
           </form>
-
-          {/* Back to Login Link */}
-          {/* <div className="mt-8 text-center">
-            <button
-              onClick={() => router.back()}
-              className="text-sm text-white/80 hover:text-[#D4AF7A] transition-colors"
-            >
-              ← Back to Login
-            </button>
-          </div> */}
         </div>
       </div>
     </AuthLayout>
