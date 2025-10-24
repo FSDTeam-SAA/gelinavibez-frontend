@@ -43,7 +43,7 @@ function PropertyCardSkeleton() {
 }
 
 /* -------------------------------------------------Main component------------------------------------------------- */
-export function Monday() {
+export function Friday() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["apartments-by-day"],
     queryFn: fetchApartmentsByDay,
@@ -56,7 +56,7 @@ export function Monday() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center mb-12">
             <h1 className="text-[#0F3D61] text-3xl lg:text-[40px] font-normal mb-4">
-              Sunday
+              Friday
             </h1>
           </div>
 
@@ -85,20 +85,19 @@ export function Monday() {
   if (isError) {
     return (
       <p className="text-center py-10 text-red-500">
-
+        
         Failed to load data.
       </p>
     );
   }
 
-  const mondayData = data?.find((d) => d._id === "monday");
-   if (!mondayData) return (
+  const fridayData = data?.find((d) => d._id === "friday");
+   if (!fridayData) return (
     <p className="text-center py-14 text-red-500 text-xl">
-        <h1 className="text-[#0F3D61] text-3xl lg:text-[40px] font-normal mb-4">
-            Monday
+         <h1 className="text-[#0F3D61] text-3xl lg:text-[40px] font-normal mb-4">
+            Friday
           </h1>
-
-      No apartments available.
+      No apartments available 
     </p>
   );
 
@@ -108,12 +107,12 @@ export function Monday() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center mb-12">
           <h1 className="text-[#0F3D61] text-3xl lg:text-[40px] font-normal mb-4">
-            Monday
+            Friday
           </h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {mondayData.apartments.map((apt) => (
+          {fridayData.apartments.map((apt) => (
             <PropertyCard
               key={apt._id}
               id={apt._id}

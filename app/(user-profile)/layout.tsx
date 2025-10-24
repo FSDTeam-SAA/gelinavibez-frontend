@@ -10,7 +10,7 @@ import RouteProtector from "./_components/RouteProtector";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <RouteProtector allowedRoles={["admin"]}>
+    <RouteProtector>
       <div className="flex min-h-screen bg-[#F8F9FA]">
         <Sidebar />
         <div className="flex-1 flex flex-col">

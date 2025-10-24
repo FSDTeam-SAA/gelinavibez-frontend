@@ -1,4 +1,3 @@
-
 "use client"
 
 import Link from "next/link"
@@ -158,24 +157,39 @@ export function Navbar() {
                     </Avatar>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48 bg-white cursor-pointer">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-48 bg-white rounded-md shadow-lg"
+                >
                   {role === "admin" && (
-                    <DropdownMenuItem onClick={() => router.push("/admindashboard")}>
+                    <DropdownMenuItem
+                      onClick={() => router.push("/admindashboard")}
+                      className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
+                    >
                       Admin Dashboard
                     </DropdownMenuItem>
                   )}
                   {role === "contractor" && (
-                    <DropdownMenuItem onClick={() => router.push("/contractor-profile")}>
+                    <DropdownMenuItem
+                      onClick={() => router.push("/contractor-profile")}
+                      className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
+                    >
                       Contractor Profile
                     </DropdownMenuItem>
                   )}
                   {role === "user" && (
-                    <DropdownMenuItem onClick={() => router.push("/property")}>
+                    <DropdownMenuItem
+                      onClick={() => router.push("/property")}
+                      className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
+                    >
                       View Profile
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem onClick={() => signOut()}>
-                    <LogOut className="mr-2 h-4 w-4" />
+                  <DropdownMenuItem
+                    onClick={() => signOut()}
+                    className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md flex items-center gap-2"
+                  >
+                    <LogOut className="h-4 w-4" />
                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>

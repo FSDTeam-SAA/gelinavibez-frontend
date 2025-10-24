@@ -1,45 +1,48 @@
 import NextAuth, { DefaultSession } from "next-auth";
-console.log(NextAuth)
 
+// ✅ Extend the built-in session and user types
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
-      userId?: string;
-      email?: string | null;
-      name?: string | null;
-      role?: string | null;
+      userId: string;
+      email: string;
+      role: string;
+      firstName?: string;
+      lastName?: string;
+      profileImage?: string;
     };
-
-    accessToken?: string;
-    refreshToken?: string;
+    accessToken: string;
     message?: string;
     success?: boolean;
     statusCode?: number;
-    role?: string;
   }
 
   interface User {
-    accessToken?: string;
-    refreshToken?: string;
-    userId?: string;
-    email?: string;
+    id: string;
+    email: string;
+    role: string;
+    firstName?: string;
+    lastName?: string;
+    profileImage?: string;
+    accessToken: string;
     message?: string;
     success?: boolean;
     statusCode?: number;
-    role?: string;
-    
   }
 }
 
+// ✅ Extend JWT token interface
 declare module "next-auth/jwt" {
   interface JWT {
-    accessToken?: string;
-    refreshToken?: string;
-    userId?: string;
-    email?: string;
+    accessToken: string;
+    userId: string;
+    email: string;
+    role: string;
+    firstName?: string;
+    lastName?: string;
+    profileImage?: string;
     message?: string;
     success?: boolean;
     statusCode?: number;
-    role?: string;
   }
 }
