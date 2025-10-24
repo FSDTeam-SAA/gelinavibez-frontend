@@ -1,17 +1,20 @@
 "use client"
 
 import { useState, useRef, type KeyboardEvent, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { AuthLayout } from "@/components/web/AuthLayout"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 export default function VerifyEmailPage() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""])
-  const [timer, setTimer] = useState(64) // 1:04 in seconds
-  const [isLoading, setIsLoading] = useState(false)
+  const [timer, setTimer] = useState(300) // 5:00 in seconds
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const email = searchParams.get("email") || ""
 
   // Timer effect
   useEffect(() => {
@@ -40,31 +43,82 @@ export default function VerifyEmailPage() {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedData = e.clipboardData.getData("Text").trim()
+    if (!/^\d{6}$/.test(pastedData)) return // only allow 6 digits
+
+    const newOtp = pastedData.split("")
+    setOtp(newOtp)
+
+    // Focus last input
+    inputRefs.current[5]?.focus()
+  }
+
+  const verifyMutation = useMutation({
+    mutationFn: async ({ email, otp }: { email: string; otp: string }) => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/verify-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp }),
+      })
+      if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Verification failed")
+      }
+      return res.json()
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        router.push(`/reset-password?email=${encodeURIComponent(email)}`)
+      } else {
+        throw new Error(data.message || "OTP does not match")
+      }
+    },
+    onError: () => {
+      toast.error( "An error occurred")
+    },
+  })
+
+  const resendMutation = useMutation({
+    mutationFn: async ({ email }: { email: string }) => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/resend-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+      if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Resend failed")
+      }
+      return res.json()
+    },
+    onSuccess: () => {
+      setTimer(300)
+      setOtp(["", "", "", "", "", ""])
+      inputRefs.current[0]?.focus()
+      toast.success("OTP resent successfully")
+    },
+    onError: () => {
+      toast.error( "Failed to resend OTP")
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-
-    try {
-      // Simulate API call (replace with your actual API call)
-      // await verifyOtpAPI(otp.join(""))
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate network delay
-
-      // Redirect to reset-password page on success
-      router.push("/reset-password")
-    } catch (error) {
-      console.error("OTP verification error:", error)
-      // Handle error (you can add toast notification here)
-    } finally {
-      setIsLoading(false)
+    if (!email) {
+      toast.error("Email not found in parameters")
+      return
     }
+    if (otp.some((digit) => !digit)) return
+    verifyMutation.mutate({ email, otp: otp.join("") })
   }
 
   const handleResend = () => {
-    // Simulate resend OTP API call
-    // await resendOtpAPI()
-    setTimer(64) // Reset timer
-    setOtp(["", "", "", "", "", ""]) // Reset OTP inputs
-    inputRefs.current[0]?.focus()
+    if (!email) {
+      toast.error("Email not found in parameters")
+      return
+    }
+    resendMutation.mutate({ email })
   }
 
   const formatTime = (seconds: number) => {
@@ -103,6 +157,7 @@ export default function VerifyEmailPage() {
                   value={digit}
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
+                  onPaste={index === 0 ? handlePaste : undefined} // handle paste on first input
                   className={`w-12 h-12 md:w-14 md:h-14 text-center text-xl font-medium bg-transparent ${
                     digit ? 'border-[#C5A574] text-[#C5A574]' : 'border-white text-[#F9F6F1]'
                   } focus:border-[#C5A574] rounded-[6px] placeholder:text-white/40`}
@@ -122,7 +177,7 @@ export default function VerifyEmailPage() {
               <button
                 type="button"
                 onClick={handleResend}
-                disabled={timer > 0}
+                disabled={timer > 0 || resendMutation.isPending}
                 className="text-[#D4AF7A] hover:text-[#E5C08B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Didn&apos;t get a code? <span className="underline">Resend</span>
@@ -132,10 +187,10 @@ export default function VerifyEmailPage() {
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={isLoading || otp.some(digit => !digit)}
+              disabled={verifyMutation.isPending || otp.some(digit => !digit)}
               className="w-full h-12 bg-[#D4AF7A] hover:bg-[#C5A574] font-medium rounded-full transition-colors text-[18px] text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Verifying..." : "Submit"}
+              {verifyMutation.isPending ? "Verifying..." : "Submit"}
             </Button>
           </form>
         </div>

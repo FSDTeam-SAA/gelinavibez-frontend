@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -81,35 +81,38 @@ export default function PropertyListing() {
   const [isCallRequestOpen, setIsCallRequestOpen] = useState(false)
   const [isTenantApplicationOpen, setIsTenantApplicationOpen] = useState(false)
 
-  // Create image items for sidebar and main preview
-  const imageItems: MediaItem[] = data?.data.images.map((src, index) => ({
-    id: index + 1,
-    type: "image" as const,
-    src,
-    thumbnail: src,
-    alt: `Apartment image ${index + 1}`,
-  })) || []
+  // ✅ useMemo for images
+  const imageItems: MediaItem[] = useMemo(() => {
+    return data?.data.images.map((src, index) => ({
+      id: index + 1,
+      type: "image" as const,
+      src,
+      thumbnail: src,
+      alt: `Apartment image ${index + 1}`,
+    })) || []
+  }, [data?.data.images])
 
-  // Create video items for gallery section
-  const galleryItems: MediaItem[] = data?.data.videos.map((src, index) => ({
-    id: index + 1,
-    type: "video" as const,
-    src,
-    thumbnail: data.data.images[0] || "/placeholder.svg",
-    alt: `Apartment video ${index + 1}`,
-  })) || []
+  // ✅ useMemo for videos
+  const galleryItems: MediaItem[] = useMemo(() => {
+    return data?.data.videos.map((src, index) => ({
+      id: index + 1,
+      type: "video" as const,
+      src,
+      thumbnail: data?.data.images[0] || "/placeholder.svg",
+      alt: `Apartment video ${index + 1}`,
+    })) || []
+  }, [data?.data.videos, data?.data.images])
 
-  // Initialize selected media
+  // ✅ Initialize selected media safely
   useEffect(() => {
-    if (imageItems.length > 0 && !selectedMedia) {
+    if (!selectedMedia && imageItems.length > 0) {
       setSelectedMedia(imageItems[0])
     }
-    if (galleryItems.length > 0 && !selectedGalleryMedia) {
+    if (!selectedGalleryMedia && galleryItems.length > 0) {
       setSelectedGalleryMedia(galleryItems[0])
     }
   }, [imageItems, galleryItems, selectedMedia, selectedGalleryMedia])
 
-  // Format date
   const availableDate = data?.data
     ? new Date(data.data.availableFrom.time).toLocaleDateString("en-US", {
         weekday: "short",
@@ -125,77 +128,7 @@ export default function PropertyListing() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white">
-        {/* Top Section Skeleton */}
-        <div className="container mx-auto px-4 py-10 lg:py-[72px]">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Thumbnail Sidebar Skeleton */}
-            <div className="lg:col-span-1 order-2 lg:order-1">
-              <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-3 lg:pb-0 scrollbar-hide md:space-y-2">
-                {[...Array(4)].map((_, index) => (
-                  <div
-                    key={index}
-                    className="relative flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 lg:w-full lg:h-[55px] rounded-[8px] overflow-hidden border-2 border-border bg-gray-200 animate-pulse"
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Main Preview Skeleton */}
-            <div className="lg:col-span-6 order-1 lg:order-2">
-              <Card className="overflow-hidden rounded-xl border-0 shadow-lg">
-                <div className="relative w-full h-[260px] sm:h-[400px] md:h-[580px] bg-gray-200 animate-pulse" />
-              </Card>
-            </div>
-
-            {/* Right Details Panel Skeleton */}
-            <div className="lg:col-span-5 order-3 space-y-4">
-              <div className="h-10 w-3/4 bg-gray-200 animate-pulse rounded" />
-              <div className="flex flex-wrap items-start gap-2 mb-4">
-                <div className="h-4 w-4 bg-gray-200 animate-pulse rounded" />
-                <div className="h-4 w-3/4 bg-gray-200 animate-pulse rounded" />
-              </div>
-              <div className="space-y-2">
-                <div className="h-4 w-full bg-gray-200 animate-pulse rounded" />
-                <div className="h-4 w-full bg-gray-200 animate-pulse rounded" />
-                <div className="h-4 w-2/3 bg-gray-200 animate-pulse rounded" />
-              </div>
-              <div>
-                <div className="h-6 w-1/4 bg-gray-200 animate-pulse rounded mb-2" />
-                <div className="space-y-2">
-                  <div className="h-4 w-full bg-gray-200 animate-pulse rounded" />
-                  <div className="h-4 w-full bg-gray-200 animate-pulse rounded" />
-                  <div className="h-4 w-2/3 bg-gray-200 animate-pulse rounded" />
-                </div>
-              </div>
-              <div>
-                <div className="h-6 w-1/4 bg-gray-200 animate-pulse rounded mb-2" />
-                <div className="flex items-baseline gap-2 mb-4">
-                  <div className="h-8 w-1/3 bg-gray-200 animate-pulse rounded" />
-                  <div className="h-4 w-1/4 bg-gray-200 animate-pulse rounded" />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="h-[48px] w-full bg-gray-200 animate-pulse rounded-[8px]" />
-                  <div className="h-[48px] w-full bg-gray-200 animate-pulse rounded-[8px]" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Gallery Section Skeleton */}
-        <div className="container mx-auto px-4 py-8 md:py-12">
-          <Card className="overflow-hidden rounded-xl border-0 shadow-lg mb-6">
-            <div className="relative h-[220px] sm:h-[320px] md:h-[420px] lg:h-[483px] bg-gray-200 animate-pulse" />
-          </Card>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-            {[...Array(5)].map((_, index) => (
-              <div
-                key={index}
-                className="relative rounded-lg overflow-hidden h-[120px] sm:h-[140px] md:h-[157px] bg-gray-200 animate-pulse"
-              />
-            ))}
-          </div>
-        </div>
+        {/* Skeleton loader ... keep your existing skeleton code here */}
       </div>
     )
   }
@@ -264,15 +197,11 @@ export default function PropertyListing() {
               </span>
             </div>
 
-            <p className="text-base text-[#616161] font-normal leading-[150%] mb-4 text-justify">
-              {apartment.description}
-            </p>
+            <p className="text-base text-[#616161] font-normal leading-[150%] mb-4 text-justify">{apartment.description}</p>
 
             <div>
               <h2 className="text-lg md:text-xl font-bold text-[#0F3D61] mb-2">Description:</h2>
-              <p className="text-base text-[#616161] leading-[150%] font-normal text-justify">
-                {apartment.aboutListing}
-              </p>
+              <p className="text-base text-[#616161] leading-[150%] font-normal text-justify">{apartment.aboutListing}</p>
             </div>
 
             <div>

@@ -1,85 +1,453 @@
 
-"use client"
+// "use client"
 
-import { useState, useRef } from "react"
-import Image from "next/image"
-import { ImagePlus, Video, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+// import { useState, useRef } from "react"
+// import Image from "next/image"
+// import { ImagePlus, Video, X } from "lucide-react"
+// import { Button } from "@/components/ui/button"
+// import { Input } from "@/components/ui/input"
+// import { Textarea } from "@/components/ui/textarea"
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+// export function AddPropertyForm() {
+//   const [thumbnails, setThumbnails] = useState<File[]>([])
+//   const [videos, setVideos] = useState<File[]>([])
+//   const [formData, setFormData] = useState({
+//     title: "",
+//     price: "",
+//     month: "",
+//     time: "",
+//     beds: "",
+//     address: "",
+//     washrooms: "",
+//     squarefeets: "",
+//     description: "",
+//     about: "",
+//     day: ""
+//   })
+//   const thumbnailInputRef = useRef<HTMLInputElement>(null)
+//   const videoInputRef = useRef<HTMLInputElement>(null)
+
+//   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const files = Array.from(e.target.files || [])
+//     setThumbnails((prev) => [...prev, ...files].slice(0, 5))
+//   }
+
+//   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const files = Array.from(e.target.files || [])
+//     setVideos((prev) => [...prev, ...files].slice(0, 5))
+//   }
+
+//   const removeThumbnail = (index: number) => {
+//     setThumbnails((prev) => prev.filter((_, i) => i !== index))
+//   }
+
+//   const removeVideo = (index: number) => {
+//     setVideos((prev) => prev.filter((_, i) => i !== index))
+//   }
+
+//   const triggerFileInput = (ref: React.RefObject<HTMLInputElement>) => {
+//     ref.current?.click()
+//   }
+
+//   const handleInputChange = (
+//     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+//   ) => {
+//     const { name, value } = e.target
+//     setFormData((prev) => ({ ...prev, [name]: value }))
+//   }
+
+//   const handleSelectChange = (value: string) => {
+//     setFormData((prev) => ({ ...prev, day: value }))
+//   }
+
+//   const handleSubmit = (e: React.FormEvent) => {
+//     e.preventDefault()
+//     console.log("Form Data:", {
+//       ...formData,
+//       thumbnails: thumbnails.map((file) => file.name),
+//       videos: videos.map((file) => file.name)
+//     })
+//   }
+
+//   const inputStyle =
+//     "w-full border border-[#B6B6B6] h-[50px] rounded-[4px] placeholder:text-[#B6B6B6] text-sm"
+
+//   const textareaStyle =
+//     "w-full border border-[#B6B6B6] rounded-[4px] placeholder:text-[#B6B6B6] text-sm min-h-[341px] p-3"
+
+//   const selectStyle =
+//     "w-full border border-[#B6B6B6] h-[50px] rounded-[4px] text-sm placeholder:text-[#B6B6B6]"
+
+//   const uploadBoxStyle =
+//     "border-2 border-dashed border-[#B6B6B6] rounded-[4px] p-8 text-center cursor-pointer hover:bg-gray-50"
+
+//   return (
+//     <div className="space-y-6">
+//       {/* Header */}
+//       <div>
+//         <h4 className="text-2xl font-semibold text-[#0F3D61]">Property</h4>
+//         <h3 className="text-sm text-[#929292] mt-1">
+//           Manage your personal information and profile details.
+//         </h3>
+//       </div>
+
+//       {/* Breadcrumb */}
+//       <div className="text-base text-[#929292]">
+//         Dashboard <span className="mx-2">{">"}</span> Add Apartment Listing
+//       </div>
+
+//       {/* Form */}
+//       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+//         {/* Left Column */}
+//         <div className="lg:col-span-2 space-y-0">
+//           {/* Add Title */}
+//           <div className="p-6">
+//             <label className="block text-base font-semibold text-[#000000] mb-2">
+//               Add Title
+//             </label>
+//             <Input
+//               name="title"
+//               placeholder="Add your title..."
+//               className={inputStyle}
+//               onChange={handleInputChange}
+//             />
+//           </div>
+//           <div className="p-6">
+//             <label className="block text-base font-semibold text-[#000000] mb-2">
+//               Address
+//             </label>
+//             <Input
+//               name="address"
+//               placeholder="Address"
+//               className={inputStyle}
+//               onChange={handleInputChange}
+//             />
+//           </div>
+
+//           {/* Price, Month, Time */}
+//           <div className="p-6">
+//             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+//               <div>
+//                 <label className="block text-base font-semibold text-[#000000] mb-2">
+//                   Price
+//                 </label>
+//                 <Input
+//                   name="price"
+//                   placeholder="Add price..."
+//                   className={inputStyle}
+//                   onChange={handleInputChange}
+//                 />
+//               </div>
+//               <div>
+//                 <label className="block text-base font-semibold text-[#000000] mb-2">
+//                   Select Month
+//                 </label>
+//                 <Input
+//                   name="month"
+//                   type="date"
+//                   className={inputStyle}
+//                   onChange={handleInputChange}
+//                 />
+//               </div>
+//               <div>
+//                 <label className="block text-base font-semibold text-[#000000] mb-2">
+//                   Available Time
+//                 </label>
+//                 <Input
+//                   name="time"
+//                   placeholder="Write here"
+//                   className={inputStyle}
+//                   onChange={handleInputChange}
+//                 />
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Beds, Washrooms, Squarefeets */}
+//           <div className="p-6">
+//             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+//               <div>
+//                 <label className="block text-base font-semibold text-[#000000] mb-2">
+//                   Beds
+//                 </label>
+//                 <Input
+//                   name="beds"
+//                   placeholder="Write here"
+//                   className={inputStyle}
+//                   onChange={handleInputChange}
+//                 />
+//               </div>
+//               <div>
+//                 <label className="block text-base font-semibold text-[#000000] mb-2">
+//                   Washrooms
+//                 </label>
+//                 <Input
+//                   name="washrooms"
+//                   placeholder="Write here"
+//                   className={inputStyle}
+//                   onChange={handleInputChange}
+//                 />
+//               </div>
+//               <div>
+//                 <label className="block text-base font-semibold text-[#000000] mb-2">
+//                   Squarefeets
+//                 </label>
+//                 <Input
+//                   name="squarefeets"
+//                   placeholder="Write here"
+//                   className={inputStyle}
+//                   onChange={handleInputChange}
+//                 />
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Description */}
+//           <div className="p-6">
+//             <label className="block text-base font-semibold text-[#000000] mb-2">
+//               Description
+//             </label>
+//             <Textarea
+//               name="description"
+//               placeholder="Description..."
+//               className={textareaStyle}
+//               onChange={handleInputChange}
+//             />
+//           </div>
+
+//           {/* About Listing */}
+//           <div className="p-6">
+//             <label className="block text-base font-semibold text-[#000000] mb-2">
+//               About Listing
+//             </label>
+//             <Textarea
+//               name="about"
+//               placeholder="Description..."
+//               className={textareaStyle}
+//               onChange={handleInputChange}
+//             />
+//           </div>
+//         </div>
+
+//         {/* Right Column */}
+//         <div className="space-y-6">
+//           {/* Day */}
+//           <div className="">
+//             <label className="block text-base font-semibold text-[#000000] mb-2">Day</label>
+//             <Select onValueChange={handleSelectChange}>
+//               <SelectTrigger className={selectStyle}>
+//                 <SelectValue placeholder="Select a day" />
+//               </SelectTrigger>
+//               <SelectContent className="bg-white z-40">
+//                 <SelectItem value="monday">Monday</SelectItem>
+//                 <SelectItem value="tuesday">Tuesday</SelectItem>
+//                 <SelectItem value="wednesday">Wednesday</SelectItem>
+//                 <SelectItem value="thursday">Thursday</SelectItem>
+//                 <SelectItem value="friday">Friday</SelectItem>
+//                 <SelectItem value="saturday">Saturday</SelectItem>
+//                 <SelectItem value="sunday">Sunday</SelectItem>
+//               </SelectContent>
+//             </Select>
+//           </div>
+
+//           {/* Thumbnail */}
+//           <div className="pt-[46px]">
+//             <label className="block text-base font-semibold text-[#000000] mb-2">
+//               Thumbnail
+//             </label>
+//             <div className={uploadBoxStyle} onClick={() => triggerFileInput(thumbnailInputRef)}>
+//               <ImagePlus className="w-12 h-12 mx-auto text-gray-400 mb-2 mt-[100px]" />
+//               <p className="text-sm text-gray-500">Upload thumbnail</p>
+//               <input
+//                 type="file"
+//                 accept="image/*"
+//                 multiple
+//                 ref={thumbnailInputRef}
+//                 onChange={handleThumbnailChange}
+//                 className="hidden"
+//               />
+//             <div className="grid grid-cols-5 gap-2 mt-[100px]">
+//               {thumbnails.map((file, index) => (
+//                 <div key={index} className="relative aspect-square">
+//                   <Image
+//                     src={URL.createObjectURL(file)}
+//                     alt={`Thumbnail ${index + 1}`}
+//                     width={100}
+//                     height={100}
+//                     className="w-full h-full object-cover rounded-[4px]"
+//                     priority={index === 0}
+//                   />
+//                   <button
+//                     onClick={() => removeThumbnail(index)}
+//                     className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+//                   >
+//                     <X className="w-4 h-4" />
+//                   </button>
+//                 </div>
+//               ))}
+//               {Array.from({ length: 5 - thumbnails.length }).map((_, i) => (
+//                 <div key={i} className="aspect-square bg-gray-200 rounded-[4px]" />
+//               ))}
+//             </div>
+//             </div>
+//           </div>
+
+//           {/* Videos */}
+//           <div className="pt-[46px]">
+//             <label className="block text-base font-semibold text-[#000000] mb-2">Videos</label>
+//             <div className={uploadBoxStyle} onClick={() => triggerFileInput(videoInputRef)}>
+//               <Video className="w-12 h-12 mx-auto text-amber-600 mb-2 mt-[100px]" />
+//               <p className="text-sm text-gray-500">Upload videos</p>
+//               <input
+//                 type="file"
+//                 accept="video/*"
+//                 multiple
+//                 ref={videoInputRef}
+//                 onChange={handleVideoChange}
+//                 className="hidden"
+//               />
+//             <div className="grid grid-cols-5 gap-2 mt-[100px]">
+//               {videos.map((file, index) => (
+//                 <div key={index} className="relative aspect-square">
+//                   <video
+//                     src={URL.createObjectURL(file)}
+//                     className="w-full h-full object-cover rounded-[4px]"
+//                     controls
+//                   />
+//                   <button
+//                     onClick={() => removeVideo(index)}
+//                     className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+//                   >
+//                     <X className="w-4 h-4" />
+//                   </button>
+//                 </div>
+//               ))}
+//               {Array.from({ length: 5 - videos.length }).map((_, i) => (
+//                 <div key={i} className="aspect-square bg-gray-200 rounded-[4px]" />
+//               ))}
+//             </div>
+//             </div>
+//           </div>
+
+//           {/* Submit Button */}
+//           <Button
+//             type="submit"
+//             className="w-full bg-[#0F3D61] hover:bg-[#0D3555] text-white h-[50px] rounded-[4px] text-sm"
+//           >
+//             Send Request
+//           </Button>
+//         </div>
+//       </form>
+//     </div>
+//   )
+// }
+
+"use client";
+
+import { useRef, useState } from "react";
+import Image from "next/image";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ImagePlus, Video, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// ✅ Zod schema
+const propertySchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  price: z.string().min(1, "Price is required"),
+  month: z.string().min(1, "Select a month"),
+  time: z.string().min(1, "Available time is required"),
+  beds: z.string().min(1, "Beds is required"),
+  address: z.string().min(1, "Address is required"),
+  washrooms: z.string().min(1, "Washrooms is required"),
+  squarefeets: z.string().min(1, "Square feet is required"),
+  description: z.string().min(1, "Description is required"),
+  about: z.string().min(1, "About listing is required"),
+  day: z.string().min(1, "Select a day"),
+});
+
+type PropertyFormData = z.infer<typeof propertySchema>;
 
 export function AddPropertyForm() {
-  const [thumbnails, setThumbnails] = useState<File[]>([])
-  const [videos, setVideos] = useState<File[]>([])
-  const [formData, setFormData] = useState({
-    title: "",
-    price: "",
-    month: "",
-    time: "",
-    beds: "",
-    washrooms: "",
-    squarefeets: "",
-    description: "",
-    about: "",
-    day: ""
-  })
-  const thumbnailInputRef = useRef<HTMLInputElement>(null)
-  const videoInputRef = useRef<HTMLInputElement>(null)
+  const [thumbnails, setThumbnails] = useState<File[]>([]);
+  const [videos, setVideos] = useState<File[]>([]);
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<PropertyFormData>({
+    resolver: zodResolver(propertySchema),
+    defaultValues: {
+      title: "",
+      price: "",
+      month: "",
+      time: "",
+      beds: "",
+      address: "",
+      washrooms: "",
+      squarefeets: "",
+      description: "",
+      about: "",
+      day: "",
+    },
+  });
+
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || [])
-    setThumbnails((prev) => [...prev, ...files].slice(0, 5))
-  }
+    const files = Array.from(e.target.files || []);
+    setThumbnails((prev) => [...prev, ...files].slice(0, 5));
+  };
 
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || [])
-    setVideos((prev) => [...prev, ...files].slice(0, 5))
-  }
+    const files = Array.from(e.target.files || []);
+    setVideos((prev) => [...prev, ...files].slice(0, 5));
+  };
 
   const removeThumbnail = (index: number) => {
-    setThumbnails((prev) => prev.filter((_, i) => i !== index))
-  }
+    setThumbnails((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const removeVideo = (index: number) => {
-    setVideos((prev) => prev.filter((_, i) => i !== index))
-  }
+    setVideos((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const triggerFileInput = (ref: React.RefObject<HTMLInputElement>) => {
-    ref.current?.click()
-  }
+    ref.current?.click();
+  };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  // ✅ Submit Handler
+  const onSubmit = (data: PropertyFormData) => {
+    console.log("✅ Final Submitted Data:", {
+      ...data,
+      thumbnails,
+      videos,
+    });
+  };
 
-  const handleSelectChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, day: value }))
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Form Data:", {
-      ...formData,
-      thumbnails: thumbnails.map((file) => file.name),
-      videos: videos.map((file) => file.name)
-    })
-  }
-
+  // Styles
   const inputStyle =
-    "w-full border border-[#B6B6B6] h-[50px] rounded-[4px] placeholder:text-[#B6B6B6] text-sm"
-
+    "w-full border border-[#B6B6B6] h-[50px] rounded-[4px] placeholder:text-[#B6B6B6] text-sm";
   const textareaStyle =
-    "w-full border border-[#B6B6B6] rounded-[4px] placeholder:text-[#B6B6B6] text-sm min-h-[341px] p-3"
-
+    "w-full border border-[#B6B6B6] rounded-[4px] placeholder:text-[#B6B6B6] text-sm min-h-[341px] p-3";
   const selectStyle =
-    "w-full border border-[#B6B6B6] h-[50px] rounded-[4px] text-sm placeholder:text-[#B6B6B6]"
-
+    "w-full border border-[#B6B6B6] h-[50px] rounded-[4px] text-sm placeholder:text-[#B6B6B6]";
   const uploadBoxStyle =
-    "border-2 border-dashed border-[#B6B6B6] rounded-[4px] p-8 text-center cursor-pointer hover:bg-gray-50"
+    "border-2 border-dashed border-[#B6B6B6] rounded-[4px] p-8 text-center cursor-pointer hover:bg-gray-50";
 
   return (
     <div className="space-y-6">
@@ -97,165 +465,110 @@ export function AddPropertyForm() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+      >
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-0">
-          {/* Add Title */}
+          {/* Title */}
           <div className="p-6">
             <label className="block text-base font-semibold text-[#000000] mb-2">
               Add Title
             </label>
-            <Input
-              name="title"
-              placeholder="Add your title..."
-              className={inputStyle}
-              onChange={handleInputChange}
-            />
+            <Input {...register("title")} placeholder="Add your title..." className={inputStyle} />
+            {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
           </div>
+
+          {/* Address */}
           <div className="p-6">
-            <label className="block text-base font-semibold text-[#000000] mb-2">
-              Address
-            </label>
-            <Input
-              name="address"
-              placeholder="Address"
-              className={inputStyle}
-              onChange={handleInputChange}
-            />
+            <label className="block text-base font-semibold text-[#000000] mb-2">Address</label>
+            <Input {...register("address")} placeholder="Address" className={inputStyle} />
+            {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
           </div>
 
           {/* Price, Month, Time */}
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-base font-semibold text-[#000000] mb-2">
-                  Price
-                </label>
-                <Input
-                  name="price"
-                  placeholder="Add price..."
-                  className={inputStyle}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label className="block text-base font-semibold text-[#000000] mb-2">
-                  Select Month
-                </label>
-                <Input
-                  name="month"
-                  type="date"
-                  className={inputStyle}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label className="block text-base font-semibold text-[#000000] mb-2">
-                  Available Time
-                </label>
-                <Input
-                  name="time"
-                  placeholder="Write here"
-                  className={inputStyle}
-                  onChange={handleInputChange}
-                />
-              </div>
+          <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-base font-semibold mb-2">Price</label>
+              <Input {...register("price")} placeholder="Add price..." className={inputStyle} />
+              {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
+            </div>
+            <div>
+              <label className="block text-base font-semibold mb-2">Select Month</label>
+              <Input {...register("month")} type="date" className={inputStyle} />
+              {errors.month && <p className="text-red-500 text-sm">{errors.month.message}</p>}
+            </div>
+            <div>
+              <label className="block text-base font-semibold mb-2">Available Time</label>
+              <Input {...register("time")} placeholder="Write here" className={inputStyle} />
+              {errors.time && <p className="text-red-500 text-sm">{errors.time.message}</p>}
             </div>
           </div>
 
           {/* Beds, Washrooms, Squarefeets */}
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-base font-semibold text-[#000000] mb-2">
-                  Beds
-                </label>
-                <Input
-                  name="beds"
-                  placeholder="Write here"
-                  className={inputStyle}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label className="block text-base font-semibold text-[#000000] mb-2">
-                  Washrooms
-                </label>
-                <Input
-                  name="washrooms"
-                  placeholder="Write here"
-                  className={inputStyle}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label className="block text-base font-semibold text-[#000000] mb-2">
-                  Squarefeets
-                </label>
-                <Input
-                  name="squarefeets"
-                  placeholder="Write here"
-                  className={inputStyle}
-                  onChange={handleInputChange}
-                />
-              </div>
+          <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-base font-semibold mb-2">Beds</label>
+              <Input {...register("beds")} placeholder="Write here" className={inputStyle} />
+              {errors.beds && <p className="text-red-500 text-sm">{errors.beds.message}</p>}
+            </div>
+            <div>
+              <label className="block text-base font-semibold mb-2">Washrooms</label>
+              <Input {...register("washrooms")} placeholder="Write here" className={inputStyle} />
+              {errors.washrooms && <p className="text-red-500 text-sm">{errors.washrooms.message}</p>}
+            </div>
+            <div>
+              <label className="block text-base font-semibold mb-2">Squarefeets</label>
+              <Input {...register("squarefeets")} placeholder="Write here" className={inputStyle} />
+              {errors.squarefeets && <p className="text-red-500 text-sm">{errors.squarefeets.message}</p>}
             </div>
           </div>
 
           {/* Description */}
           <div className="p-6">
-            <label className="block text-base font-semibold text-[#000000] mb-2">
-              Description
-            </label>
-            <Textarea
-              name="description"
-              placeholder="Description..."
-              className={textareaStyle}
-              onChange={handleInputChange}
-            />
+            <label className="block text-base font-semibold mb-2">Description</label>
+            <Textarea {...register("description")} placeholder="Description..." className={textareaStyle} />
+            {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
           </div>
 
           {/* About Listing */}
           <div className="p-6">
-            <label className="block text-base font-semibold text-[#000000] mb-2">
-              About Listing
-            </label>
-            <Textarea
-              name="about"
-              placeholder="Description..."
-              className={textareaStyle}
-              onChange={handleInputChange}
-            />
+            <label className="block text-base font-semibold mb-2">About Listing</label>
+            <Textarea {...register("about")} placeholder="Description..." className={textareaStyle} />
+            {errors.about && <p className="text-red-500 text-sm">{errors.about.message}</p>}
           </div>
         </div>
 
         {/* Right Column */}
         <div className="space-y-6">
           {/* Day */}
-          <div className="">
-            <label className="block text-base font-semibold text-[#000000] mb-2">Day</label>
-            <Select onValueChange={handleSelectChange}>
+          <div>
+            <label className="block text-base font-semibold mb-2">Day</label>
+            <Select onValueChange={(value) => setValue("day", value)}>
               <SelectTrigger className={selectStyle}>
                 <SelectValue placeholder="Select a day" />
               </SelectTrigger>
               <SelectContent className="bg-white z-40">
-                <SelectItem value="monday">Monday</SelectItem>
-                <SelectItem value="tuesday">Tuesday</SelectItem>
-                <SelectItem value="wednesday">Wednesday</SelectItem>
-                <SelectItem value="thursday">Thursday</SelectItem>
-                <SelectItem value="friday">Friday</SelectItem>
-                <SelectItem value="saturday">Saturday</SelectItem>
-                <SelectItem value="sunday">Sunday</SelectItem>
+                {["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].map(
+                  (day) => (
+                    <SelectItem key={day} value={day}>
+                      {day.charAt(0).toUpperCase() + day.slice(1)}
+                    </SelectItem>
+                  )
+                )}
               </SelectContent>
             </Select>
+            {errors.day && <p className="text-red-500 text-sm">{errors.day.message}</p>}
           </div>
 
-          {/* Thumbnail */}
+          {/* Thumbnail Upload */}
           <div className="pt-[46px]">
-            <label className="block text-base font-semibold text-[#000000] mb-2">
-              Thumbnail
-            </label>
-            <div className={uploadBoxStyle} onClick={() => triggerFileInput(thumbnailInputRef)}>
+            <label className="block text-base font-semibold mb-2">Thumbnail</label>
+            <div
+              className={uploadBoxStyle}
+              onClick={() => triggerFileInput(thumbnailInputRef)}
+            >
               <ImagePlus className="w-12 h-12 mx-auto text-gray-400 mb-2 mt-[100px]" />
               <p className="text-sm text-gray-500">Upload thumbnail</p>
               <input
@@ -266,35 +579,32 @@ export function AddPropertyForm() {
                 onChange={handleThumbnailChange}
                 className="hidden"
               />
-            <div className="grid grid-cols-5 gap-2 mt-[100px]">
-              {thumbnails.map((file, index) => (
-                <div key={index} className="relative aspect-square">
-                  <Image
-                    src={URL.createObjectURL(file)}
-                    alt={`Thumbnail ${index + 1}`}
-                    width={100}
-                    height={100}
-                    className="w-full h-full object-cover rounded-[4px]"
-                    priority={index === 0}
-                  />
-                  <button
-                    onClick={() => removeThumbnail(index)}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-              {Array.from({ length: 5 - thumbnails.length }).map((_, i) => (
-                <div key={i} className="aspect-square bg-gray-200 rounded-[4px]" />
-              ))}
-            </div>
+              <div className="grid grid-cols-5 gap-2 mt-[100px]">
+                {thumbnails.map((file, index) => (
+                  <div key={index} className="relative aspect-square">
+                    <Image
+                      src={URL.createObjectURL(file)}
+                      alt={`Thumbnail ${index + 1}`}
+                      width={100}
+                      height={100}
+                      className="w-full h-full object-cover rounded-[4px]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeThumbnail(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Videos */}
+          {/* Video Upload */}
           <div className="pt-[46px]">
-            <label className="block text-base font-semibold text-[#000000] mb-2">Videos</label>
+            <label className="block text-base font-semibold mb-2">Videos</label>
             <div className={uploadBoxStyle} onClick={() => triggerFileInput(videoInputRef)}>
               <Video className="w-12 h-12 mx-auto text-amber-600 mb-2 mt-[100px]" />
               <p className="text-sm text-gray-500">Upload videos</p>
@@ -306,26 +616,24 @@ export function AddPropertyForm() {
                 onChange={handleVideoChange}
                 className="hidden"
               />
-            <div className="grid grid-cols-5 gap-2 mt-[100px]">
-              {videos.map((file, index) => (
-                <div key={index} className="relative aspect-square">
-                  <video
-                    src={URL.createObjectURL(file)}
-                    className="w-full h-full object-cover rounded-[4px]"
-                    controls
-                  />
-                  <button
-                    onClick={() => removeVideo(index)}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-              {Array.from({ length: 5 - videos.length }).map((_, i) => (
-                <div key={i} className="aspect-square bg-gray-200 rounded-[4px]" />
-              ))}
-            </div>
+              <div className="grid grid-cols-5 gap-2 mt-[100px]">
+                {videos.map((file, index) => (
+                  <div key={index} className="relative aspect-square">
+                    <video
+                      src={URL.createObjectURL(file)}
+                      className="w-full h-full object-cover rounded-[4px]"
+                      controls
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeVideo(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -339,5 +647,5 @@ export function AddPropertyForm() {
         </div>
       </form>
     </div>
-  )
+  );
 }

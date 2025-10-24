@@ -1,43 +1,87 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useMutation } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff } from "lucide-react"
 import { AuthLayout } from "@/components/web/AuthLayout"
+import { toast } from "sonner"
+
+// API function
+const resetPassword = async ({ email, newPassword }: { email: string; newPassword: string }) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, newPassword }),
+  })
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to reset password")
+  }
+
+  return data
+}
 
 export default function ResetPasswordPage() {
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState("")
+  
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Extract email from URL query params (e.g., ?email=user@example.com)
+  useEffect(() => {
+    const emailParam = searchParams.get("email")
+    if (emailParam) {
+      setEmail(decodeURIComponent(emailParam))
+    } else {
+      toast.error("Invalid or missing email. Please use the link from your email.")
+    }
+  }, [searchParams])
+
+  // TanStack Query Mutation
+  const mutation = useMutation({
+    mutationFn: resetPassword,
+    onSuccess: () => {
+      toast.success("Password reset successfully! Redirecting to login...")
+      setTimeout(() => {
+        router.push("/login")
+      }, 2000)
+    },
+    onError: () => {
+      toast.error( "Failed to reset password. Please try again.")
+    },
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
 
-    try {
-      // Validate passwords match
-      if (newPassword !== confirmPassword) {
-        throw new Error("Passwords do not match")
-      }
-
-      // Simulate API call (replace with your actual API call)
-      // await resetPasswordAPI(newPassword)
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate network delay
-
-      // Redirect to login page on success
-      router.push("/login")
-    } catch (error) {
-      console.error("Reset password error:", error)
-      // Handle error (you can add toast notification here)
-    } finally {
-      setIsLoading(false)
+    if (!email) {
+      toast.error("Email is missing. Please use the reset link sent to your email.")
+      return
     }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match")
+      return
+    }
+
+    if (newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters")
+      return
+    }
+
+    mutation.mutate({ email, newPassword })
   }
 
   return (
@@ -52,6 +96,11 @@ export default function ResetPasswordPage() {
             <h3 className="text-[#F9F6F1] text-base font-normal">
               Enter your new password
             </h3>
+            {email && (
+              <p className="text-[#F9F6F1]/70 text-sm mt-2">
+                Resetting password for: <span className="font-medium">{email}</span>
+              </p>
+            )}
           </div>
 
           {/* Form */}
@@ -70,6 +119,7 @@ export default function ResetPasswordPage() {
                   placeholder="Enter Password..."
                   className="bg-transparent border-[#C0C3C1] placeholder:text-white/40 focus:border-white/40 pl-5 h-12 rounded-full pr-12 placeholder:text-[#F9F6F1] text-[#F9F6F1]"
                   required
+                  minLength={6}
                 />
                 <button
                   type="button"
@@ -92,9 +142,10 @@ export default function ResetPasswordPage() {
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Enter Password..."
+                  placeholder="Confirm Password..."
                   className="bg-transparent border-[#C0C3C1] placeholder:text-white/40 focus:border-white/40 pl-5 h-12 rounded-full pr-12 placeholder:text-[#F9F6F1] text-[#F9F6F1]"
                   required
+                  minLength={6}
                 />
                 <button
                   type="button"
@@ -109,15 +160,22 @@ export default function ResetPasswordPage() {
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={isLoading || !newPassword || !confirmPassword}
+              disabled={mutation.isPending || !newPassword || !confirmPassword || newPassword !== confirmPassword}
               className="w-full h-12 bg-[#D4AF7A] hover:bg-[#C5A574] font-medium rounded-full transition-colors text-[18px] text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? "Changing..." : "Change Password"}
+              {mutation.isPending ? "Changing..." : "Change Password"}
             </Button>
           </form>
 
           {/* Back to Login Link */}
-      
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => router.push("/login")}
+              className="text-[#C5A574] text-sm hover:underline"
+            >
+              Back to Login
+            </button>
+          </div>
         </div>
       </div>
     </AuthLayout>
