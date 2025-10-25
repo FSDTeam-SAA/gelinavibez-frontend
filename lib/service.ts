@@ -9,7 +9,7 @@ export async function addService(token: string, payload: any) {
 
     body: JSON.stringify({
       fullName: payload.fullName,
-      email: payload.email,
+      email: payload.emailAddress,
       phoneNumber: payload.phoneNumber,
       propertyAddress: payload.propertyAddress,
       typeOfProperty: payload.typeOfProperty,
