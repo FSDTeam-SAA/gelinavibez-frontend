@@ -1,4 +1,6 @@
+import { getPayment } from "@/lib/payment";
 import { changePassword, getProfile, updateProfileInfo } from "@/lib/profileInfo";
+import { PaymentApiResponse } from "@/types/paymentDataType";
 import { ProfileUpdatePayload } from "@/types/userDataType";
 import { UserProfileResponse } from "@/types/userDataType";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -47,3 +49,15 @@ export function useChnagePassword(
         },
     });
 }
+
+export function usePyament(token: string | undefined,currentPage: number,itemsPerPage: number) {
+    return useQuery<PaymentApiResponse>({
+        queryKey: ["payment",currentPage,itemsPerPage],
+        queryFn: () => {
+            if (!token) throw new Error("Token is missing")
+            return getPayment(token,currentPage,itemsPerPage)
+        },
+        enabled: !!token,
+    })
+}
+
