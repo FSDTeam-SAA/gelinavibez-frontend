@@ -5,17 +5,20 @@ import { ReactNode } from "react";
 
 interface RouteProtectorProps {
   children: ReactNode;
-  allowedRoles?: string[]; // e.g. ['admin', 'manager']
+ 
 }
 
 export default function RouteProtector({ children,  }: RouteProtectorProps) {
   const session  = useSession();
-  const user=session.data?.user?.role
+  const user=session?.data?.user?.role
+  
   const router = useRouter();
 
 
-   if(!user){
+   if(user=="user"){
     router.push('/property')
+   }else{
+    router.push('/')
    }
   
 

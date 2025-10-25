@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Building2, Settings, LogOut, X, CreditCard } from "lucide-react";
+import { Building2, Settings, LogOut, X} from "lucide-react";
 import { cn } from "@/lib/utils";
 import React from "react";
 import Image from "next/image";
 
 const navigation = [
-  { name: "Property", href: "/property", icon: Building2 },
-  { name: "Payment", href: "/payment", icon: CreditCard },
-  { name: "Settings", href: "/profile", icon: Settings },
+  { name: "Order Lists", href: "/order-list", icon: Building2 },
+
+  { name: "Settings", href: "/provider-profile", icon: Settings },
 ];
 
 interface SidebarProps {
@@ -18,7 +18,7 @@ interface SidebarProps {
   onClose?: () => void;
 }
 
-export function Sidebar({ isMobileMenuOpen = false, onClose }: SidebarProps) {
+export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
 
   React.useEffect(() => {
