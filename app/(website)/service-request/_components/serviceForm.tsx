@@ -1,9 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { toast } from "sonner"
 import { format } from "date-fns"
 
 import { cn } from "@/lib/utils"
@@ -18,17 +17,14 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from "@/components/ui/select"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useServiceRequest } from "@/hooks/ApiClling"
+import { useSession } from "next-auth/react"
+
+
 
 
 const formSchema = z.object({
@@ -36,14 +32,14 @@ const formSchema = z.object({
     phoneNumber: z.string().min(1, "Phone number is required"),
     emailAddress: z.string().email("Invalid email"),
     propertyAddress: z.string().min(1, "Address required"),
-    typeOfProperty: z.string().min(1, "Select a type"),
-    contactMethod: z.string().min(1, "Select a method"),
-    pestProblem: z.string().min(1, "Select a problem"),
-    locationOfProblem: z.string().min(1, "Select a location"),
+    typeOfProperty: z.array(z.string()).min(1, "Select at least one type"),
+    contactMethod: z.array(z.string()).min(1, "Select at least one method"),
+    pestProblem: z.array(z.string()).min(1, "Select at least one problem"),
+    locationOfProblem: z.array(z.string()).min(1, "Select at least one location"),
     durationOfIssue: z.string().min(1, "Enter duration"),
     exterminationService: z.string().min(1, "Select one"),
     preferredServiceDate: z.date().refine(date => date !== null, { message: "Pick a date" }),
-    preferredTime: z.string().min(1, "Select time"),
+    preferredTime: z.array(z.string()).min(1, "Select at least one time"),
     building: z.string().min(1, "Enter building info"),
     contactInfo: z.string().min(1, "Select contact info"),
     signature: z.string().min(1, "Signature required"),
@@ -52,41 +48,67 @@ const formSchema = z.object({
 })
 
 export default function ServiceForm() {
+    const { data: session } = useSession();
+    const token = session?.accessToken || "";
+    const serviceMutation = useServiceRequest(token)
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             preferredServiceDate: new Date(),
             date: new Date(),
-            checkbox: false
+            checkbox: false,
+            typeOfProperty: [],
+            contactMethod: [],
+            pestProblem: [],
+            locationOfProblem: [],
+            preferredTime: []
         }
     })
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log(values)
-        toast(
-            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-            </pre>
-        )
+
+        serviceMutation.mutate(values)
     }
 
-    const selectOptions = [
-        { value: "option1", label: "Option 1" },
-        { value: "option2", label: "Option 2" },
-        { value: "option3", label: "Option 3" }
-    ]
+    const propertyOptions = ["Residential", "Commercial", "Multi-unit Building"]
+    const contactOptions = ["Phone", "Email", "Text Message"]
+    const pestOptions = ["Bedbugs", "Roaches", "Ants", "Termites", "Fleas", "Spiders", "Rodents"]
+
+    const locationOptions = ["Whole property", "Specific rooms", "Basement", "Outside areas"]
+    const timeOptions = ["Morning", "Afternoon", "Evening"]
+     
+    const MultiCheckboxGroup = ({ field, options }: { field: any; options: string[] }) => (
+        <div className="flex flex-col space-y-2 border border-[#C0C3C1] p-3 rounded-[5px] bg-white">
+            {options.map((opt) => (
+                <label key={opt} className="flex items-center space-x-2">
+                    <Checkbox
+                        checked={field.value?.includes(opt)}
+                        onCheckedChange={(checked) => {
+                            if (checked) {
+                                field.onChange([...field.value, opt])
+                            } else {
+                                field.onChange(field.value.filter((v: string) => v !== opt))
+                            }
+                        }}
+                    />
+                    <span className="text-sm">{opt}</span>
+                </label>
+            ))}
+        </div>
+    )
 
     return (
-
         <div className="container mx-auto">
-            <h1 className="text-[#0F3D61] font-bold text-[40px] mt-[120px]"> Extermination Service Request Application</h1>
+            <h1 className="text-[#0F3D61] font-bold text-[40px] mt-[120px]">
+                Extermination Service Request Application
+            </h1>
             <Form {...form}>
-
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-4 container  mx-auto py-4 px-4"
+                    className="space-y-4 container mx-auto py-4 px-4"
                 >
-                    <h2 className="text-[#424242] font-semibold"> Client Information</h2>
+                    <h2 className="text-[#424242] font-semibold">Client Information</h2>
 
                     {/* Full Name & Phone */}
                     <div className="grid grid-cols-12 gap-4">
@@ -98,14 +120,13 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Full Name</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1]  rounded-[5px]" placeholder="Full Name" {...field} />
+                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Full Name" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
-
                         <div className="col-span-12 md:col-span-6">
                             <FormField
                                 control={form.control}
@@ -114,7 +135,7 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Phone Number</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1]  rounded-[5px]" placeholder="Phone Number" {...field} />
+                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Phone Number" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -133,14 +154,13 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Email Address</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1]  rounded-[5px]" type="email" placeholder="Email Address" {...field} />
+                                            <Input className="border border-[#C0C3C1] rounded-[5px]" type="email" placeholder="Email Address" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
-
                         <div className="col-span-12 md:col-span-6">
                             <FormField
                                 control={form.control}
@@ -149,7 +169,7 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Property Address</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1]  rounded-[5px]" placeholder="Property Address" {...field} />
+                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Property Address" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -158,7 +178,7 @@ export default function ServiceForm() {
                         </div>
                     </div>
 
-                    {/* Select fields */}
+                    {/* Multi-select groups */}
                     <div className="grid grid-cols-12 gap-4">
                         <div className="col-span-12 md:col-span-6">
                             <FormField
@@ -168,24 +188,13 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Type of Property</FormLabel>
                                         <FormControl>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <SelectTrigger className="border border-[#C0C3C1] rounded-[5px] bg-white">
-                                                    <SelectValue placeholder="Select Type" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-white">
-                                                <SelectItem value="Residential">Residential</SelectItem>
-                                                <SelectItem value="Commercial ">Commercial</SelectItem>
-                                                <SelectItem value="Multi-unit Building">Multi-unit Building</SelectItem>
-                                                </SelectContent>
-                                            </Select>
+                                            <MultiCheckboxGroup field={field} options={propertyOptions} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
-
                                 )}
                             />
                         </div>
-
                         <div className="col-span-12 md:col-span-6">
                             <FormField
                                 control={form.control}
@@ -194,18 +203,7 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Preferred Contact Method</FormLabel>
                                         <FormControl>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <SelectTrigger className="border border-[#C0C3C1] rounded-[5px] bg-white">
-                                                    <SelectValue placeholder="Select Type" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-white">
-                                                    {selectOptions.map((opt) => (
-                                                        <SelectItem key={opt.value} value={opt.value}>
-                                                            {opt.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
+                                            <MultiCheckboxGroup field={field} options={contactOptions} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -224,25 +222,13 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Type of Pest Problem</FormLabel>
                                         <FormControl>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <SelectTrigger className="border border-[#C0C3C1] rounded-[5px] bg-white">
-                                                    <SelectValue placeholder="Select Type" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-white">
-                                                    {selectOptions.map((opt) => (
-                                                        <SelectItem key={opt.value} value={opt.value}>
-                                                            {opt.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
+                                            <MultiCheckboxGroup field={field} options={pestOptions} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
-
                         <div className="col-span-12 md:col-span-6">
                             <FormField
                                 control={form.control}
@@ -251,18 +237,7 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Location of Problem</FormLabel>
                                         <FormControl>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <SelectTrigger className="border border-[#C0C3C1] rounded-[5px] bg-white">
-                                                    <SelectValue placeholder="Select Type" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-white">
-                                                    {selectOptions.map((opt) => (
-                                                        <SelectItem key={opt.value} value={opt.value}>
-                                                            {opt.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
+                                            <MultiCheckboxGroup field={field} options={locationOptions} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -281,14 +256,13 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Duration of Issue</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1] rounded-[5px] " placeholder="Duration of Issue" {...field} />
+                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Duration of Issue" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
-
                         <div className="col-span-12 md:col-span-6">
                             <FormField
                                 control={form.control}
@@ -297,18 +271,15 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Previous Extermination Service</FormLabel>
                                         <FormControl>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <SelectTrigger className="border border-[#C0C3C1] rounded-[5px] bg-white">
-                                                    <SelectValue placeholder="Select Type" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-white">
-                                                    {selectOptions.map((opt) => (
-                                                        <SelectItem key={opt.value} value={opt.value}>
-                                                            {opt.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
+                                            <select
+                                                className="border border-[#C0C3C1] rounded-[5px] bg-white w-full h-[40px] px-2"
+                                                onChange={field.onChange}
+                                                value={field.value}
+                                            >
+                                                <option value="">Select Type</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                            </select>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -327,12 +298,12 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Preferred Service Date</FormLabel>
                                         <Popover>
-                                            <PopoverTrigger className="flex h-[40px] w-full items-center justify-between rounded-[5px] border border-[#C0C3C1] bg-white px-3 py-2 text-sm" asChild>
+                                            <PopoverTrigger asChild>
                                                 <FormControl>
                                                     <Button
                                                         variant="outline"
                                                         className={cn(
-                                                            "w-full text-left font-normal",
+                                                            "w-full justify-between border border-[#C0C3C1] rounded-[5px] bg-white",
                                                             !field.value && "text-muted-foreground"
                                                         )}
                                                     >
@@ -355,7 +326,6 @@ export default function ServiceForm() {
                                 )}
                             />
                         </div>
-
                         <div className="col-span-12 md:col-span-6">
                             <FormField
                                 control={form.control}
@@ -364,18 +334,7 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Preferred Time</FormLabel>
                                         <FormControl>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <SelectTrigger className="border border-[#C0C3C1] rounded-[5px] bg-white">
-                                                    <SelectValue placeholder="Select Type" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-white">
-                                                    {selectOptions.map((opt) => (
-                                                        <SelectItem key={opt.value} value={opt.value}>
-                                                            {opt.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
+                                            <MultiCheckboxGroup field={field} options={timeOptions} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -394,14 +353,21 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Building/Super Access Required</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1] rounded-[5px] bg-white" placeholder="Building/Super Access" {...field} />
+                                            <select
+                                                className="border border-[#C0C3C1] rounded-[5px] bg-white w-full h-[40px] px-2"
+                                                onChange={field.onChange}
+                                                value={field.value}
+                                            >
+                                                <option value="">Select Type</option>
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                            </select>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
-
                         <div className="col-span-12 md:col-span-6">
                             <FormField
                                 control={form.control}
@@ -410,18 +376,7 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Contact Info</FormLabel>
                                         <FormControl>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <SelectTrigger className="border border-[#C0C3C1] rounded-[5px] bg-white">
-                                                    <SelectValue placeholder="Select Type" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-white">
-                                                    {selectOptions.map((opt) => (
-                                                        <SelectItem key={opt.value} value={opt.value}>
-                                                            {opt.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
+                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Type your contact info" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -430,7 +385,7 @@ export default function ServiceForm() {
                         </div>
                     </div>
 
-                    {/* Signature (text input) & Date */}
+                    {/* Signature & Date */}
                     <div className="grid grid-cols-12 gap-4">
                         <div className="col-span-12 md:col-span-6">
                             <FormField
@@ -440,14 +395,13 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Signature</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1] rounded-[5px] bg-white" placeholder="Type your signature" {...field} />
+                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Type your signature" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                         </div>
-
                         <div className="col-span-12 md:col-span-6">
                             <FormField
                                 control={form.control}
@@ -456,12 +410,12 @@ export default function ServiceForm() {
                                     <FormItem>
                                         <FormLabel>Date</FormLabel>
                                         <Popover>
-                                            <PopoverTrigger className="flex h-[40px] w-full items-center justify-between rounded-[5px] border border-[#C0C3C1] bg-white px-3 py-2 text-sm" asChild>
+                                            <PopoverTrigger asChild>
                                                 <FormControl>
                                                     <Button
                                                         variant="outline"
                                                         className={cn(
-                                                            "w-full text-left font-normal",
+                                                            "w-full justify-between border border-[#C0C3C1] rounded-[5px] bg-white",
                                                             !field.value && "text-muted-foreground"
                                                         )}
                                                     >
