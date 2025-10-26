@@ -1,117 +1,120 @@
-"use client"
 
-import { useState, useEffect, useMemo } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { MapPin, Play } from "lucide-react"
-import Image from "next/image"
-import { CallRequestModal } from "./CallRequestModal"
-import { TenantApplicationModal } from "./TenantApplicationModal"
-import { useParams } from "next/navigation"
 
-interface MediaItem {
-  id: number
-  type: "image" | "video"
-  src: string
-  thumbnail: string
-  alt: string
-}
+"use client";
 
-interface Address {
-  street: string
-  city: string
-  state: string
-  zipCode: string
-}
+import { useState, useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { MapPin, Play } from "lucide-react";
+import Image from "next/image";
+import { CallRequestModal } from "./CallRequestModal";
+import { TenantApplicationModal } from "./TenantApplicationModal";
+import { useParams, useRouter } from "next/navigation";
+import PropertyListingSkeleton from "./Skleton";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
-interface AvailableFrom {
-  month: string
-  time: string
-}
+// === Types ===
+type MediaItem = {
+  id: number;
+  type: "image" | "video";
+  src: string;
+  thumbnail: string;
+  alt: string;
+};
 
-interface Apartment {
-  address: Address
-  availableFrom: AvailableFrom
-  _id: string
-  title: string
-  description: string
-  aboutListing: string
-  price: number
-  bedrooms: number
-  bathrooms: number
-  squareFeet: number
-  amenities: string[]
-  images: string[]
-  videos: string[]
-  day: string
-  action: string
-  status: string
-  ownerId: string
-  createdAt: string
-  updatedAt: string
-}
+type Address = {
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+};
 
-interface ApiResponse {
-  statusCode: number
-  success: boolean
-  message: string
-  data: Apartment
-}
+type AvailableFrom = {
+  time: string;
+};
 
-const fetchApartment = async (id: string): Promise<ApiResponse> => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apartment/${id}`)
+type ApartmentDetails = {
+  _id: string;
+  title: string;
+  description: string;
+  aboutListing: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  address: Address;
+  availableFrom: AvailableFrom;
+  images: string[];
+  videos: string[];
+};
+
+type ApartmentDetailsResponse = {
+  data: ApartmentDetails;
+};
+
+// === Fetch Function ===
+const fetchApartment = async (id: string): Promise<ApartmentDetailsResponse> => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apartment/${id}`);
   if (!response.ok) {
-    throw new Error("Failed to fetch apartment data")
+    throw new Error("Failed to fetch apartment data");
   }
-  return response.json()
-}
+  return response.json();
+};
 
 export default function PropertyListing() {
-  const params = useParams()
-  const id = params.id as string
+  const params = useParams();
+  const id = params.id as string;
+  const router = useRouter();
 
-  const { data, isLoading, error } = useQuery<ApiResponse>({
+  const { data: session, status } = useSession();
+  const userRole = session?.user?.role as string | undefined;
+
+  const { data, isLoading, error } = useQuery<ApartmentDetailsResponse>({
     queryKey: ["apartment", id],
     queryFn: () => fetchApartment(id),
-  })
+  });
 
-  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null)
-  const [selectedGalleryMedia, setSelectedGalleryMedia] = useState<MediaItem | null>(null)
-  const [isCallRequestOpen, setIsCallRequestOpen] = useState(false)
-  const [isTenantApplicationOpen, setIsTenantApplicationOpen] = useState(false)
+  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
+  const [selectedGalleryMedia, setSelectedGalleryMedia] = useState<MediaItem | null>(null);
+  const [isCallRequestOpen, setIsCallRequestOpen] = useState(false);
+  const [isTenantApplicationOpen, setIsTenantApplicationOpen] = useState(false);
 
-  //  useMemo for images
+  // useMemo for images
   const imageItems: MediaItem[] = useMemo(() => {
-    return data?.data.images.map((src, index) => ({
-      id: index + 1,
-      type: "image" as const,
-      src,
-      thumbnail: src,
-      alt: `Apartment image ${index + 1}`,
-    })) || []
-  }, [data?.data.images])
+    return (
+      data?.data.images.map((src, index) => ({
+        id: index + 1,
+        type: "image" as const,
+        src,
+        thumbnail: src,
+        alt: `Apartment image ${index + 1}`,
+      })) || []
+    );
+  }, [data?.data.images]);
 
   // useMemo for videos
   const galleryItems: MediaItem[] = useMemo(() => {
-    return data?.data.videos.map((src, index) => ({
-      id: index + 1,
-      type: "video" as const,
-      src,
-      thumbnail: data?.data.images[0] || "/placeholder.svg",
-      alt: `Apartment video ${index + 1}`,
-    })) || []
-  }, [data?.data.videos, data?.data.images])
+    return (
+      data?.data.videos.map((src, index) => ({
+        id: index + 1,
+        type: "video" as const,
+        src,
+        thumbnail: data?.data.images[0] || "/placeholder.svg",
+        alt: `Apartment video ${index + 1}`,
+      })) || []
+    );
+  }, [data?.data.videos, data?.data.images]);
 
-  // ✅ Initialize selected media safely
+  // Initialize selected media safely
   useEffect(() => {
     if (!selectedMedia && imageItems.length > 0) {
-      setSelectedMedia(imageItems[0])
+      setSelectedMedia(imageItems[0]);
     }
     if (!selectedGalleryMedia && galleryItems.length > 0) {
-      setSelectedGalleryMedia(galleryItems[0])
+      setSelectedGalleryMedia(galleryItems[0]);
     }
-  }, [imageItems, galleryItems, selectedMedia, selectedGalleryMedia])
+  }, [imageItems, galleryItems, selectedMedia, selectedGalleryMedia]);
 
   const availableDate = data?.data
     ? new Date(data.data.availableFrom.time).toLocaleDateString("en-US", {
@@ -123,21 +126,48 @@ export default function PropertyListing() {
         minute: "numeric",
         hour12: true,
       })
-    : ""
+    : "";
+
+  // === Handle Apply Now Click ===
+  const handleApplyNow = () => {
+    // 1. Not logged in → redirect to login
+    if (status !== "authenticated" || !userRole) {
+      router.push("/login");
+      return;
+    }
+
+    // 2. Contractor or Admin → show toast
+    if (userRole === "contractor" || userRole === "admin") {
+      toast.error("Only users can apply.", {
+        duration: 4000,
+        style: { background: "#fef", color: "#b91c1c" },
+      });
+      return;
+    }
+
+    // 3. Tenant (role = user) → open modal
+    if (userRole === "user") {
+      setIsTenantApplicationOpen(true);
+    }
+  };
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white">
-        {/* Skeleton loader ... keep your existing skeleton code here */}
+        <PropertyListingSkeleton />
       </div>
-    )
+    );
   }
 
   if (error || !data?.data) {
-    return <div className="min-h-screen bg-white flex items-center justify-center">Error loading apartment data</div>
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        Error loading apartment data
+      </div>
+    );
   }
 
-  const apartment = data.data
+  const apartment = data.data;
 
   return (
     <div className="min-h-screen bg-white">
@@ -186,7 +216,9 @@ export default function PropertyListing() {
 
           {/* Right Details Panel */}
           <div className="lg:col-span-5 order-3 space-y-4">
-            <h1 className="text-3xl md:text-[40px] font-normal text-[#0F3D61]">{apartment.title.toUpperCase()}</h1>
+            <h1 className="text-3xl md:text-[40px] font-normal text-[#0F3D61]">
+              {apartment.title.toUpperCase()}
+            </h1>
 
             <div className="flex items-center gap-1 text-base text-[#68706A] mb-4">
               <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#A60000]" />
@@ -197,17 +229,23 @@ export default function PropertyListing() {
               </span>
             </div>
 
-            <p className="text-base text-[#616161] font-normal leading-[150%] mb-4 text-justify">{apartment.description}</p>
+            <p className="text-base text-[#616161] font-normal leading-[150%] mb-4 text-justify">
+              {apartment.description}
+            </p>
 
             <div>
               <h2 className="text-lg md:text-xl font-bold text-[#0F3D61] mb-2">Description:</h2>
-              <p className="text-base text-[#616161] leading-[150%] font-normal text-justify">{apartment.aboutListing}</p>
+              <p className="text-base text-[#616161] leading-[150%] font-normal text-justify">
+                {apartment.aboutListing}
+              </p>
             </div>
 
             <div>
               <h3 className="text-xl font-semibold text-foreground mb-2">Pricing</h3>
               <div className="flex items-baseline gap-2 mb-4">
-                <span className="text-3xl md:text-4xl font-bold text-[#0F3D61]">$ {apartment.price.toLocaleString()}</span>
+                <span className="text-3xl md:text-4xl font-bold text-[#0F3D61]">
+                  $ {apartment.price.toLocaleString()}
+                </span>
                 <span className="text-sm text-muted-foreground">/Month</span>
               </div>
 
@@ -223,7 +261,7 @@ export default function PropertyListing() {
                 <Button
                   size="lg"
                   className="w-full bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[48px] rounded-[8px] text-[#F5F5F5]"
-                  onClick={() => setIsTenantApplicationOpen(true)}
+                  onClick={handleApplyNow}
                 >
                   Apply Now
                 </Button>
@@ -274,8 +312,16 @@ export default function PropertyListing() {
         </div>
       </div>
 
-      <CallRequestModal open={isCallRequestOpen} onOpenChange={setIsCallRequestOpen} apartment={apartment.title} id={apartment._id} />
-      <TenantApplicationModal open={isTenantApplicationOpen} onOpenChange={setIsTenantApplicationOpen} />
+      <CallRequestModal
+        open={isCallRequestOpen}
+        onOpenChange={setIsCallRequestOpen}
+        apartment={apartment.title}
+        id={apartment._id}
+      />
+      <TenantApplicationModal
+        open={isTenantApplicationOpen}
+        onOpenChange={setIsTenantApplicationOpen}
+      />
     </div>
-  )
+  );
 }

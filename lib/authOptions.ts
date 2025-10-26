@@ -22,14 +22,14 @@ export const authOptions: AuthOptions = {
 
           const data = await res.json();
 
-          // ✅ Adjusted to match your actual API response shape
+          //  Adjusted to match your actual API response shape
           if (res.ok && data?.data?.accessToken && data?.data?.user) {
             const user = data.data.user;
 
             return {
               id: user._id,
               email: user.email,
-              role: user.role, // ✅ role now comes from data.data.user.role
+              role: user.role, // role now comes from data.data.user.role
               firstName: user.firstName,
               lastName: user.lastName,
               profileImage: user.profileImage,
