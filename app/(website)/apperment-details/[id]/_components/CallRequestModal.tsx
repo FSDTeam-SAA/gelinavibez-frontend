@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea"; // <-- Import Textarea
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
@@ -25,6 +26,7 @@ interface FormData {
   lastName: string;
   email: string;
   phone: string;
+  note: string; // <-- New field
 }
 
 interface FormErrors {
@@ -32,6 +34,7 @@ interface FormErrors {
   lastName?: string;
   email?: string;
   phone?: string;
+  // note is optional, no error needed
 }
 
 export function CallRequestModal({
@@ -45,6 +48,7 @@ export function CallRequestModal({
     lastName: "",
     email: "",
     phone: "",
+    note: "",
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -64,8 +68,9 @@ export function CallRequestModal({
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
-          visiting: id, // <-- send apartment ID here
+          visiting: id,
           phone: data.phone,
+          addNode: data.note, 
         }),
       }
     );
@@ -86,11 +91,12 @@ export function CallRequestModal({
         lastName: "",
         email: "",
         phone: "",
+        note: "",
       });
       onOpenChange(false);
     },
     onError: () => {
-      toast.error( "Failed to submit call request");
+      toast.error("Failed to submit call request");
     },
   });
 
@@ -222,12 +228,12 @@ export function CallRequestModal({
           </div>
 
           {/* Phone */}
-          <div className="space-y-2 pb-10">
+          <div className="space-y-2">
             <label className="text-base text-[#343A40] font-medium">
               Phone Number
             </label>
             <Input
-              type="number"
+              type="tel"
               placeholder="Enter phone number"
               value={formData.phone}
               onChange={(e) => {
@@ -235,13 +241,28 @@ export function CallRequestModal({
                 setFormData({ ...formData, phone: value });
                 clearError("phone");
               }}
-              className={`h-[48px] rounded-[4px] border-[#C0C3C1] placeholder:text-[#B6B6B6] placeholder:text-[#B6B6B6] text-sm ${
+              className={`h-[48px] rounded-[4px] border-[#C0C3C1] placeholder:text-[#B6B6B6] text-sm ${
                 errors.phone ? "border-red-500" : ""
-              } [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`}
+              } [appearance:textfield] [&::-webkit-outer-spin-button]:hidden [&::-webkit-inner-spin-button]:hidden`}
             />
             {errors.phone && (
               <p className="text-red-500 text-sm">{errors.phone}</p>
             )}
+          </div>
+
+          {/* Add Note - New Field */}
+          <div className="space-y-2">
+            <label className="text-base text-[#343A40] font-medium">
+              Add Note
+            </label>
+            <Textarea
+              placeholder="Any additional information..."
+              value={formData.note}
+              onChange={(e) => {
+                setFormData({ ...formData, note: e.target.value });
+              }}
+              className={` rounded-[4px] border-[#C0C3C1] placeholder:text-[#B6B6B6] resize-none`}
+            />
           </div>
 
           <Button

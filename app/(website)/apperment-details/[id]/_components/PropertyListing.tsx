@@ -81,7 +81,7 @@ export default function PropertyListing() {
   const [isCallRequestOpen, setIsCallRequestOpen] = useState(false)
   const [isTenantApplicationOpen, setIsTenantApplicationOpen] = useState(false)
 
-  // ✅ useMemo for images
+  //  useMemo for images
   const imageItems: MediaItem[] = useMemo(() => {
     return data?.data.images.map((src, index) => ({
       id: index + 1,
@@ -92,7 +92,7 @@ export default function PropertyListing() {
     })) || []
   }, [data?.data.images])
 
-  // ✅ useMemo for videos
+  // useMemo for videos
   const galleryItems: MediaItem[] = useMemo(() => {
     return data?.data.videos.map((src, index) => ({
       id: index + 1,
