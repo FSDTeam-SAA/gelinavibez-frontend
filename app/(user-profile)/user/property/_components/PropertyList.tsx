@@ -210,7 +210,7 @@ export function PropertyList() {
 
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const currentData = properties.slice(startIndex, endIndex)
+  const currentData = properties && properties?.slice(startIndex, endIndex)
 
   interface FormattedDateTime {
     date: string
@@ -329,9 +329,11 @@ export function PropertyList() {
                     </td>
                     <td className="px-4 sm:px-6 py-3">
                       <div className="flex items-center gap-2 sm:gap-3">
+                      <Link href={`/user/edit-property/${item._id}`}>
                         <button className="text-gray-600 hover:text-blue-600 transition-colors p-1">
                           <Edit2 className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
+                      </Link>
                         <button className="text-gray-600 hover:text-red-600 transition-colors p-1">
                           <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>

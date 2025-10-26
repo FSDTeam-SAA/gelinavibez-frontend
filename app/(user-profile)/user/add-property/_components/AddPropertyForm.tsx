@@ -165,7 +165,7 @@ export function AddPropertyForm() {
             </div>
             <div>
               <label className="block text-base font-semibold mb-2">Available Time</label>
-              <Input type="time" {...register("time")} placeholder="Write here" className={inputStyle} />
+              <Input  {...register("time")} placeholder="Write here" className={inputStyle} />
               {errors.time && <p className="text-red-500 text-sm">{errors.time.message}</p>}
             </div>
           </div>

@@ -57,3 +57,44 @@ export interface IProperty {
   thumbnails: File[]; // Adjust based on upload structure
   videos: File[];     // same here
 }
+
+
+
+
+export interface ISingleApartmentResponse {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  data: IApartment;
+}
+
+export interface IApartment {
+  _id: string;
+  title: string;
+  description: string;
+  aboutListing: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  squareFeet: number;
+  amenities: string[];
+  images: string[];
+  videos: string[];
+  day: string;
+  action: string;
+  status: string;
+  ownerId: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  };
+  availableFrom: {
+    month: string;
+    time: string;
+  };
+}
