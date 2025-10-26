@@ -77,7 +77,7 @@ export function PropertyCard({
         </div>
 
         {/* Description */}
-        <h3 className="text-[#333333] text-sm sm:text-base mb-6 leading-[150%]">
+        <h3 className="text-[#333333] text-sm sm:text-base line-clamp-2 mb-6 leading-[150%] h-[50px] overflow-hidden">
           {description}
         </h3>
 

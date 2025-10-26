@@ -8,9 +8,9 @@ import React from "react";
 import Image from "next/image";
 
 const navigation = [
-  { name: "Order Lists", href: "/order-list", icon: Building2 },
+  { name: "Order Lists", href: "/contractor/order-list", icon: Building2 },
 
-  { name: "Settings", href: "/provider-profile", icon: Settings },
+  { name: "Settings", href: "/contractor/provider-profile", icon: Settings },
 ];
 
 interface SidebarProps {
@@ -69,6 +69,7 @@ export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarPro
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:flex-col lg:w-[386px] bg-[#EFEFEF] border-r border-gray-200">
         <div className="flex items-center justify-center h-[90px] w-[120px] pl-5">
+          <Link href="/">
           <Image
             src="/assets/logo.png"
             width={1000}
@@ -76,6 +77,7 @@ export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarPro
             alt="logo"
             className="w-full h-full"
           />
+          </Link>
         </div>
 
         {/* Nav Links + Logout right below Settings */}

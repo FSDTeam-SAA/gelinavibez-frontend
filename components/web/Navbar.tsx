@@ -81,13 +81,13 @@ export function Navbar() {
 
     switch (role) {
       case "user":
-        router.push("/property")
+        router.push("/user/property")
         break
       case "contractor":
-        router.push("/contractor-profile")
+        router.push("/contractor/order-list")
         break
       case "admin":
-        router.push("/admindashboard")
+        router.push("")
         break
       default:
         toast.error("Unknown role")
@@ -143,7 +143,7 @@ export function Navbar() {
           {/* === Desktop Auth Section === */}
           <div className="hidden lg:flex items-center gap-4">
             {token && userProfile ? (
-              <DropdownMenu>
+              <DropdownMenu >
                 <DropdownMenuTrigger asChild>
                   <button className="focus:outline-none">
                     <Avatar className="h-10 w-10 bg-white cursor-pointer hover:opacity-80 transition-opacity">
@@ -159,19 +159,12 @@ export function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="w-48 bg-white rounded-md shadow-lg"
+                  className="w-48 bg-white rounded-[8px] shadow-lg text-base font-semibold text-[#0F3D61] py-2"
                 >
-                  {role === "admin" && (
-                    <DropdownMenuItem
-                      onClick={() => router.push("/admindashboard")}
-                      className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
-                    >
-                      Admin Dashboard
-                    </DropdownMenuItem>
-                  )}
+                 
                   {role === "contractor" && (
                     <DropdownMenuItem
-                      onClick={() => router.push("/contractor-profile")}
+                      onClick={() => router.push("/contractor/order-list")}
                       className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
                     >
                       Contractor Profile
@@ -179,7 +172,7 @@ export function Navbar() {
                   )}
                   {role === "user" && (
                     <DropdownMenuItem
-                      onClick={() => router.push("/property")}
+                      onClick={() => router.push("/user/property")}
                       className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
                     >
                       View Profile
@@ -187,7 +180,7 @@ export function Navbar() {
                   )}
                   <DropdownMenuItem
                     onClick={() => signOut()}
-                    className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md flex items-center gap-2"
+                    className="cursor-pointer  px-3 rounded-md flex items-center gap-2"
                   >
                     <LogOut className="h-4 w-4" />
                     Sign Out
