@@ -120,7 +120,7 @@ export const SubscribeModal: React.FC<SubscribeModalProps> = ({ isOpen, onClose 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 hover:bg-gray-100 rounded-full transition-colors"
+          className="absolute top-4 right-4 z-10 p-2 bg-gray-100 rounded-full transition-colors"
           aria-label="Close modal"
         >
           <X className="w-6 h-6 text-gray-600" />

@@ -10,7 +10,7 @@ export function ServicesHero() {
                     alt="Hero Background"
                     width={1000}
                     height={1000}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full "
                 />
             </div>
             <div className="absolute inset-0 bg-[#00000066]/40" />

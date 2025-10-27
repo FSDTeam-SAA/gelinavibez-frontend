@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import Link from "next/link"
 
 export function HeroSection() {
   return (
@@ -33,6 +34,7 @@ export function HeroSection() {
 
         {/* Action Buttons */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 px-2 md:px-4 items-center bg-[#EFDACB] py-3 md:py-4 rounded-[8px] mt-8 md:mt-12 lg:mt-[100px] mb-5 md:mb-0">
+          <Link href="/apartments">
           <Button className="w-full bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[60px] md:h-[68px] lg:h-[74px] !rounded-[4px] border-2 border-[#d4b896] px-4 md:px-6 lg:px-8 py-4 md:py-5 lg:py-6 text-sm md:text-lg lg:text-2xl flex items-center justify-center gap-2 md:gap-3 font-bold text-[#EFDACB] ">
             <Image
               src="/assets/icon3.png"
@@ -43,6 +45,7 @@ export function HeroSection() {
             />
             <span className="text-balance">Find an Apartment</span>
           </Button>
+          </Link>
           <Button className="w-full bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[60px] md:h-[68px] lg:h-[74px] !rounded-[4px] border-2 border-[#d4b896] px-4 md:px-6 lg:px-8 py-4 md:py-5 lg:py-6 text-sm md:text-lg lg:text-2xl flex items-center justify-center gap-2 md:gap-3 font-bold text-[#EFDACB]">
             <Image
               src="/assets/icon2.png"
