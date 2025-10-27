@@ -13,8 +13,8 @@ export function ServicesHero() {
                     className="w-full h-full "
                 />
             </div>
-            <div className="absolute inset-0 bg-[#00000066]/40" />
 
+            <div className="absolute inset-0 bg-[#00000066]/40" />
             {/* Content */}
             <div className="relative z-10 text-center px-4 md:px-6 lg:px-4 container mx-auto">
                 {/* Logo */}

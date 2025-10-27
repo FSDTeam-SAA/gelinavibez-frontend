@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Building2, Settings, LogOut, X} from "lucide-react";
+import { Building2, Settings, LogOut, X, CardSim } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React from "react";
 import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
+import { useProfileQuery } from "@/hooks/ApiClling";
 
 const navigation = [
   { name: "Order Lists", href: "/contractor/order-list", icon: Building2 },
@@ -20,6 +22,9 @@ interface SidebarProps {
 
 export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const token = session?.accessToken || "";
+  const getUser = useProfileQuery(token)
 
   React.useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "unset";
@@ -55,6 +60,40 @@ export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarPro
       );
     });
 
+  const handelGO = async () => {
+    try {
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/contractor/dashboard-link`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch Stripe dashboard link");
+      }
+
+      const data = await response.json();
+      if (data.data.url) {
+        window.location.href = data.data.url;
+      } else {
+        // Otherwise, redirect to your dashboard manually.
+      }
+    } catch (error) {
+      console.error("Error redirecting to dashboard:", error);
+    }
+  };
+
+
+
+
   return (
     <>
       {/* Overlay */}
@@ -70,13 +109,13 @@ export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarPro
       <aside className="hidden lg:flex lg:flex-col lg:w-[386px] bg-[#EFEFEF] border-r border-gray-200">
         <div className="flex items-center justify-center h-[90px] w-[120px] pl-5">
           <Link href="/">
-          <Image
-            src="/assets/logo.png"
-            width={1000}
-            height={1000}
-            alt="logo"
-            className="w-full h-full"
-          />
+            <Image
+              src="/assets/logo.png"
+              width={1000}
+              height={1000}
+              alt="logo"
+              className="w-full h-full"
+            />
           </Link>
         </div>
 
@@ -84,9 +123,21 @@ export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarPro
         <nav className="flex-1 py-6 space-y-1">
           {renderLinks()}
 
+          {getUser.data?.data.stripeAccountId &&
+            <button
+              onClick={handelGO}
+              className="flex items-center gap-3 px-4 py-3 text-[18px]  font-normal  rounded-lg hover:bg-red-50 transition-colors w-full"
+            >
+              <CardSim className="w-5 h-5" />
+              Stripe Dashboard
+            </button>
+          }
+
+
+
           {/* Logout button right below other links */}
           <button
-            onClick={onClose}
+            onClick={() => signOut({ callbackUrl: "/login" })}
             className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-lg hover:bg-red-50 transition-colors w-full"
           >
             <LogOut className="w-5 h-5" />
@@ -125,8 +176,9 @@ export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarPro
           {renderLinks()}
 
           {/* Logout below other links */}
+
           <button
-            onClick={onClose}
+            onClick={() => signOut({ callbackUrl: "/login" })}
             className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-lg hover:bg-red-50 transition-colors w-full"
           >
             <LogOut className="w-5 h-5" />

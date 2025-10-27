@@ -1,6 +1,3 @@
-
-
-
 "use client"
 
 import { useState } from "react"
@@ -8,17 +5,21 @@ import Link from "next/link"
 import { Edit2, Trash2, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useSession } from "next-auth/react"
-import { useProperty } from "@/hooks/ApiClling"
+import { useDeletProperty, useProperty } from "@/hooks/ApiClling"
+import { Skeleton } from "@/components/ui/skeleton"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 
 export function PropertyList() {
   const [currentPage, setCurrentPage] = useState(1)
+  const [selectedProperty, setSelectedProperty] = useState<string | null>(null)
   const { data: session } = useSession()
   const token = session?.accessToken || ""
 
   const { data: propertyData, isLoading, error } = useProperty(token)
-
+  
+  const deleteProperty = useDeletProperty(token)
   // Use API data if available, otherwise fallback to empty array
-  const properties = propertyData?.data || []
+  const properties = Array.isArray(propertyData?.data) ? propertyData.data : []
   const totalItems = propertyData?.meta?.total || 0
   const itemsPerPage = propertyData?.meta?.limit || 10
   const totalPages = Math.ceil(totalItems / itemsPerPage)
@@ -43,8 +44,68 @@ export function PropertyList() {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return (
+      <div className="space-y-6 px-3 xs:px-4 sm:px-6 lg:px-8 py-4">
+        {/* Header Skeleton */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <Skeleton className="h-6 w-32 sm:w-48" />
+            <Skeleton className="h-4 w-48 sm:w-64 mt-2" />
+          </div>
+          <Skeleton className="h-10 w-40" />
+        </div>
+
+        {/* Table Skeleton */}
+        <div className="rounded-lg border border-[#B6B6B6] overflow-hidden bg-white mt-6">
+          <div className="hidden sm:block">
+            <table className="w-full">
+              <thead className="border-b border-[#B6B6B6] bg-gray-50">
+                <tr>
+                  {[...Array(4)].map((_, i) => (
+                    <th key={i} className="px-4 sm:px-6 py-3">
+                      <Skeleton className="h-4 w-24" />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[...Array(5)].map((_, i) => (
+                  <tr key={i} className="border-b border-[#B6B6B6]">
+                    <td className="px-4 sm:px-6 py-4"><Skeleton className="h-4 w-24" /></td>
+                    <td className="px-4 sm:px-6 py-4"><Skeleton className="h-4 w-32" /></td>
+                    <td className="px-4 sm:px-6 py-4"><Skeleton className="h-4 w-28" /></td>
+                    <td className="px-4 sm:px-6 py-4"><Skeleton className="h-4 w-16" /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card Skeletons */}
+          <div className="sm:hidden divide-y divide-[#B6B6B6]">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="p-4">
+                <Skeleton className="h-4 w-36 mb-2" />
+                <Skeleton className="h-3 w-24 mb-2" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Pagination Skeleton */}
+        <div className="flex justify-between items-center mt-4">
+          <Skeleton className="h-4 w-40" />
+          <div className="flex gap-2">
+            {[...Array(3)].map((_, i) => (
+              <Skeleton key={i} className="h-6 w-6 rounded" />
+            ))}
+          </div>
+        </div>
+      </div>
+    )
   }
+
 
   if (error) {
     return <div>Error loading properties: {error.message}</div>
@@ -144,13 +205,16 @@ export function PropertyList() {
                     </td>
                     <td className="px-4 sm:px-6 py-3">
                       <div className="flex items-center gap-2 sm:gap-3">
-                      <Link href={`/user/edit-property/${item._id}`}>
-                        <button className="text-gray-600 hover:text-blue-600 transition-colors p-1">
-                          <Edit2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                        </button>
-                      </Link>
-                        <button className="text-gray-600 hover:text-red-600 transition-colors p-1">
-                          <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <Link href={`/user/edit-property/${item._id}`}>
+                          <button className="text-gray-600 hover:text-blue-600 transition-colors p-1">
+                            <Edit2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                          </button>
+                        </Link>
+                        <button
+                          onClick={() => setSelectedProperty(item._id)}
+                          className="text-gray-600 hover:text-red-600 transition-colors p-1"
+                        >
+                          <Trash2 className="w-5 h-5" />
                         </button>
                       </div>
                     </td>
@@ -161,6 +225,32 @@ export function PropertyList() {
           </table>
         </div>
       </div>
+
+
+      <AlertDialog open={!!selectedProperty} onOpenChange={() => setSelectedProperty(null)}>
+        <AlertDialogContent className="bg-white rounded-xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Property</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this property? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setSelectedProperty(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (selectedProperty) {
+                  deleteProperty.mutate(selectedProperty)
+                  setSelectedProperty(null)
+                }
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Pagination */}
       <div className="px-3 xs:px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -180,8 +270,8 @@ export function PropertyList() {
               key={page}
               onClick={() => setCurrentPage(page)}
               className={`px-2 xs:px-3 py-1.5 text-xs border rounded min-w-[32px] ${currentPage === page
-                  ? "bg-[#0F3D61] text-white border-[#0F3D61]"
-                  : "border-gray-300 hover:bg-gray-50"
+                ? "bg-[#0F3D61] text-white border-[#0F3D61]"
+                : "border-gray-300 hover:bg-gray-50"
                 }`}
             >
               {page}

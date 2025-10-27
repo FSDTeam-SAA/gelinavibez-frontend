@@ -14,6 +14,7 @@ export interface UserProfile {
   phone: string
   createdAt: string
   updatedAt: string
+  stripeAccountId: string
   __v: number
 }
 

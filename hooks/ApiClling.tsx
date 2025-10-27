@@ -1,7 +1,7 @@
 import { ammountPyload, getOrder } from "@/lib/order";
 import { getPayment } from "@/lib/payment";
 import { changePassword, getProfile, updateProfileInfo } from "@/lib/profileInfo";
-import { addProperty, editProperty, getProperty, getSingelProperty } from "@/lib/property";
+import { addProperty, deleteProperty, editProperty, getProperty, getSingelProperty } from "@/lib/property";
 import { addService } from "@/lib/service";
 import { IApartmentResponse, IProperty, ISingleApartmentResponse } from "@/types/ApartmentResponse";
 import { PaymentApiResponse } from "@/types/paymentDataType";
@@ -101,7 +101,7 @@ export function useServiceRequest(token: string, onSuccessCallback?: () => void)
 
     return useMutation({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        mutationFn: (payload:any) => addService(token, payload),
+        mutationFn: (payload: any) => addService(token, payload),
         onSuccess: () => {
             toast.success("Service request sent successfully");
             queryClient.invalidateQueries({ queryKey: ["service"] });
@@ -129,7 +129,7 @@ export function useAddProperty(token: string, onSuccessCallback?: () => void) {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (payload:IProperty) => addProperty(token, payload),
+        mutationFn: (payload: IProperty) => addProperty(token, payload),
         onSuccess: () => {
             toast.success("Property added successfully");
             queryClient.invalidateQueries({ queryKey: ["property"] });
@@ -147,17 +147,17 @@ export function useGetSingelProperty(token: string | undefined, id: string) {
         queryKey: ["property"],
         queryFn: () => {
             if (!token) throw new Error("Token is missing")
-            return getSingelProperty(token , id)
+            return getSingelProperty(token, id)
         },
         enabled: !!token,
     })
 }
 
-export function useEditProperty(token: string,id: string, onSuccessCallback?: () => void) {
+export function useEditProperty(token: string, id: string, onSuccessCallback?: () => void) {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (payload:IProperty) => editProperty(token, payload,id),
+        mutationFn: (payload: IProperty) => editProperty(token, payload, id),
         onSuccess: () => {
             toast.success("Property updated successfully");
             queryClient.invalidateQueries({ queryKey: ["property"] });
@@ -169,3 +169,21 @@ export function useEditProperty(token: string,id: string, onSuccessCallback?: ()
         },
     });
 }
+
+export function useDeletProperty(token: string, onSuccessCallback?: () => void) {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: string) => deleteProperty(token, id),
+        onSuccess: () => {
+            toast.success("Property deleted successfully");
+            queryClient.invalidateQueries({ queryKey: ["property"] });
+            if (onSuccessCallback) onSuccessCallback();
+        },
+        onError: (error: unknown) => {
+            if (error instanceof Error) toast.error(error.message || "Update failed");
+            else toast.error("Update failed");
+        },
+    });
+}
+
