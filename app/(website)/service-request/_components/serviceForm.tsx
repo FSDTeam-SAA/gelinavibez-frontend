@@ -23,6 +23,7 @@ import { Calendar as CalendarIcon } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useServiceRequest } from "@/hooks/ApiClling"
 import { useSession } from "next-auth/react"
+import { toast } from "sonner"
 
 
 
@@ -67,8 +68,12 @@ export default function ServiceForm() {
     })
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-
-        serviceMutation.mutate(values)
+        if (values.checkbox) {
+            console.log(values.checkbox)
+            toast.error("Please agree to terms and conditions")
+        } else {
+            serviceMutation.mutate(values)
+        }
     }
 
     const propertyOptions = ["Residential", "Commercial", "Multi-unit Building"]
@@ -77,7 +82,7 @@ export default function ServiceForm() {
 
     const locationOptions = ["Whole property", "Specific rooms", "Basement", "Outside areas"]
     const timeOptions = ["Morning", "Afternoon", "Evening"]
-     
+
     const MultiCheckboxGroup = ({ field, options }: { field: any; options: string[] }) => (
         <div className="flex flex-col space-y-2 border border-[#C0C3C1] p-3 rounded-[5px] bg-white">
             {options.map((opt) => (
@@ -106,7 +111,7 @@ export default function ServiceForm() {
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-4 container mx-auto py-4 px-4"
+                    className="space-y-[16px] container mx-auto py-4 px-4"
                 >
                     <h2 className="text-[#424242] font-semibold">Client Information</h2>
 
@@ -118,11 +123,11 @@ export default function ServiceForm() {
                                 name="fullName"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Full Name</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Full Name</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Full Name" {...field} />
+                                            <Input py-2 className="border py-[25px] placeholder:text-gray-400 border-[#C0C3C1] rounded-[5px]" placeholder="Full Name" {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -133,11 +138,11 @@ export default function ServiceForm() {
                                 name="phoneNumber"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Phone Number</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Phone Number</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Phone Number" {...field} />
+                                            <Input className="border  py-[25px] placeholder:text-gray-400 border-[#C0C3C1] rounded-[5px]" placeholder="Phone Number" {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -152,11 +157,11 @@ export default function ServiceForm() {
                                 name="emailAddress"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Email Address</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Email Address</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1] rounded-[5px]" type="email" placeholder="Email Address" {...field} />
+                                            <Input className="border py-[25px] placeholder:text-gray-400 border-[#C0C3C1] rounded-[5px]" type="email" placeholder="Email Address" {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -167,11 +172,11 @@ export default function ServiceForm() {
                                 name="propertyAddress"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Property Address</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Property Address</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Property Address" {...field} />
+                                            <Input className="border py-[25px] placeholder:text-gray-400 border-[#C0C3C1] rounded-[5px]" placeholder="Property Address" {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -179,18 +184,18 @@ export default function ServiceForm() {
                     </div>
 
                     {/* Multi-select groups */}
-                    <div className="grid grid-cols-12 gap-4">
+                    <div className="grid grid-cols-12 gap-4 ">
                         <div className="col-span-12 md:col-span-6">
                             <FormField
                                 control={form.control}
                                 name="typeOfProperty"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Type of Property</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Type of Property</FormLabel>
                                         <FormControl>
                                             <MultiCheckboxGroup field={field} options={propertyOptions} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -201,30 +206,31 @@ export default function ServiceForm() {
                                 name="contactMethod"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Preferred Contact Method</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Preferred Contact Method</FormLabel>
                                         <FormControl>
                                             <MultiCheckboxGroup field={field} options={contactOptions} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
                         </div>
                     </div>
+                    <h2 className="text-[#424242] font-semibold text-[20px] !mt-[60px] ">Infestation Details</h2>
 
                     {/* Pest Problem & Location */}
-                    <div className="grid grid-cols-12 gap-4">
-                        <div className="col-span-12 md:col-span-6">
+                    <div className="flex flex-col gap-4">
+                        <div className="col-span-12 md:col-span-6  ">
                             <FormField
                                 control={form.control}
                                 name="pestProblem"
                                 render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Type of Pest Problem</FormLabel>
+                                    <FormItem >
+                                        <FormLabel className="text-[16px]  font-semibold text-[#424242]">Type of Pest Problem</FormLabel>
                                         <FormControl>
                                             <MultiCheckboxGroup field={field} options={pestOptions} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -235,17 +241,17 @@ export default function ServiceForm() {
                                 name="locationOfProblem"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Location of Problem</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Location of Problem</FormLabel>
                                         <FormControl>
                                             <MultiCheckboxGroup field={field} options={locationOptions} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
                         </div>
                     </div>
-
+                    <h2 className="text-[#424242] font-semibold text-[20px] !mt-[60px] ">Scheduling & Access</h2>
                     {/* Duration & Previous Service */}
                     <div className="grid grid-cols-12 gap-4">
                         <div className="col-span-12 md:col-span-6">
@@ -254,11 +260,11 @@ export default function ServiceForm() {
                                 name="durationOfIssue"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Duration of Issue</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Duration of Issue</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Duration of Issue" {...field} />
+                                            <Input className="border py-[25px] placeholder:text-gray-400 border-[#C0C3C1] rounded-[5px]" placeholder="Duration of Issue" {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -269,10 +275,10 @@ export default function ServiceForm() {
                                 name="exterminationService"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Previous Extermination Service</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Previous Extermination Service</FormLabel>
                                         <FormControl>
                                             <select
-                                                className="border border-[#C0C3C1] rounded-[5px] bg-white w-full h-[40px] px-2"
+                                                className="border border-[#C0C3C1] rounded-[5px] bg-white w-full h-[51px] px-2"
                                                 onChange={field.onChange}
                                                 value={field.value}
                                             >
@@ -281,7 +287,7 @@ export default function ServiceForm() {
                                                 <option value="No">No</option>
                                             </select>
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -289,21 +295,21 @@ export default function ServiceForm() {
                     </div>
 
                     {/* Preferred Service Date & Time */}
-                    <div className="grid grid-cols-12 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                         <div className="col-span-12 md:col-span-6">
                             <FormField
                                 control={form.control}
                                 name="preferredServiceDate"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Preferred Service Date</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Preferred Service Date</FormLabel>
                                         <Popover>
                                             <PopoverTrigger asChild>
                                                 <FormControl>
                                                     <Button
                                                         variant="outline"
                                                         className={cn(
-                                                            "w-full justify-between border border-[#C0C3C1] rounded-[5px] bg-white",
+                                                            "w-full justify-between border border-[#C0C3C1] h-[51px] rounded-[5px] bg-white",
                                                             !field.value && "text-muted-foreground"
                                                         )}
                                                     >
@@ -321,7 +327,7 @@ export default function ServiceForm() {
                                                 />
                                             </PopoverContent>
                                         </Popover>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -332,11 +338,11 @@ export default function ServiceForm() {
                                 name="preferredTime"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Preferred Time</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Preferred Time</FormLabel>
                                         <FormControl>
                                             <MultiCheckboxGroup field={field} options={timeOptions} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -351,10 +357,10 @@ export default function ServiceForm() {
                                 name="building"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Building/Super Access Required</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Building/Super Access Required</FormLabel>
                                         <FormControl>
                                             <select
-                                                className="border border-[#C0C3C1] rounded-[5px] bg-white w-full h-[40px] px-2"
+                                                className="border border-[#C0C3C1]  rounded-[5px] bg-white w-full h-[51px] px-2"
                                                 onChange={field.onChange}
                                                 value={field.value}
                                             >
@@ -363,7 +369,7 @@ export default function ServiceForm() {
                                                 <option value="No">No</option>
                                             </select>
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -374,17 +380,17 @@ export default function ServiceForm() {
                                 name="contactInfo"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Contact Info</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Contact Info</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Type your contact info" {...field} />
+                                            <Input className="border py-[25px] placeholder:text-gray-400 border-[#C0C3C1] rounded-[5px]" placeholder="Type your contact info" {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
                         </div>
                     </div>
-
+                    <h2 className="text-[#424242] font-semibold text-[20px] !mt-[60px] ">Authorization</h2>
                     {/* Signature & Date */}
                     <div className="grid grid-cols-12 gap-4">
                         <div className="col-span-12 md:col-span-6">
@@ -393,11 +399,11 @@ export default function ServiceForm() {
                                 name="signature"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Signature</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Signature</FormLabel>
                                         <FormControl>
-                                            <Input className="border border-[#C0C3C1] rounded-[5px]" placeholder="Type your signature" {...field} />
+                                            <Input className="border py-[25px] placeholder:text-gray-400 border-[#C0C3C1] rounded-[5px]" placeholder="Type your signature" {...field} />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -408,14 +414,14 @@ export default function ServiceForm() {
                                 name="date"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Date</FormLabel>
+                                        <FormLabel className="text-[16px] font-semibold text-[#424242]">Date</FormLabel>
                                         <Popover>
                                             <PopoverTrigger asChild>
-                                                <FormControl>
+                                                <FormControl >
                                                     <Button
                                                         variant="outline"
                                                         className={cn(
-                                                            "w-full justify-between border border-[#C0C3C1] rounded-[5px] bg-white",
+                                                            "w-full justify-between border py-[25px]  placeholder:text-gray-400 border-[#C0C3C1] rounded-[5px] bg-white",
                                                             !field.value && "text-muted-foreground"
                                                         )}
                                                     >
@@ -433,7 +439,7 @@ export default function ServiceForm() {
                                                 />
                                             </PopoverContent>
                                         </Popover>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-500" />
                                     </FormItem>
                                 )}
                             />
@@ -445,26 +451,31 @@ export default function ServiceForm() {
                         control={form.control}
                         name="checkbox"
                         render={({ field }) => (
-                            <FormItem className="flex items-start space-x-3 rounded-md border p-4">
+                            <FormItem className="flex items-center space-x-3 rounded-md  p-4">
                                 <FormControl>
-                                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                                    <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                        className="mt-0" // remove top offset
+                                    />
                                 </FormControl>
-                                <div className="space-y-1 leading-none">
-                                    <FormLabel className="text-sm">
+                                <div className="flex-1">
+                                    <FormLabel className="text-sm font-normal leading-snug text-[#616161]">
                                         By signing below, I authorize Bridge Point Solutions LLC to share my
                                         information with a licensed extermination company for service
                                         coordination. I understand Bridge Point Solutions is a referral
                                         intermediary and not the direct service provider.
                                     </FormLabel>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </div>
                             </FormItem>
                         )}
                     />
-
-                    <Button type="submit" className="w-full md:w-auto">
-                        Submit
-                    </Button>
+                    <div className="flex justify-end w-full ">
+                        <Button type="submit" className=" text-white px-11 rounded-[5px] hover:bg-[#0F3D61]/90  flex items-end  bg-[#0F3D61] justify-end">
+                            Submit {serviceMutation.isPending ? "..." : ""}
+                        </Button>
+                    </div>
                 </form>
             </Form>
         </div>
