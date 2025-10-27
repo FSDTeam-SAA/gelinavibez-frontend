@@ -105,3 +105,19 @@ export async function editProperty(token: string, payload: IProperty, id: string
   if (!response.ok) throw new Error(resData.message || "Failed to add property");
   return resData;
 }
+
+export async function deleteProperty(token: string, id: string) {
+
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apartment/my-apartments/${id}`, {
+    method: "DELETE",
+    headers: {
+
+      Authorization: `Bearer ${token}`,
+    },
+   
+  });
+
+  const resData = await response.json();
+  if (!response.ok) throw new Error(resData.message || "Failed to add property");
+  return resData;
+}

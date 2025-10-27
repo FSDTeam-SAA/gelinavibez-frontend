@@ -77,8 +77,8 @@ export function EditProperty({ id }: { id: string }) {
             setValue("title", data?.title);
             setValue("price", data?.price?.toString());
             setValue("month", data?.availableFrom?.month?.split("T")[0]); // Format date to YYYY-MM-DD
-            setValue("time", data?.availableFrom.time.split("T")[1].slice(0, 5)); // Format time to HH:MM
-            setValue("beds", data?.bedrooms.toString());
+            setValue("time", data?.availableFrom?.time?.split("T")[1].slice(0, 5)); // Format time to HH:MM
+            setValue("beds", data?.bedrooms?.toString());
             setValue("address", data?.address?.state);
             setValue("washrooms", data?.bathrooms?.toString());
             setValue("squarefeets", data?.squareFeet?.toString());
