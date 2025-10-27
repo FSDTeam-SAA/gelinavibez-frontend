@@ -114,10 +114,11 @@ export async function deleteProperty(token: string, id: string) {
 
       Authorization: `Bearer ${token}`,
     },
-   
+
   });
 
   const resData = await response.json();
   if (!response.ok) throw new Error(resData.message || "Failed to add property");
   return resData;
 }
+
