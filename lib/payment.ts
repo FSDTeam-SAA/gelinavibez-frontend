@@ -6,7 +6,7 @@ export async function getPayment(
     itemsPerPage: number
 ): Promise<PaymentApiResponse> {
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/payment?page=${currentPage}&limit=${itemsPerPage}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/charge/my-charges?page=${currentPage}&limit=${itemsPerPage}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,
