@@ -16,6 +16,7 @@ export function PropertyList() {
   const token = session?.accessToken || ""
 
   const { data: propertyData, isLoading, error } = useProperty(token)
+  
   const deleteProperty = useDeletProperty(token)
   // Use API data if available, otherwise fallback to empty array
   const properties = Array.isArray(propertyData?.data) ? propertyData.data : []
