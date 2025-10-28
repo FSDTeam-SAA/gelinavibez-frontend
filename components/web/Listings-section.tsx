@@ -52,7 +52,7 @@ export function ListingsSection() {
   })) || [];
 
   return (
-    <section className="bg-[#e8e8e8] py-16 lg:py-24">
+    <section className="bg-[#e8e8e8] py-16 lg:py-24" id="listings">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-12">
