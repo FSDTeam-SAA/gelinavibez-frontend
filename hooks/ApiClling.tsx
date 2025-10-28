@@ -1,9 +1,10 @@
 import { ammountPyload, getOrder } from "@/lib/order";
 import { getPayment } from "@/lib/payment";
 import { changePassword, getProfile, updateProfileInfo } from "@/lib/profileInfo";
-import { addProperty, deleteProperty, editProperty, getProperty, getSingelProperty } from "@/lib/property";
+import { addProperty, deleteProperty, editProperty, getMyProperties, getProperty, getSingelProperty } from "@/lib/property";
 import { addService } from "@/lib/service";
 import { IApartmentResponse, IProperty, ISingleApartmentResponse } from "@/types/ApartmentResponse";
+import { TenantApplicationResponse } from "@/types/AppliedTable.";
 import { PaymentApiResponse } from "@/types/paymentDataType";
 import { ProfileUpdatePayload } from "@/types/userDataType";
 import { UserProfileResponse } from "@/types/userDataType";
@@ -187,3 +188,13 @@ export function useDeletProperty(token: string, onSuccessCallback?: () => void) 
     });
 }
 
+export function useGetPaymentProperty(token: string | undefined,currentPage: number, itemsPerPage: number) {
+    return useQuery<TenantApplicationResponse>({
+        queryKey: ["payment" , currentPage , itemsPerPage],
+        queryFn: () => {
+            if (!token) throw new Error("Token is missing")
+            return getMyProperties(token, currentPage, itemsPerPage)
+        },
+        enabled: !!token,
+    })
+}

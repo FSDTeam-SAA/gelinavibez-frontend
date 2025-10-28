@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Building2, Settings, LogOut, X, CreditCard } from "lucide-react";
+import { Building2, Settings, LogOut, X, CreditCard, EqualApproximately } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React from "react";
 import Image from "next/image";
+import { signOut } from "next-auth/react";
 
 const navigation = [
   { name: "Property", href: "/user/property", icon: Building2 },
   { name: "Payment", href: "/user/payment", icon: CreditCard },
+  { name: "Applied Apartments", href: "/user/applied-apartments", icon: EqualApproximately },
   { name: "Settings", href: "/user/profile", icon: Settings },
 ];
 
@@ -70,13 +72,13 @@ export function Sidebar({ isMobileMenuOpen = false, onClose }: SidebarProps) {
       <aside className="hidden lg:flex lg:flex-col lg:w-[386px] bg-[#EFEFEF] border-r border-gray-200">
         <div className="flex items-center justify-center h-[90px] w-[120px] pl-5">
           <Link href="/">
-          <Image
-            src="/assets/logo.png"
-            width={1000}
-            height={1000}
-            alt="logo"
-            className="w-full h-full"
-          />
+            <Image
+              src="/assets/logo.png"
+              width={1000}
+              height={1000}
+              alt="logo"
+              className="w-full h-full"
+            />
           </Link>
         </div>
 
@@ -86,7 +88,8 @@ export function Sidebar({ isMobileMenuOpen = false, onClose }: SidebarProps) {
 
           {/* Logout button right below other links */}
           <button
-            onClick={onClose}
+            onClick={() => signOut({ callbackUrl: "/login" })}
+
             className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-lg hover:bg-red-50 transition-colors w-full"
           >
             <LogOut className="w-5 h-5" />
@@ -126,7 +129,7 @@ export function Sidebar({ isMobileMenuOpen = false, onClose }: SidebarProps) {
 
           {/* Logout below other links */}
           <button
-            onClick={onClose}
+            onClick={() => signOut({ callbackUrl: "/login" })}
             className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-lg hover:bg-red-50 transition-colors w-full"
           >
             <LogOut className="w-5 h-5" />
