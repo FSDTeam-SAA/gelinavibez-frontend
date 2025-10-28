@@ -18,11 +18,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { useQuery, useMutation} from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-/* ------------------------------------------------------------------ */
-/*                         TYPE DEFINITIONS                           */
-/* ------------------------------------------------------------------ */
+/* ------- TYPE DEFINITIONS ------------------- */
 interface UserProfile {
   _id: string;
   firstName: string;
@@ -39,6 +37,7 @@ interface UserProfile {
   location?: string;
   phone?: string;
   jobTitle?: string;
+  stripeAccountId?: string;
 }
 
 interface ApiResponse<T = unknown> {
@@ -48,11 +47,15 @@ interface ApiResponse<T = unknown> {
   data: T;
 }
 
-/* ------------ STRIPE CREATE ACCOUNT---------------------------------------- */
+/* ------------ STRIPE CREATE ACCOUNT ---------------------------------------- */
 interface StripeCreateResponse {
   accountId: string;
   url: string;
+}
 
+/* ------------ STRIPE DASHBOARD LINK ---------------------------------------- */
+interface StripeDashboardResponse {
+  url: string;
 }
 
 /* -----------------  NAVBAR COMPONENT  ------------------------------- */
@@ -62,7 +65,7 @@ export function Navbar() {
   const router = useRouter();
   const { data: session } = useSession();
   const token = session?.accessToken;
-  
+  const queryClient = useQueryClient();
 
   /* ----------------------- FETCH USER PROFILE ----------------------- */
   const fetchUserProfile = async (): Promise<ApiResponse<UserProfile>> => {
@@ -85,6 +88,7 @@ export function Navbar() {
   });
 
   const role = userProfile?.data?.role;
+  const hasStripe = !!userProfile?.data?.stripeAccountId;
 
   /* --------------------- CREATE STRIPE ACCOUNT --------------------- */
   const createStripeAccount = async (): Promise<ApiResponse<StripeCreateResponse>> => {
@@ -101,7 +105,6 @@ export function Navbar() {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.message ?? "Failed to create Stripe account");
     }
-
     return res.json();
   };
 
@@ -109,9 +112,41 @@ export function Navbar() {
     mutationFn: createStripeAccount,
     onSuccess: (response) => {
       const url = response.data.url;
-      // Open Stripe onboarding in a new tab
       window.open(url, "_blank", "noopener,noreferrer");
       toast.success("Stripe onboarding link opened");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+
+  /* --------------------- GET STRIPE DASHBOARD LINK --------------------- */
+  const getStripeDashboardLink = async (): Promise<ApiResponse<StripeDashboardResponse>> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/contractor/dashboard-link`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message ?? "Failed to get Stripe dashboard link");
+    }
+    return res.json();
+  };
+
+  const {
+    mutate: openStripeDashboard,
+    isPending: dashboardLoading,
+  } = useMutation({
+    mutationFn: getStripeDashboardLink,
+    onSuccess: (response) => {
+      const url = response.data.url;
+      window.open(url, "_blank", "noopener,noreferrer");
+      toast.success("Opening Stripe Dashboard");
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -130,7 +165,7 @@ export function Navbar() {
         router.push("/contractor/order-list");
         break;
       case "admin":
-        router.push("/admin"); // <-- change if you have a real admin route
+        router.push("/admin");
         break;
       default:
         toast.error("Unknown role");
@@ -216,13 +251,27 @@ export function Navbar() {
                         Contractor Profile
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem
-                        onClick={() => startStripeOnboarding()}
-                        disabled={stripeLoading}
-                        className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md flex items-center justify-between"
-                      >
-                        {stripeLoading ? "Creating…" : "Add Stripe Account"}
-                      </DropdownMenuItem>
+                      {/* CREATE ACCOUNT (if no stripe) */}
+                      {!hasStripe && (
+                        <DropdownMenuItem
+                          onClick={() => startStripeOnboarding()}
+                          disabled={stripeLoading}
+                          className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md flex items-center justify-between"
+                        >
+                          {stripeLoading ? "Creating…" : "Add Stripe Account"}
+                        </DropdownMenuItem>
+                      )}
+
+                      {/* DASHBOARD (if stripe exists) */}
+                      {hasStripe && (
+                        <DropdownMenuItem
+                          onClick={() => openStripeDashboard()}
+                          disabled={dashboardLoading}
+                          className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md flex items-center justify-between"
+                        >
+                          {dashboardLoading ? "Opening…" : "Stripe Dashboard"}
+                        </DropdownMenuItem>
+                      )}
                     </>
                   )}
 
@@ -318,18 +367,35 @@ export function Navbar() {
                       : "View Profile"}
                   </button>
 
-                  {/* Stripe for contractors (mobile) */}
+                  {/* Stripe actions for contractor (mobile) */}
                   {role === "contractor" && (
-                    <button
-                      onClick={() => {
-                        startStripeOnboarding();
-                        handleMenuItemClick();
-                      }}
-                      disabled={stripeLoading}
-                      className="w-full text-left px-2 py-2 text-white hover:text-[#d4b896] transition-colors disabled:opacity-50"
-                    >
-                      {stripeLoading ? "Creating…" : "Add Stripe Account"}
-                    </button>
+                    <>
+                      {!hasStripe && (
+                        <button
+                          onClick={() => {
+                            startStripeOnboarding();
+                            handleMenuItemClick();
+                          }}
+                          disabled={stripeLoading}
+                          className="w-full text-left px-2 py-2 text-white hover:text-[#d4b896] transition-colors disabled:opacity-50"
+                        >
+                          {stripeLoading ? "Creating…" : "Add Stripe Account"}
+                        </button>
+                      )}
+
+                      {hasStripe && (
+                        <button
+                          onClick={() => {
+                            openStripeDashboard();
+                            handleMenuItemClick();
+                          }}
+                          disabled={dashboardLoading}
+                          className="w-full text-left px-2 py-2 text-white hover:text-[#d4b896] transition-colors disabled:opacity-50"
+                        >
+                          {dashboardLoading ? "Opening…" : "Stripe Dashboard"}
+                        </button>
+                      )}
+                    </>
                   )}
 
                   {/* Sign out */}
