@@ -2,10 +2,12 @@ import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 export default withAuth(
+
   function middleware(req) {
     const token = req.nextauth.token;
     const role = token?.role;
     const path = req.nextUrl.pathname;
+    console.log(path)
 
     // User dashboard protection
     if (path.startsWith("/user") && role !== "user") {
@@ -13,7 +15,7 @@ export default withAuth(
     }
 
     // Contractor/Service Provider dashboard protection
-    if (path.startsWith("/service-provider") && role !== "contractor") {
+    if (path.startsWith("/contractor") && role !== "contractor") {
       return NextResponse.redirect(new URL("/", req.url));
     }
 
