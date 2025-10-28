@@ -83,10 +83,10 @@ export function ApartmentSearch() {
   const filteredSuggestions = suggestions.filter((apartment) => {
     const q = searchQuery.toLowerCase()
     return (
-      apartment.title.toLowerCase().includes(q) ||
-      apartment.address.city.toLowerCase().includes(q) ||
-      apartment.address.state.toLowerCase().includes(q) ||
-      apartment.address.street.toLowerCase().includes(q)
+      apartment?.title?.toLowerCase()?.includes(q) ||
+      apartment?.address?.city?.toLowerCase()?.includes(q) ||
+      apartment?.address?.state?.toLowerCase()?.includes(q) ||
+      apartment?.address?.street?.toLowerCase()?.includes(q)
     )
   })
 
