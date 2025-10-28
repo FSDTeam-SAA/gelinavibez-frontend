@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation} from "@tanstack/react-query";
 
 /* ------- TYPE DEFINITIONS ------------------- */
 interface UserProfile {
@@ -65,7 +65,6 @@ export function Navbar() {
   const router = useRouter();
   const { data: session } = useSession();
   const token = session?.accessToken;
-  const queryClient = useQueryClient();
 
   /* ----------------------- FETCH USER PROFILE ----------------------- */
   const fetchUserProfile = async (): Promise<ApiResponse<UserProfile>> => {
