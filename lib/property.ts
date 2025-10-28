@@ -1,4 +1,5 @@
 import { IApartmentResponse, IProperty, ISingleApartmentResponse } from "@/types/ApartmentResponse"
+import { TenantApplicationResponse, } from "@/types/AppliedTable."
 
 export async function getProperty(token: string) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apartment/my-apartments`, {
@@ -122,3 +123,16 @@ export async function deleteProperty(token: string, id: string) {
   return resData;
 }
 
+export async function getMyProperties(token: string, currentPage: number, itemsPerPage: number): Promise<TenantApplicationResponse> {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tenant/my?page=${currentPage}&limit=${itemsPerPage}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+  const resData: TenantApplicationResponse = await response.json()
+  if (!response.ok) {
+    throw new Error(resData.message || "Failed to get property")
+  }
+  return resData
+}
