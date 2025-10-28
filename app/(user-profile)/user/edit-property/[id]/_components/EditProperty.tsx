@@ -26,7 +26,10 @@ const propertySchema = z.object({
     month: z.string().min(1, "Select a month"),
     time: z.string().min(1, "Available time is required"),
     beds: z.string().min(1, "Beds is required"),
-    address: z.string().min(1, "Address is required"),
+    street: z.string().min(1, "Street is required"),
+    city: z.string().min(1, "City is required"),
+    state: z.string().min(1, "State is required"),
+    zip: z.string().min(1, "Zip code is required"),
     washrooms: z.string().min(1, "Washrooms is required"),
     squarefeets: z.string().min(1, "Square feet is required"),
     description: z.string().min(1, "Description is required"),
@@ -47,7 +50,7 @@ export function EditProperty({ id }: { id: string }) {
     const token = session?.accessToken || "";
     const { data: propertyData, isLoading } = useGetSingelProperty(token, id);
     const editPropertyMutation = useEditProperty(token, id);
-
+    console.log(propertyData)
     const {
         register,
         handleSubmit,
@@ -61,7 +64,10 @@ export function EditProperty({ id }: { id: string }) {
             month: "",
             time: "",
             beds: "",
-            address: "",
+            street: "",
+            city: "",
+            state: "",
+            zip: "",
             washrooms: "",
             squarefeets: "",
             description: "",
@@ -79,7 +85,10 @@ export function EditProperty({ id }: { id: string }) {
             setValue("month", data?.availableFrom?.month?.split("T")[0]); // Format date to YYYY-MM-DD
             setValue("time", data?.availableFrom?.time?.split("T")[1].slice(0, 5)); // Format time to HH:MM
             setValue("beds", data?.bedrooms?.toString());
-            setValue("address", data?.address?.state);
+            setValue("street", data?.address?.street);
+            setValue("city", data?.address?.city);
+            setValue("state", data?.address?.state);
+            setValue("zip", data?.address?.zipCode);
             setValue("washrooms", data?.bathrooms?.toString());
             setValue("squarefeets", data?.squareFeet?.toString());
             setValue("description", data?.description);
@@ -121,6 +130,7 @@ export function EditProperty({ id }: { id: string }) {
     };
 
     const onSubmit = (data: PropertyFormData) => {
+        console.log("Form submitted:", data)
         const payload: IProperty = {
             ...data,
             thumbnails,
@@ -174,10 +184,34 @@ export function EditProperty({ id }: { id: string }) {
                         {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
                     </div>
 
-                    <div className="p-6">
-                        <label className="block text-base font-semibold text-[#000000] mb-2">Address</label>
-                        <Input {...register("address")} placeholder="Address" className={inputStyle} />
-                        {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
+                    <div className="grid grid-cols-1 md:grid-cols-2">
+                        {/* Street */}
+                        <div className="p-6">
+                            <label className="block text-base font-semibold text-[#000000] mb-2">Street</label>
+                            <Input {...register("street")} placeholder="Street" className={inputStyle} />
+                            {errors.street && <p className="text-red-500 text-sm">{errors.street.message}</p>}
+                        </div>
+                        {/* City */}
+                        <div className="p-6">
+                            <label className="block text-base font-semibold text-[#000000] mb-2">City</label>
+                            <Input {...register("city")} placeholder="City" className={inputStyle} />
+                            {errors.city && <p className="text-red-500 text-sm">{errors.city.message}</p>}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2">
+                        {/* State */}
+                        <div className="p-6">
+                            <label className="block text-base font-semibold text-[#000000] mb-2"> State</label>
+                            <Input {...register("state")} placeholder="State" className={inputStyle} />
+                            {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>}
+                        </div>
+                        {/* zip */}
+                        <div className="p-6">
+                            <label className="block text-base font-semibold text-[#000000] mb-2">Zip</label>
+                            <Input {...register("zip")} placeholder="zip" className={inputStyle} />
+                            {errors.zip && <p className="text-red-500 text-sm">{errors.zip.message}</p>}
+                        </div>
                     </div>
 
                     <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -193,7 +227,7 @@ export function EditProperty({ id }: { id: string }) {
                         </div>
                         <div>
                             <label className="block text-base font-semibold mb-2">Available Time</label>
-                            <Input  {...register("time")} placeholder="Write here" className={inputStyle} />
+                            <Input type="datetime-local" {...register("time")} placeholder="Write here" className={inputStyle} />
                             {errors.time && <p className="text-red-500 text-sm">{errors.time.message}</p>}
                         </div>
                     </div>

@@ -48,7 +48,10 @@ export interface IProperty {
   month: string; // You could change to Date if needed
   time: string;
   beds: string;
-  address: string;
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
   washrooms: string;
   squarefeets: string;
   description: string;

@@ -24,7 +24,10 @@ export async function addProperty(token: string, payload: IProperty) {
   formData.append("bedrooms", payload.beds);
   formData.append("bathrooms", payload.washrooms);
   formData.append("squareFeet", payload.squarefeets);
-  formData.append("address[state]", payload.address);
+  formData.append("address[city]", payload.city)
+  formData.append("address[state]", payload.state)
+  formData.append("address[zipCode]", payload.zip)
+  formData.append("address[street]", payload.street)
   formData.append("day", payload.day);
   formData.append("availableFrom[month]", payload.month);
   formData.append("availableFrom[time]", new Date(payload.time).toISOString());
@@ -68,7 +71,7 @@ export async function getSingelProperty(token: string, id: string) {
 }
 
 export async function editProperty(token: string, payload: IProperty, id: string) {
-
+console.log(payload.time)
   const formData = new FormData();
   formData.append("title", payload.title);
   formData.append("description", payload.description);
@@ -77,10 +80,14 @@ export async function editProperty(token: string, payload: IProperty, id: string
   formData.append("bedrooms", payload.beds);
   formData.append("bathrooms", payload.washrooms);
   formData.append("squareFeet", payload.squarefeets);
-  formData.append("address[state]", payload.address);
+  formData.append("address[city]", payload.city)
+  formData.append("address[state]", payload.state)
+  formData.append("address[zipCode]", payload.zip)
+  formData.append("address[street]", payload.street)
   formData.append("day", payload.day);
   formData.append("availableFrom[month]", payload.month);
   formData.append("availableFrom[time]", new Date(payload.time).toISOString());
+  
   if (payload.thumbnails) {
     for (let i = 0; i < payload.thumbnails.length; i++) {
       formData.append("images", payload.thumbnails[i]);
@@ -91,7 +98,7 @@ export async function editProperty(token: string, payload: IProperty, id: string
       formData.append("videos", payload.videos[i]);
     }
   }
-  console.log(formData)
+
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apartment/my-apartments/${id}`, {
     method: "PUT",
