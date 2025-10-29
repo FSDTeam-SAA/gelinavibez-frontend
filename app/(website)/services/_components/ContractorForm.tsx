@@ -697,7 +697,7 @@ export default function ContractorForm() {
   const triggerFileInput = () => fileInputRef.current?.click();
 
   return (
-    <section className="bg-[#e8e8e8] py-[120px] px-4 md:px-8 lg:px-16">
+    <section id="contractor-form" className="bg-[#e8e8e8]  py-[120px] px-4 md:px-8 lg:px-16">
       <div className="container">
         <h1 className="font-serif text-3xl md:text-4xl lg:text-[40px] text-[#0F3D61] font-normal mb-8 text-center md:text-left">
           CONTRACTOR INFORMATION FORM
