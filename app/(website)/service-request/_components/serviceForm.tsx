@@ -68,7 +68,7 @@ export default function ServiceForm() {
     })
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
-        if (values.checkbox) {
+        if (!values.checkbox) {
             console.log(values.checkbox)
             toast.error("Please agree to terms and conditions")
         } else {

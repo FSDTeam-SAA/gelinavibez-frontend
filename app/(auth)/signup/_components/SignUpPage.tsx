@@ -56,15 +56,15 @@ export default function SignUpPage() {
     })
 
     const result = await response.json()
-    toast.success(result.message || "Account created successfully")
-    router.push("/login")
-    setIsLoading(true)
     if (!response.ok) {
       setIsLoading(false)
       toast.error(result.message || "Something went wrong")
       throw new Error(result.message || "Something went wrong")
 
     }
+    toast.success(result.message || "Account created successfully")
+    router.push("/login")
+    setIsLoading(true)
     return result
   }
 
@@ -78,7 +78,6 @@ export default function SignUpPage() {
   })
 
   const onSubmit = (data: SignUpFormData) => {
-    console.log("Form submitted:", data)
     signUpUser(data)
   }
 
