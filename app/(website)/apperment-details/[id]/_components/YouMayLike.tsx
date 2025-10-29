@@ -130,10 +130,10 @@ export function YouMayLike() {
 
         {/* Carousel with 3 cards */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[...Array(3)].map((e ) => (
+          <div  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(3)].map((e,i ) => (
               // <Skeleton key={i} className="h-96 rounded-xl" />
-              <p key={e}>loding.....</p>
+              <p key={i}>loding.....</p>
             ))}
           </div>
         ) : properties && properties.length > 0 ? (

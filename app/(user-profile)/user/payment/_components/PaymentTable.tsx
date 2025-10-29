@@ -93,9 +93,9 @@ export function PaymentTable() {
                                     </td>
                                     <td className="px-4 py-3 text-base base:text-base">
                                         <span
-                                            className={`py-3 px-10 rounded-[8px] text-white text-sm font-medium ${item.status === "approved"
+                                            className={`py-2 px-6 rounded-[8px] text-white text-sm font-medium ${item.status === "paid"
                                                     ? "bg-green-600"
-                                                    : item.status === "rejected"
+                                                    : item.status === "cancelled"
                                                         ? "bg-red-500"
                                                         : "bg-yellow-500"
                                                 }`}

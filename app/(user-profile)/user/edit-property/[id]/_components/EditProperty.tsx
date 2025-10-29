@@ -50,7 +50,6 @@ export function EditProperty({ id }: { id: string }) {
     const token = session?.accessToken || "";
     const { data: propertyData, isLoading } = useGetSingelProperty(token, id);
     const editPropertyMutation = useEditProperty(token, id);
-    console.log(propertyData)
     const {
         register,
         handleSubmit,
