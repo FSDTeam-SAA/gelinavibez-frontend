@@ -16,7 +16,7 @@ export function ServicesSection() {
         "Apply online with our simple form",
       ],
       buttonText: "Apply",
-      hrf: ""
+      hrf: "/apartments"
     },
     {
       icon: <Home className="h-12 w-12" />,
@@ -28,7 +28,7 @@ export function ServicesSection() {
         "Schedule and track open house events",
       ],
       buttonText: "See Property",
-      hrf: ""
+      hrf: "#listings"
     },
     {
       icon: <Wrench className="h-12 w-12" />,
@@ -40,7 +40,7 @@ export function ServicesSection() {
         "Build trust through reviews and reliable support",
       ],
       buttonText: "See Service",
-      hrf: ""
+      hrf: "/services/#contractor-form"
     },
     {
       icon: <Upload className="h-12 w-12" />,
