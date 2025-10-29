@@ -70,24 +70,23 @@ export function PaymentTable() {
                     <table className="w-full text-base base:text-base">
                         <thead className="border-b border-[#B6B6B6] bg-gray-50">
                             <tr>
-                                <th className="px-4 py-3 text-left font-bold uppercase text-base base:text-base">Tenant</th>
+                                <th className="px-4 py-3 text-left font-bold uppercase text-base base:text-base">Name</th>
                                 <th className="px-4 py-3 text-left font-bold uppercase text-base base:text-base">Email</th>
                                 <th className="px-4 py-3 text-left font-bold uppercase text-base base:text-base">Amount</th>
                                 <th className="px-4 py-3 text-left font-bold uppercase text-base base:text-base">Status</th>
                                 <th className="px-4 py-3 text-left font-bold uppercase text-base base:text-base">Apartment</th>
                                 <th className="px-4 py-3 text-left font-bold uppercase text-base base:text-base">Problem Type</th>
-                                <th className="px-4 py-3 text-left font-bold uppercase text-base base:text-base">Created At</th>
                                 <th className="px-4 py-3 text-left font-bold uppercase text-base base:text-base">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#B6B6B6] bg-white">
                             {payments.map((item) => (
                                 <tr key={item._id} className="hover:bg-gray-50 py-5 h-[60px]">
-                                    <td className="px-4 py-3 text-[#424242] text-base base:text-base">
-                                        {item.tenantName || "N/A"}
+                                  <td className="px-4 py-3 text-[#424242] text-base base:text-base">
+                                        {item?.contractor?.name || "N/A"}
                                     </td>
                                     <td className="px-4 py-3 text-[#424242] text-base base:text-base">
-                                        {item.tenantEmail || item.user?.email || "N/A"}
+                                        {item?.contractor?.email|| "N/A"}
                                     </td>
                                     <td className="px-4 py-3 text-[#424242] text-base base:text-base">
                                         ${item.amount || 0}
@@ -108,15 +107,12 @@ export function PaymentTable() {
                                         {item.apartmentName || "—"}
                                     </td>
                                     <td className="px-4 py-3 text-[#424242] text-base base:text-base">
-                                        {item.typeOfProblem || "—"}
-                                    </td>
-                                    <td className="px-4 py-3 text-[#424242] text-base base:text-base">
-                                        {new Date(item.createdAt).toLocaleString()}
+                                        {item?.extermination?.typeOfPestProblem[0] || "—"}
                                     </td>
                                     <td className="px-4 py-3">
                                         <button
                                             onClick={() => handlePay(item._id)}
-                                            disabled={payMutation.isPending}
+                                            disabled={payMutation.isPending || item.status === "paid"}
                                             className="bg-[#0F3D61] text-white px-4 py-2 rounded-[8px] text-base base:text-base hover:bg-[#0c314f] disabled:opacity-50 transition-colors whitespace-nowrap"
                                         >
                                             {payMutation.isPending ? "Processing..." : "Pay"}

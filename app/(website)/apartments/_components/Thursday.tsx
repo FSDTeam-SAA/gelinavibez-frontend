@@ -56,7 +56,7 @@ export function Thursday() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center mb-12">
             <h1 className="text-[#0F3D61] text-3xl lg:text-[40px] font-normal mb-4">
-             Thursday
+              Thursday
             </h1>
           </div>
 
@@ -90,12 +90,13 @@ export function Thursday() {
     );
   }
 
-  const sundayData = data?.find((d) => d._id === "sunday");
-   if (!sundayData) return (
+  const sundayData = data?.find((d) => d._id === "thursday");
+
+  if (!sundayData) return (
     <p className="text-center py-14 text-red-500 text-xl">
-       <h1 className="text-[#0F3D61] text-3xl lg:text-[40px] font-normal mb-4">
-           Thursday
-          </h1>
+      <h1 className="text-[#0F3D61] text-3xl lg:text-[40px] font-normal mb-4">
+        Thursday
+      </h1>
       No apartments available.
     </p>
   );
@@ -106,7 +107,7 @@ export function Thursday() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center mb-12">
           <h1 className="text-[#0F3D61] text-3xl lg:text-[40px] font-normal mb-4">
-           Thursday
+            Thursday
           </h1>
         </div>
 

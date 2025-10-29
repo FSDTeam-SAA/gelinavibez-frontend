@@ -43,6 +43,7 @@ type ApartmentDetails = {
   price: number;
   bedrooms: number;
   bathrooms: number;
+  ownerId: string;
   address: Address;
   availableFrom: AvailableFrom;
   images: string[];
@@ -68,8 +69,8 @@ export default function PropertyListing() {
   const router = useRouter();
 
   const { data: session, status } = useSession();
+  const ids = session?.user?.userId as string | undefined;
   const userRole = session?.user?.role as string | undefined;
-
   const { data, isLoading, error } = useQuery<ApartmentDetailsResponse>({
     queryKey: ["apartment", id],
     queryFn: () => fetchApartment(id),
@@ -118,14 +119,14 @@ export default function PropertyListing() {
 
   const availableDate = data?.data
     ? new Date(data.data.availableFrom.time).toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      })
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    })
     : "";
 
   // === Handle Apply Now Click ===
@@ -181,9 +182,8 @@ export default function PropertyListing() {
                 <button
                   key={item.id}
                   onClick={() => setSelectedMedia(item)}
-                  className={`relative flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 lg:w-full lg:h-[55px] rounded-[8px] overflow-hidden border-2 transition-all hover:border-[#0F3D61] ${
-                    selectedMedia?.id === item.id ? "border-[#0F3D61]" : "border-border"
-                  }`}
+                  className={`relative flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 lg:w-full lg:h-[55px] rounded-[8px] overflow-hidden border-2 transition-all hover:border-[#0F3D61] ${selectedMedia?.id === item.id ? "border-[#0F3D61]" : "border-border"
+                    }`}
                 >
                   <Image
                     src={item.thumbnail || "/placeholder.svg"}
@@ -252,14 +252,17 @@ export default function PropertyListing() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Button
                   variant="outline"
+                  disabled={ids == apartment.ownerId ? true : false}
                   size="lg"
                   className="w-full h-[48px] rounded-[8px] text-[#0F3D61] bg-transparent"
                   onClick={() => setIsCallRequestOpen(true)}
                 >
                   Request a Call
                 </Button>
+
                 <Button
                   size="lg"
+                  disabled={ids == apartment.ownerId ? true : false}
                   className="w-full bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[48px] rounded-[8px] text-[#F5F5F5]"
                   onClick={handleApplyNow}
                 >
@@ -278,7 +281,6 @@ export default function PropertyListing() {
             {selectedGalleryMedia && (
               <video
                 key={selectedGalleryMedia.id}
-                controls
                 autoPlay
                 className="w-full h-full object-cover"
                 poster={selectedGalleryMedia.thumbnail}

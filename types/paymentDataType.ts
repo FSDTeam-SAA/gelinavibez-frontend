@@ -16,7 +16,7 @@ export interface Payment {
   tenantName: string
   tenantEmail: string
   amount: number
-  status: "pending" | "approved" | "rejected"
+  status: "pending" | "approved" | "rejected" | "cancelled" | "paid"
   user: {
     _id: string
     firstName: string
@@ -25,8 +25,13 @@ export interface Payment {
     role: string
     profileImage: string
   }
-  contractor?: string
-  extermination?: string
+  contractor?: {
+    name: string
+    email: string
+  }
+  extermination?: {
+    typeOfPestProblem: string[]
+  }
   apartmentName?: string
   typeOfProblem?: string
   chargeId?: string

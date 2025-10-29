@@ -15,7 +15,7 @@ export async function addService(token: string, payload: any) {
       typeOfProperty: payload.typeOfProperty,
       preferredContactMethod: payload.preferredContactMethod,
 
-      typeOfPestProblem: payload.typeOfPestProblem,
+      typeOfPestProblem: payload.pestProblem,
       locationOfProblem: payload.locationOfProblem,
       durationOfIssue: payload.durationOfIssue,
 
