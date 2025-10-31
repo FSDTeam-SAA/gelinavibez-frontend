@@ -35,6 +35,7 @@ export function PaymentTable() {
 
             if (!response.ok) {
                 const error = await response.json().catch(() => ({ message: "Payment failed" }));
+                //  toast.error(error.message || "Payment failed");
                 throw new Error(error.message || "Payment failed");
             }
 
