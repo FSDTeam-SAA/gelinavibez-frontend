@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import { useState } from "react"
@@ -24,24 +23,29 @@ export default function ServiceProviderOrderList() {
   const handleChange = (id: string, value: string) => {
     setAmounts(prev => ({ ...prev, [id]: value }))
   }
-
+  
   const handlePay = (id: string) => {
-    if (getUser.data?.data.stripeAccountId === "") {
-      return toast.success("Please connect your Stripe account first")
+    // Ensure that getUser.data and getUser.data.data are defined
+    const stripeAccountId = getUser.data?.data?.stripeAccountId;
+
+    // Check if stripeAccountId is not present or is an empty string
+    if (!stripeAccountId) {
+      toast.error("Please connect your Stripe account first"); 
+      return 
     } else {
-      setLoadingIds(prev => ({ ...prev, [id]: true }))
+      console.log("thelo")
+      setLoadingIds((prev) => ({ ...prev, [id]: true }));
 
       sendAmmount.mutate(
         { id, amount: Number(amounts[id]) },
         {
           onSettled: () => {
-            setLoadingIds(prev => ({ ...prev, [id]: false }))
+            setLoadingIds((prev) => ({ ...prev, [id]: false }));
           },
         }
-      )
+      );
     }
-
-  }
+  };
 
   if (isLoading) {
     return (

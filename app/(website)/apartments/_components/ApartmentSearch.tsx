@@ -343,7 +343,7 @@ export function ApartmentSearch() {
     setLocation(city)
     setSearchQuery("")
     setShowLocationDropdown(false)
-    triggerSearch("", city) // 👈 instantly search apartments for this location
+    triggerSearch("", city) 
   }
 
   // Debounced auto search when typing (optional)
@@ -367,6 +367,7 @@ export function ApartmentSearch() {
     setHasSearched(false)
     router.push("/apartments")
   }
+  console.log(location)
 
   return (
     <div className="w-full mx-auto" ref={searchRef}>
@@ -432,7 +433,7 @@ export function ApartmentSearch() {
                     onClick={() => {
                       setSearchQuery(apartment.title)
                       setShowSuggestions(false)
-                      triggerSearch(apartment.title, location) // 👈 instantly search when clicked
+                      triggerSearch(apartment.title, location) 
                     }}
                     className="w-full px-4 py-2.5 text-left text-sm text-gray-600 hover:bg-gray-50 transition-colors"
                   >

@@ -95,7 +95,7 @@ export function Monday() {
    if (!mondayData) return (
     <p className="text-center py-14 text-red-500 text-xl">
         <h1 className="text-[#0F3D61] text-3xl lg:text-[40px] font-normal mb-4">
-            Monday
+            Monday  
           </h1>
 
       No apartments available.
@@ -137,7 +137,7 @@ export function Monday() {
             href="/listings"
             className="inline-flex items-center gap-2 text-[#1a4d6d] hover:text-[#0f3a52] font-semibold"
           >
-            View All
+            View All  
             <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
