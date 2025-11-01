@@ -74,6 +74,15 @@ export function Footer() {
                  Info@mybridgepointsolutions.com
                 </a>
               </li>
+              <li className="flex items-center gap-3">
+               
+                <a
+                  href="mailto:info@creditmatch.com"
+                  className="text-[#F8F9FA] text-sm font-medium hover:text-[#d4b896] transition-colors "
+                >
+                  Hours: 10:00 AM – 6:00 PM ET, Mon–Fri • Inquiries accepted online 24/7
+                </a>
+              </li>
             </ul>
           </div>
         </div>
