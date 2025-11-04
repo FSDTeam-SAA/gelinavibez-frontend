@@ -61,8 +61,7 @@ export function ListingsSection() {
               Latest Listings
             </h1>
             <p className="text-[#616161] text-base lg:text-lg">
-              Step into a world of curated elegance — exclusive properties crafted
-              for the most discerning lifestyles.
+              Discover available apartments updated weekly. Attend open houses or request a private viewing.
             </p>
           </div>
           <Link

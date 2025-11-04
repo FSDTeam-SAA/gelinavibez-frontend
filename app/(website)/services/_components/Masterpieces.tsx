@@ -21,7 +21,7 @@ const Masterpieces = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="w-full h-[250px] sm:h-[300px] md:h-[355px]">
                 <Image
-                  src="/assets/masterpis4.jpg"
+                  src="/assets/image 2.png"
                   alt="Masterpiece 4"
                   width={1000}
                   height={1000}
@@ -30,7 +30,7 @@ const Masterpieces = () => {
               </div>
               <div className="w-full h-[250px] sm:h-[300px] md:h-[355px]">
                 <Image
-                  src="/assets/masterpis3.jpg"
+                  src="/assets/image 4.png"
                   alt="Masterpiece 3"
                   width={1000}
                   height={1000}
@@ -42,7 +42,7 @@ const Masterpieces = () => {
             {/* Bottom image */}
             <div className="w-full h-[200px] sm:h-[250px] md:h-[271px]">
               <Image
-                src="/assets/masterpis2.jpg"
+                src="/assets/image 5.png"
                 alt="Masterpiece 2"
                 width={1000}
                 height={1000}
@@ -54,7 +54,7 @@ const Masterpieces = () => {
           {/* Right Column */}
           <div className="w-full h-[300px] sm:h-[400px] md:h-[550px] lg:h-[650px]">
             <Image
-              src="/assets/masterpis1.jpg"
+              src="/assets/image 6.png"
               alt="Masterpiece 1"
               width={1000}
               height={1000}

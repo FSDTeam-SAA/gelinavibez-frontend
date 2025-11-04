@@ -5,55 +5,63 @@ import { ServiceCard } from "./ServiceCard"
 
 
 export function ServicesSection() {
-  const services = [
+   const services = [
+ {
+  icon: <FileText className="h-12 w-12" />,
+  title: "Tenant Application",
+  features: [
+    "Clarity at every step — from search to submission",
+    "Real listings. Real guidance. Real progress",
+    "Your application, organized — documents done right",
+    "Track your status, reduce stress, and move forward",
+    "We bridge the gap so you can get home"
+  ],
+  buttonText: "Apply Now",
+  hrf: "/apartments"
+},
+
+{
+  icon: <Home className="h-12 w-12" />,
+  title: "Listings",
+  features: [
+    "New listings posted weekly — see what's open now",
+    "Your next home might already be waiting",
+    "Verified listings, easy scheduling, transparent updates",
+    "Explore open houses in your area and apply instantly",
+    "Bridge Point Solutions — connecting tenants to opportunity"
+  ],
+  buttonText: "See Listings",
+  hrf: "#listings"
+},
+
+{
+  icon: <Wrench className="h-12 w-12" />,
+  title: "Contractor Service",
+  features: [
+    "From vision to structure — we turn your ideas into reality",
+    "Rebuild. Repair. Redesign. Delivered with precision",
+    "Trusted craftsmanship, transparent updates, timeless results",
+    "Ground-up excellence — start strong, finish stronger",
+    "Quality that stands the test of time, weather, and use"
+  ],
+  buttonText: "Explore Services",
+  hrf: "/services/#contractor-form"
+},
+
     {
-      icon: <FileText className="h-12 w-12" />,
-      title: "Tenant Application",
-      features: [
-        "Search for available apartments",
-        "Filter by price, location, and features",
-        "Attend open house events",
-        "Apply online with our simple form",
-      ],
-      buttonText: "Apply",
-      hrf: "/apartments"
-    },
-    {
-      icon: <Home className="h-12 w-12" />,
-      title: "Listings",
-      features: [
-        "Post your available apartments with ease",
-        "Manage inquiries and applications in one place",
-        "Highlight property details with photos and descriptions",
-        "Schedule and track open house events",
-      ],
-      buttonText: "See Property",
-      hrf: "#listings"
-    },
-    {
-      icon: <Wrench className="h-12 w-12" />,
-      title: "Contractor Service",
-      features: [
-        "Offer professional repair and maintenance services",
-        "Manage service requests from landlords and tenants",
-        "Showcase expertise with detailed profiles",
-        "Build trust through reviews and reliable support",
-      ],
-      buttonText: "See Service",
-      hrf: "/services/#contractor-form"
-    },
-    {
-      icon: <Upload className="h-12 w-12" />,
-      title: "Extermination Service",
-      features: [
-        "Deliver Comprehensive Pest Control Solutions",
-        "Ensure Safe and Eco-Friendly Treatments",
-        "Offer Timely Response and Ongoing Support",
-        "Build Confidence Through Expertise and Transparency",
-      ],
-      buttonText: "Get quote",
-      hrf: "/service-request"
-    },
+  icon: <Upload className="h-12 w-12" />,
+  title: "Extermination Service",
+  features: [
+    "Targeted treatment today — lasting protection tomorrow",
+    "Expert diagnostics, effective solutions, clear reports",
+    "Discreet, safe, and prevention-minded service",
+    "Stop pests at the source — not just the surface",
+    "Your plan, your schedule, your peace of mind"
+  ],
+  buttonText: "Get Quote",
+  hrf: "/service-request"
+},
+
   ]
 
   return (
