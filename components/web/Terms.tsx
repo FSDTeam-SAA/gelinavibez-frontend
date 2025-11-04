@@ -8,6 +8,7 @@ const Terms = () => {
       <h4 className="text-2xl font-bold mb-4 text-[#424242]">
         Terms & Conditions 
       </h4>
+      
 
       <ol className="list-decimal pl-5 space-y-4 text-[#616161] mt-[40px]">
         
@@ -34,7 +35,6 @@ const Terms = () => {
           Verify credentials, review contracts, and confirm scope, timeline, and
           pricing directly with the responsible party.
         </li>
-
         <li className="text-base">
           <strong>Fees & Refunds:</strong>{" "}
           Platform, application, and processing fees are non-refundable unless

@@ -11,6 +11,7 @@ const page = () => {
       </div>
       <Terms/>
 
+
     </section>
   )
 }
