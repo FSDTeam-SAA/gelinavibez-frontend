@@ -16,7 +16,8 @@ export function ServideBanner() {
           WELCOME TO BRIDGE POINT SOLUTION
         </h1>
 
-        <p className="text-[#E6E7E6] text-base lg:text-lg mb-12 w-full mx-auto">Building Bridge & Connecting Futures</p>
+        <p className="text-[#E6E7E6] text-base lg:text-lg mb-12 w-full mx-auto"> Build, Rebuild, Repair — From the Ground Up</p>
+        {/* <p className="text-[#E6E7E6] text-base lg:text-lg mb-12 w-full mx-auto">Building Bridge & Connecting Futures</p> */}
 
       
       </div>

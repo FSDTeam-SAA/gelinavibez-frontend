@@ -249,7 +249,7 @@ export function ContactSection() {
           {/* Property Image */}
           <div className="relative h-full">
             <Image
-              src="/assets/getintuch.jpg"
+              src="/assets/image 3.png"
               alt="Modern luxury property"
               width={1000}
               height={1000}

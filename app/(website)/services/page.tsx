@@ -1,5 +1,5 @@
 import React from 'react'
-// import { ServideBanner } from './_components/ServideBanner'
+import { ServideBanner } from './_components/ServideBanner'
 // import SignatureServices from './_components/SignatureServices'
 // import DistinguishedExperts from './_components/DistinguishedExperts'
 import ContractorForm from './_components/ContractorForm'
@@ -10,8 +10,8 @@ import Community from '@/components/Shared/Community'
 const page = () => {
   return (
     <section className='bg-[#e8e8e8]'>
-      {/* <ServideBanner/>
-      <SignatureServices/>
+      <ServideBanner/>
+      {/* <SignatureServices/>
       <DistinguishedExperts/> */}
       <Masterpieces/>
       <ContractorForm/>

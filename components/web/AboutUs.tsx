@@ -9,7 +9,7 @@ const AboutUs = () => {
         <div>
           <div className="w-full h-[300px] sm:h-[400px] md:h-[480px] lg:h-[540px]">
             <Image
-              src="/assets/about2.png"
+              src="/assets/image 8.png"
               alt="about"
               width={1000}
               height={1000}
@@ -20,7 +20,7 @@ const AboutUs = () => {
           <div className="grid grid-cols-3 gap-4 sm:gap-6 mt-6 sm:mt-8">
             <div className="w-full h-[120px] sm:h-[160px] md:h-[200px] lg:h-[213px]">
               <Image
-                src="/assets/about3.png"
+                src="/assets/image 7.png"
                 alt="about"
                 width={1000}
                 height={1000}
@@ -29,7 +29,7 @@ const AboutUs = () => {
             </div>
             <div className="w-full h-[120px] sm:h-[160px] md:h-[200px] lg:h-[213px]">
               <Image
-                src="/assets/about4.png"
+                src="/assets/image 10.png"
                 alt="about"
                 width={1000}
                 height={1000}
@@ -38,7 +38,7 @@ const AboutUs = () => {
             </div>
             <div className="w-full h-[120px] sm:h-[160px] md:h-[200px] lg:h-[213px]">
               <Image
-                src="/assets/about5.png"
+                src="/assets/image 9.png"
                 alt="about"
                 width={1000}
                 height={1000}
