@@ -5,6 +5,7 @@ import { ServideBanner } from './_components/ServideBanner'
 import ContractorForm from './_components/ContractorForm'
 import Masterpieces from './_components/Masterpieces'
 import Community from '@/components/Shared/Community'
+import ContractorServices from './_components/contractor-services'
 
 
 const page = () => {
@@ -14,6 +15,7 @@ const page = () => {
       {/* <SignatureServices/>
       <DistinguishedExperts/> */}
       <Masterpieces/>
+      <ContractorServices/>
       <ContractorForm/>
       <Community/>
     </section>
