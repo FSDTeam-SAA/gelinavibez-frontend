@@ -5,23 +5,10 @@ const Contact_Information = () => {
   return (
     <section className="container">
       <div className="flex flex-col lg:flex-row justify-between gap-8 lg:gap-12 py-10 lg:py-[120px]">
-        {/* Map Section */}
-        <div className="w-full lg:w-[68%]">
-          <iframe
-            title="Google Map — Dhaka"
-            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13959.102296746623!2d-73.75970340835015!3d42.64991578276417!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89de0a2126a34f81%3A0xfbdcba57e4fa777!2s418%20Broadway%20%236217%2C%20Albany%2C%20NY%2012207%2C%20USA!5e0!3m2!1sen!2sbd!4v1761622949130!5m2!1sen!2sbd" 
-            width="100%"
-            height="380"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="rounded-xl"
-          />
-        </div>
+     
 
         {/* Contact Info */}
-        <div className="w-full lg:w-[32%]">
+        <div className="w-full ">
           <h1 className="text-2xl lg:text-[32px] font-normal text-[#0F3D61] mb-2">
             Contact Information
           </h1>

@@ -1,3 +1,6 @@
+
+
+
 "use client";
 
 import type React from "react";
@@ -16,10 +19,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Upload } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // === Reusable Input Class ===
 const inputClasses =
@@ -48,20 +57,39 @@ interface TenantCreateResponse {
   };
 }
 
+interface Apartment {
+  _id: string;
+  title: string;
+  address: {
+    street?: string;
+    city?: string;
+    state?: string;
+    zipCode?: string;
+  };
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  squareFeet: number;
+}
+
+interface ApartmentResponse {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  data: {
+    data: Apartment[];
+  };
+}
+
 interface TenantApplicationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-
 }
 
 export function TenantApplicationModal({
   open,
   onOpenChange,
-
 }: TenantApplicationModalProps) {
-  const params = useParams();
-  const apartmentId = params.id as string;
-
   const [hasVoucher, setHasVoucher] = useState<string>("no");
   const [livesInShelter, setLivesInShelter] = useState<string>("no");
   const [affiliatedWithHomebase, setAffiliatedWithHomebase] =
@@ -72,6 +100,7 @@ export function TenantApplicationModal({
   const [incomeFile, setIncomeFile] = useState<File | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [consent, setConsent] = useState(false);
+  const [selectedApartmentId, setSelectedApartmentId] = useState<string>("");
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -89,10 +118,29 @@ export function TenantApplicationModal({
       if (!res.ok) throw new Error("Failed to fetch application fee");
       return res.json();
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
   });
 
   const applicationFee = feeData?.data?.applicationFee;
+
+  // === Fetch Approved Apartments ===
+  const {
+    data: apartmentsData,
+    isLoading: apartmentsLoading,
+    error: apartmentsError,
+  } = useQuery<ApartmentResponse>({
+    queryKey: ["approvedApartments"],
+    queryFn: async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/apartment/?status=approve`
+      );
+      if (!res.ok) throw new Error("Failed to fetch apartments");
+      return res.json();
+    },
+    staleTime: 1000 * 60 * 2, // 2 minutes
+  });
+
+  const apartments = apartmentsData?.data?.data || [];
 
   // === Submit Mutation ===
   const mutation = useMutation<TenantCreateResponse, Error, FormData>({
@@ -104,7 +152,6 @@ export function TenantApplicationModal({
         {
           method: "POST",
           headers: {
-            // DO NOT set Content-Type → browser sets multipart boundary
             Authorization: `Bearer ${token}`,
           },
           body: formData,
@@ -151,8 +198,8 @@ export function TenantApplicationModal({
       return;
     }
 
-    if (!apartmentId) {
-      toast.error("Invalid apartment ID.");
+    if (!selectedApartmentId) {
+      toast.error("Please select an apartment.");
       return;
     }
 
@@ -202,7 +249,7 @@ export function TenantApplicationModal({
           : null,
       applicantSignature: get("signature"),
       acceptedTerms: true,
-      apartmentId,
+      apartmentId: selectedApartmentId,
     };
 
     formData.append("data", JSON.stringify(payload));
@@ -259,7 +306,43 @@ export function TenantApplicationModal({
               <h1 className="text-xl font-semibold text-[#424242]">
                 Applicant Information
               </h1>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <h2 className="text-base font-medium text-[#424242]">
+                Select Apartment *
+              </h2>
+              <Select
+                value={selectedApartmentId}
+                onValueChange={setSelectedApartmentId}
+                disabled={apartmentsLoading}
+              >
+                <SelectTrigger className="h-[48px] rounded-[4px] border-[#C0C3C1] bg-white">
+                  <SelectValue
+                    placeholder={
+                      apartmentsLoading
+                        ? "Loading apartments..."
+                        : "Choose an apartment"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent className="bg-white cursor-pointer">
+                  {apartmentsError ? (
+                    <SelectItem value="error" disabled>
+                      Failed to load apartments
+                    </SelectItem>
+                  ) : apartments.length === 0 ? (
+                    <SelectItem value="none" disabled>
+                      No approved apartments
+                    </SelectItem>
+                  ) : (
+                    apartments.map((apt) => (
+                      <SelectItem key={apt._id} value={apt._id} className=" cursor-pointer">
+                        {apt.title}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                 <div className="space-y-2">
                   <Label className="text-base text-[#424242] font-semibold">
                     First Name *
@@ -432,7 +515,6 @@ export function TenantApplicationModal({
                     className={`${inputClasses} appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance:textfield]`}
                   />
                 </div>
-
                 <div className="space-y-2">
                   <Label className="text-base text-[#424242] font-semibold">
                     Employer Address
@@ -744,6 +826,7 @@ export function TenantApplicationModal({
                   <Input
                     value={new Date().toLocaleDateString()}
                     className="h-[48px] rounded-[4px] bg-gray-50 text-[#6C757D]"
+                    readOnly
                   />
                 </div>
               </div>
@@ -796,7 +879,12 @@ export function TenantApplicationModal({
             <div className="flex justify-center pt-6">
               <Button
                 type="submit"
-                disabled={mutation.isPending || !token}
+                disabled={
+                  mutation.isPending ||
+                  !token ||
+                  !selectedApartmentId ||
+                  apartmentsLoading
+                }
                 className="w-[200px] h-12 bg-[#0F3D61] hover:bg-[#0F3D61]/90 text-white rounded-[4px] text-base font-medium disabled:opacity-50"
               >
                 {mutation.isPending ? "Submitting..." : "Submit Application"}

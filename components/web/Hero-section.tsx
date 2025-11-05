@@ -67,7 +67,7 @@ export function HeroSection() {
               height={1000}
               className="w-[30px] h-[30px] md:w-[38px] md:h-[38px] lg:w-[45px] lg:h-[45px] flex-shrink-0"
             />
-            <span className="text-balance">Request to Repair</span>
+            <span className="text-balance">Build with US</span>
           </Button>
           </Link>
         </div>

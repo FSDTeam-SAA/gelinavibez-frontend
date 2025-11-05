@@ -69,10 +69,10 @@ export default function ServiceForm() {
 
     const onSubmit = (values: z.infer<typeof formSchema>) => {
         if (!values.checkbox) {
-            console.log(values.checkbox)
             toast.error("Please agree to terms and conditions")
         } else {
             serviceMutation.mutate(values)
+            toast.success("Service request submitted successfully")
         }
     }
 
