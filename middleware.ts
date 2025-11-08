@@ -7,7 +7,7 @@ export default withAuth(
     const token = req.nextauth.token;
     const role = token?.role;
     const path = req.nextUrl.pathname;
-    console.log(path)
+ 
 
     // User dashboard protection
     if (path.startsWith("/user") && role !== "user") {

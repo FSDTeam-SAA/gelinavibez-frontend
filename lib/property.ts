@@ -71,7 +71,7 @@ export async function getSingelProperty(token: string, id: string) {
 }
 
 export async function editProperty(token: string, payload: IProperty, id: string) {
-console.log(payload.time)
+
   const formData = new FormData();
   formData.append("title", payload.title);
   formData.append("description", payload.description);

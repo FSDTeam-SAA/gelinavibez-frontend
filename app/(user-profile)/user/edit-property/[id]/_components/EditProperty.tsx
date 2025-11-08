@@ -129,7 +129,7 @@ export function EditProperty({ id }: { id: string }) {
     };
 
     const onSubmit = (data: PropertyFormData) => {
-        console.log("Form submitted:", data)
+        // console.log("Form submitted:", data)
         const payload: IProperty = {
             ...data,
             thumbnails,

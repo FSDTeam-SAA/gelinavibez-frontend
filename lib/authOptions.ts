@@ -1,5 +1,6 @@
 import NextAuth, { type AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { toast } from "sonner";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -42,7 +43,7 @@ export const authOptions: AuthOptions = {
 
           return null;
         } catch (error) {
-          console.error("Login error:", error);
+         toast.error("Failed to log in. Please try again." + error);
           return null;
         }
       },

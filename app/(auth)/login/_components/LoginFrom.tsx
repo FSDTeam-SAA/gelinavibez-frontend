@@ -82,8 +82,8 @@ export default function LoginForm() {
         router.push(res?.url ?? "/");
       }, 2100); // a tiny buffer so the toast finishes its animation
     } catch (err) {
-      console.error("Login error:", err);
-      toast.error("Something went wrong. Please try again.", {
+      // console.error("Login error:", err);
+      toast.error("Something went wrong. Please try again." + err , {
         id: loadingToastId,
       });
     } finally {
