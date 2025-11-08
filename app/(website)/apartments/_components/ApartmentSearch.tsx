@@ -146,7 +146,7 @@ export function ApartmentSearch() {
     setHasSearched(false);
     router.push("/apartments");
   };
-  console.log(location);
+
 
   return (
     <div className="w-full mx-auto" ref={searchRef}>

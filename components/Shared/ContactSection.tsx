@@ -71,8 +71,8 @@ export function ContactSection() {
       setAgreed(false);
     },
     onError: (error) => {
-      toast.error("Failed to send message. Please try again.");
-      console.error("Submission error:", error);
+      toast.error("Failed to send message. Please try again." + error);
+     
     },
   });
 

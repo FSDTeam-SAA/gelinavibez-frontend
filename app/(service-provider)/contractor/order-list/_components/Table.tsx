@@ -33,7 +33,7 @@ export default function ServiceProviderOrderList() {
       toast.error("Please connect your Stripe account first"); 
       return 
     } else {
-      console.log("thelo")
+     
       setLoadingIds((prev) => ({ ...prev, [id]: true }));
 
       sendAmmount.mutate(
