@@ -30,7 +30,7 @@ export default function ContractorServices() {
   ]
 
   return (
-    <div className="w-full py-8 px-4 sm:px-6 lg:px-8">
+    <div className="w-full py-8 px-4 sm:px-6 lg:px-8" id="contractor-services">
       <div className=" container">
         <h1 className="text-2xl text-center sm:text-3xl lg:text-4xl font-normal text-[#0F3D61] mb-8 tracking-wide">
           CONTRACTOR SERVICES

@@ -58,7 +58,7 @@ export function HeroSection() {
             <span className="text-balance">Apply as a Tenant</span>
           </Button>
           </Link>
-          <Link href="/service-request">
+          <Link href="/services/#contractor-services">
           <Button className="w-full md:col-span-2 lg:col-span-1 bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[60px] md:h-[68px] lg:h-[74px] !rounded-[4px] border-2 border-[#d4b896] px-4 md:px-6 lg:px-8 py-4 md:py-5 lg:py-6 text-sm md:text-lg lg:text-2xl flex items-center justify-center gap-2 md:gap-3 font-bold text-[#EFDACB]">
             <Image
               src="/assets/icon1.png"

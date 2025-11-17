@@ -56,8 +56,8 @@ export function ServicesSection() {
         "Ground-up excellence — start strong, finish stronger",
         "Quality that stands the test of time, weather, and use",
       ],
-      buttonText: "Explore Services",
-      hrf: "/services/#contractor-form",
+      buttonText: "Build with us",
+      hrf: "/services/#contractor-services",
     },
     {
       icon: <Upload className="h-12 w-12" />,
