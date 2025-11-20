@@ -84,7 +84,7 @@ export default function ServiceForm() {
     serviceMutation.mutate(values, {
       onSuccess: () => {
         toast.success("Service request submitted successfully!")
-        form.reset() // This clears the entire form
+        form.reset() 
       },
       onError: (error: any) => {
         toast.error(error?.message || "Failed to submit request. Please try again.")

@@ -85,7 +85,7 @@ export function useSendAmmount(token: string, onSuccessCallback?: () => void) {
     return useMutation({
         mutationFn: (payload: { id: string, amount: number }) => ammountPyload(token, payload),
         onSuccess: () => {
-            toast.success("Profile updated successfully");
+            toast.success("Ammount sent successfully");
             queryClient.invalidateQueries({ queryKey: ["service"] });
             if (onSuccessCallback) onSuccessCallback();
         },
