@@ -12,6 +12,7 @@ const navigation = [
   { name: "Property", href: "/user/property", icon: Building2 },
   { name: "Payment", href: "/user/payment", icon: CreditCard },
   { name: "Applied Apartments", href: "/user/applied-apartments", icon: EqualApproximately },
+  {name: "Message", href: "/user/message", icon: Settings },
   { name: "Settings", href: "/user/profile", icon: Settings },
 ];
 

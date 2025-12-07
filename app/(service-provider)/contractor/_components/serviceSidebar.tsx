@@ -11,7 +11,7 @@ import { useProfileQuery } from "@/hooks/ApiClling";
 
 const navigation = [
   { name: "Order Lists", href: "/contractor/order-list", icon: Building2 },
-
+  { name: "Message", href: "/contractor/message", icon: Settings },
   { name: "Settings", href: "/contractor/provider-profile", icon: Settings },
 ];
 
