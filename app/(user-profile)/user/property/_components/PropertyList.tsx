@@ -56,7 +56,7 @@ export function PropertyList() {
         </div>
 
         {/* Table Skeleton */}
-        <div className="rounded-lg border border-[#B6B6B6] overflow-hidden bg-white mt-6">
+        <div className="rounded-[4px] border border-[#B6B6B6] overflow-hidden bg-white mt-6">
           <div className="hidden sm:block">
             <table className="w-full">
               <thead className="border-b border-[#B6B6B6] bg-gray-50">
@@ -137,7 +137,7 @@ export function PropertyList() {
       </div>
 
       {/* Responsive Table Container */}
-      <div className="rounded-lg border border-[#B6B6B6] overflow-hidden bg-white">
+      <div className="rounded-[4px] border border-[#B6B6B6] overflow-hidden bg-white">
         {/* Mobile Card View */}
         <div className="sm:hidden">
           <div className="divide-y divide-[#B6B6B6]">

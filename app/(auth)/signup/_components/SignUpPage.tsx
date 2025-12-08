@@ -336,7 +336,7 @@ export default function SignUpPage() {
       toast.success("Account created successfully! Redirecting to login...")
       setTimeout(() => router.push("/login"), 1500)
     } catch (err) {
-      toast.error("Network error. Please check your connection and try again.")
+      toast.error("Network error. Please check your connection and try again. + " + err)
     } finally {
       setIsLoading(false)
     }

@@ -48,7 +48,7 @@ export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarPro
           href={item.href}
           onClick={onClose}
           className={cn(
-            "flex items-center gap-3 px-4 py-3 text-[18px] font-normal rounded-lg transition-colors w-full",
+            "flex items-center gap-3 px-4 py-3 text-[18px] font-normal rounded-[4px] transition-colors w-full",
             isActive
               ? "bg-[#0F3D6133]/20 text-[#0F3D61]"
               : "text-[#0F3D61] hover:bg-[#0F3D6133]/20"
@@ -126,7 +126,7 @@ export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarPro
           {getUser.data?.data.stripeAccountId &&
             <button
               onClick={handelGO}
-              className="flex items-center gap-3 px-4 py-3 text-[18px]  font-normal  rounded-lg hover:bg-red-50 transition-colors w-full"
+              className="flex items-center gap-3 px-4 py-3 text-[18px]  font-normal  rounded-[4px] hover:bg-red-50 transition-colors w-full"
             >
               <CardSim className="w-5 h-5" />
               Stripe Dashboard
@@ -138,7 +138,7 @@ export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarPro
           {/* Logout button right below other links */}
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-lg hover:bg-red-50 transition-colors w-full"
+            className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-[4px] hover:bg-red-50 transition-colors w-full"
           >
             <LogOut className="w-5 h-5" />
             Log Out
@@ -165,7 +165,7 @@ export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarPro
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+            className="p-2 text-gray-600 hover:bg-gray-100 rounded-[4px]"
             aria-label="Close menu"
           >
             <X className="w-5 h-5" />
@@ -179,7 +179,7 @@ export function ServiceSidebar({ isMobileMenuOpen = false, onClose }: SidebarPro
 
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-lg hover:bg-red-50 transition-colors w-full"
+            className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-[4px] hover:bg-red-50 transition-colors w-full"
           >
             <LogOut className="w-5 h-5" />
             Log Out

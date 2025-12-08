@@ -9,7 +9,7 @@ import { fetchApartmentsByDay } from "@/lib/fetchApartmentsByDay ";
 /* -------------------------------------------------Skeleton card – looks exactly like PropertyCard------------------------------------------------- */
 function PropertyCardSkeleton() {
   return (
-    <div className="animate-pulse rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="animate-pulse rounded-[4px] border border-gray-200 bg-white p-4 shadow-sm">
       {/* Image placeholder */}
       <div className="mb-4 h-48 w-full bg-gray-200 rounded-md" />
 

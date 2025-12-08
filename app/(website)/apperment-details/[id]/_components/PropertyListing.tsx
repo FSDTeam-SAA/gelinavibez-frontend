@@ -297,7 +297,7 @@ export default function PropertyListing() {
             <button
               key={item.id}
               onClick={() => setSelectedGalleryMedia(item)}
-              className="relative rounded-lg overflow-hidden"
+              className="relative rounded-[4px] overflow-hidden"
             >
               <Image
                 src={item.thumbnail || "/placeholder.svg"}

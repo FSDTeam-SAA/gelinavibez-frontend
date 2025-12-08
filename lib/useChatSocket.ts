@@ -24,8 +24,8 @@ export const useChatSocket = ({
   conversationId,
   onNewMessage,
   onMessageSent,
-  onTyping,
 }: UseChatSocketProps) => {
+  //eslint-disable-next-line
   const socketRef = useRef<any>(null);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export const useChatSocket = ({
 
     // Listen for incoming messages
     socket.on("receiveMessage", (message: MessageType) => {
-      console.log("New message received:", message);
+      // console.log("New message received:", message);
       onNewMessage(message);
     });
 

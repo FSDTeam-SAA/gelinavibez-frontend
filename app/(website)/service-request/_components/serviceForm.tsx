@@ -127,7 +127,7 @@ export default function ServiceForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-[16px] container mx-auto py-8 px-4  rounded-lg "
+          className="space-y-[16px] container mx-auto py-8 px-4  rounded-[4px] "
         >
           <h2 className="text-[#424242] font-semibold text-xl">Client Information</h2>
 

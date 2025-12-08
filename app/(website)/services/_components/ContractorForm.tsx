@@ -398,7 +398,7 @@
 //           <div className="mb-8">
 //             <h2 className="text-lg font-semibold text-[#1a3a52] mb-4">Image</h2>
 //             <div
-//               className={`relative border-2 border-dashed rounded-lg p-12 md:p-24 flex flex-col items-center justify-center min-h-[300px] overflow-hidden cursor-pointer transition-colors ${
+//               className={`relative border-2 border-dashed rounded-[4px] p-12 md:p-24 flex flex-col items-center justify-center min-h-[300px] overflow-hidden cursor-pointer transition-colors ${
 //                 isDragging ? "border-blue-400 bg-blue-50" : "border-gray-300"
 //               }`}
 //               onDragOver={handleDragOver}
@@ -413,7 +413,7 @@
 //                     alt="Preview"
 //                     width={1000}
 //                     height={1000}
-//                     className="w-full h-[300px] object-cover rounded-lg"
+//                     className="w-full h-[300px] object-cover rounded-[4px]"
 //                   />
 //                   <button
 //                     type="button"
@@ -937,7 +937,7 @@ export default function ContractorForm() {
           <div className="mb-8">
             <h2 className="text-lg font-semibold text-[#1a3a52] mb-4">Image</h2>
             <div
-              className={`relative border-2 border-dashed rounded-lg p-12 md:p-24 flex flex-col items-center justify-center min-h-[300px] overflow-hidden cursor-pointer transition-colors ${
+              className={`relative border-2 border-dashed rounded-[4px] p-12 md:p-24 flex flex-col items-center justify-center min-h-[300px] overflow-hidden cursor-pointer transition-colors ${
                 isDragging ? "border-blue-400 bg-blue-50" : "border-gray-300"
               }`}
               onDragOver={handleDragOver}
@@ -952,7 +952,7 @@ export default function ContractorForm() {
                     alt="Preview"
                     width={1000}
                     height={1000}
-                    className="w-full h-[300px] object-cover rounded-lg"
+                    className="w-full h-[300px] object-cover rounded-[4px]"
                   />
                   <button
                     type="button"

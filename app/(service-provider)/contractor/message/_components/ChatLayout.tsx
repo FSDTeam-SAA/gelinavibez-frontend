@@ -15,13 +15,12 @@ export default function ChatLayout() {
   return (
     <div className="flex h-[80vh] bg-gray-100">
       {/* Sidebar */}
-      <ChatSidebar
-        selectedChat={selectedChat}
-        onSelectChat={setSelectedChat}
-      />
+      <div className={`md:w-96 w-full md:flex ${selectedChat ? 'hidden md:flex' : 'flex'}`}>
+        <ChatSidebar selectedChat={selectedChat} onSelectChat={setSelectedChat} />
+      </div>
 
       {/* Chat Window */}
-      <div className="flex-1 flex flex-col">
+      <div className={`flex-1 flex flex-col ${selectedChat ? 'flex' : 'hidden md:flex'}`}>
         {selectedChat ? (
           <ChatWindow
             conversationId={selectedChat.conversationId}
