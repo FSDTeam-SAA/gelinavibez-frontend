@@ -169,7 +169,7 @@ export function ApartmentSearch() {
 
             {showLocationDropdown && (
               <div
-                className="absolute top-full left-0 mt-2 w-full min-w-[150px] max-w-[200px] sm:w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-[100] max-h-60 overflow-y-auto hide-scrollbar "
+                className="absolute top-full left-0 mt-2 w-full min-w-[150px] max-w-[200px] sm:w-48 bg-white rounded-[4px] shadow-lg border border-gray-200 py-2 z-[100] max-h-60 overflow-y-auto hide-scrollbar "
                 role="listbox"
               >
                 {locationsLoading && (
@@ -209,7 +209,7 @@ export function ApartmentSearch() {
             />
 
             {showSuggestions && filteredSuggestions.length > 0 && (
-              <div className="absolute top-full left-0 mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200 py-2 max-h-64 overflow-y-auto z-[200]">
+              <div className="absolute top-full left-0 mt-2 w-full bg-white rounded-[4px] shadow-lg border border-gray-200 py-2 max-h-64 overflow-y-auto z-[200]">
                 {filteredSuggestions.map((apartment) => (
                   <button
                     key={apartment._id}

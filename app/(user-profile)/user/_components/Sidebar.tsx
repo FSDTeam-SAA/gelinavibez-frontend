@@ -12,6 +12,7 @@ const navigation = [
   { name: "Property", href: "/user/property", icon: Building2 },
   { name: "Payment", href: "/user/payment", icon: CreditCard },
   { name: "Applied Apartments", href: "/user/applied-apartments", icon: EqualApproximately },
+  {name: "Message", href: "/user/message", icon: Settings },
   { name: "Settings", href: "/user/profile", icon: Settings },
 ];
 
@@ -45,7 +46,7 @@ export function Sidebar({ isMobileMenuOpen = false, onClose }: SidebarProps) {
           href={item.href}
           onClick={onClose}
           className={cn(
-            "flex items-center gap-3 px-4 py-3 text-[18px] font-normal rounded-lg transition-colors w-full",
+            "flex items-center gap-3 px-4 py-3 text-[18px] font-normal rounded-[4px] transition-colors w-full",
             isActive
               ? "bg-[#0F3D6133]/20 text-[#0F3D61]"
               : "text-[#0F3D61] hover:bg-[#0F3D6133]/20"
@@ -90,7 +91,7 @@ export function Sidebar({ isMobileMenuOpen = false, onClose }: SidebarProps) {
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
 
-            className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-lg hover:bg-red-50 transition-colors w-full"
+            className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-[4px] hover:bg-red-50 transition-colors w-full"
           >
             <LogOut className="w-5 h-5" />
             Log Out
@@ -117,7 +118,7 @@ export function Sidebar({ isMobileMenuOpen = false, onClose }: SidebarProps) {
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+            className="p-2 text-gray-600 hover:bg-gray-100 rounded-[4px]"
             aria-label="Close menu"
           >
             <X className="w-5 h-5" />
@@ -130,7 +131,7 @@ export function Sidebar({ isMobileMenuOpen = false, onClose }: SidebarProps) {
           {/* Logout below other links */}
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-lg hover:bg-red-50 transition-colors w-full"
+            className="flex items-center gap-3 px-4 py-3 text-[18px] font-normal text-red-600 rounded-[4px] hover:bg-red-50 transition-colors w-full"
           >
             <LogOut className="w-5 h-5" />
             Log Out

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,7 +33,7 @@ export function Header({ onMenuClick }: HeaderProps) {
     queryFn: async (): Promise<ApiResponse> => {
       if (!token) throw new Error("No token available");
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/profile`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user/profile`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -42,12 +42,12 @@ export function Header({ onMenuClick }: HeaderProps) {
         credentials: "include",
       });
 
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({}));
         throw new Error(error.message || "Failed to fetch profile");
       }
 
-      return response.json();
+      return res.json();
     },
     enabled: !!token && status === "authenticated",
     staleTime: 1000 * 60 * 5,
@@ -55,24 +55,26 @@ export function Header({ onMenuClick }: HeaderProps) {
   });
 
   const user = data?.data;
-
   const fullName = user ? `${user.firstName} ${user.lastName}` : "Loading...";
   const initials = user
     ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase()
     : "??";
 
-  // Session loading state
   if (status === "loading") {
     return (
       <header className="h-20 bg-white flex items-center justify-between px-6 lg:px-10 sticky top-0 z-50 border-b">
+        {/* Mobile menu button */}
         <button
           onClick={onMenuClick}
-          className="lg:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          className="lg:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-[4px]"
           aria-label="Open menu"
         >
           <Menu className="w-6 h-6" />
         </button>
+
         <div className="flex-1" />
+
+        {/* Loading skeleton */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse" />
           <div className="hidden sm:block">
@@ -84,16 +86,14 @@ export function Header({ onMenuClick }: HeaderProps) {
     );
   }
 
-  // Not authenticated
-  if (status === "unauthenticated") {
-    return null; // or show login button
-  }
+  if (status === "unauthenticated") return null;
 
   return (
     <header className="h-20 bg-white flex items-center justify-between px-6 lg:px-10 sticky top-0 z-50 border-b">
+      {/* Mobile menu button */}
       <button
         onClick={onMenuClick}
-        className="lg:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+        className="lg:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-[4px]"
         aria-label="Open menu"
       >
         <Menu className="w-6 h-6" />
@@ -101,16 +101,13 @@ export function Header({ onMenuClick }: HeaderProps) {
 
       <div className="flex-1" />
 
+      {/* User avatar + info */}
       <div className="flex items-center gap-3">
         <Avatar className="w-10 h-10">
           {isLoading ? (
-            <AvatarFallback className="animate-pulse bg-gray-200">
-              ...
-            </AvatarFallback>
+            <AvatarFallback className="animate-pulse bg-gray-200">...</AvatarFallback>
           ) : isError ? (
-            <AvatarFallback className="bg-red-100 text-red-600">
-              Error
-            </AvatarFallback>
+            <AvatarFallback className="bg-red-100 text-red-600">!</AvatarFallback>
           ) : (
             <>
               <AvatarImage src={user?.profileImage} alt={fullName} />
@@ -127,16 +124,12 @@ export function Header({ onMenuClick }: HeaderProps) {
             </>
           ) : isError ? (
             <>
-              <div className="text-sm font-medium text-red-600">
-                Failed to load
-              </div>
+              <div className="text-sm font-medium text-red-600">Failed to load</div>
               <div className="text-xs text-red-500">Try again later</div>
             </>
           ) : (
             <>
-              <div className="text-sm font-medium text-gray-900">
-                {fullName}
-              </div>
+              <div className="text-sm font-medium text-gray-900">{fullName}</div>
               <div className="text-xs text-gray-500">{user?.email}</div>
             </>
           )}

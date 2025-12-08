@@ -63,8 +63,8 @@ export function PropertyListingSkeleton() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="h-12 bg-gray-200 rounded-lg animate-pulse" />
-                <div className="h-12 bg-gray-200 rounded-lg animate-pulse" />
+                <div className="h-12 bg-gray-200 rounded-[4px] animate-pulse" />
+                <div className="h-12 bg-gray-200 rounded-[4px] animate-pulse" />
               </div>
             </div>
           </div>
@@ -79,7 +79,7 @@ export function PropertyListingSkeleton() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="relative rounded-lg overflow-hidden">
+            <div key={i} className="relative rounded-[4px] overflow-hidden">
               <div className="w-full h-[120px] sm:h-[140px] md:h-[157px] bg-gray-200 animate-pulse rounded-[8px]" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-12 h-12 bg-white/70 rounded-full animate-pulse" />

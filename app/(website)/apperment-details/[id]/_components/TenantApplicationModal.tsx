@@ -670,7 +670,7 @@ export function TenantApplicationModal({
 
             {/* Voucher Info */}
             {hasVoucher === "yes" && (
-              <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+              <div className="space-y-4 p-4 bg-gray-50 rounded-[4px]">
                 <h3 className="text-base font-semibold text-[#131313]">
                   Voucher Information
                 </h3>

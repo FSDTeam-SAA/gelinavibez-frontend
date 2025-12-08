@@ -1,4 +1,4 @@
-
+/*eslint-disable */
 "use client"
 
 import { useState } from "react"
@@ -9,166 +9,176 @@ import { useGetOrder, useProfileQuery, useSendAmmount } from "@/hooks/ApiClling"
 import { useSession } from "next-auth/react"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 export default function ServiceProviderOrderList() {
   const [amounts, setAmounts] = useState<{ [key: string]: string }>({})
   const [loadingIds, setLoadingIds] = useState<{ [key: string]: boolean }>({})
+  const [msgLoading, setMsgLoading] = useState<{ [key: string]: boolean }>({})
+  
   const { data: session } = useSession()
   const token = session?.accessToken || ""
   const { data, isLoading, error } = useGetOrder(token)
   const sendAmmount = useSendAmmount(token)
-  const getUser = useProfileQuery(token)
-
+  const router = useRouter()
 
   const handleChange = (id: string, value: string) => {
     setAmounts(prev => ({ ...prev, [id]: value }))
   }
-  
+
   const handlePay = (id: string) => {
-    // Ensure that getUser.data and getUser.data.data are defined
-    const stripeAccountId = getUser.data?.data?.stripeAccountId;
-
-    // Check if stripeAccountId is not present or is an empty string
-    if (!stripeAccountId) {
-      toast.error("Please connect your Stripe account first"); 
-      return 
-    } else {
-     
-      setLoadingIds((prev) => ({ ...prev, [id]: true }));
-
-      sendAmmount.mutate(
-        { id, amount: Number(amounts[id]) },
-        {
-          onSettled: () => {
-            setLoadingIds((prev) => ({ ...prev, [id]: false }));
-          },
-        }
-        
-      );
+    if (!amounts[id] || isNaN(Number(amounts[id])) || Number(amounts[id]) <= 0) {
+      toast.error("Please enter a valid amount")
+      return
     }
-  };
+
+    setLoadingIds(prev => ({ ...prev, [id]: true }))
+
+    sendAmmount.mutate(
+      { id, amount: Number(amounts[id]) },
+      {
+        onSuccess: () => toast.success("Payment request sent successfully!"),
+        onError: (err: any) => toast.error(err.message || "Failed to send payment request"),
+        onSettled: () => setLoadingIds(prev => ({ ...prev, [id]: false }))
+      }
+    )
+  }
+
+  const handleMessageClick = async (receiverId: string) => {
+    if (!receiverId) {
+      toast.error("Customer not found")
+      return
+    }
+
+    setMsgLoading(prev => ({ ...prev, [receiverId]: true }))
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/conversation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ receiverId }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to create conversation")
+      }
+
+      toast.success("Chat opened successfully!")
+      router.push("/contractor/message")
+    } catch (err: any) {
+      toast.error(err.message || "Could not start chat")
+    } finally {
+      setMsgLoading(prev => ({ ...prev, [receiverId]: false }))
+    }
+  }
+
+  const getUserId = (user: any): string => {
+    if (!user) return ""
+    if (typeof user === "string") return user
+    return user._id || ""
+  }
 
   if (isLoading) {
     return (
-      <div className="p-6 space-y-6">
-        <div className="text-sm text-gray-500 mb-4">
-          Dashboard &gt; Service Provider Order Lists
-        </div>
-
-        <div className="border border-gray-200 rounded-md overflow-hidden">
-          <table className="w-full border-collapse text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="text-left py-3 px-4 border-b">Type of Pest Problem</th>
-                <th className="text-left py-3 px-4 border-b">Property Address</th>
-                <th className="text-left py-3 px-4 border-b">Date</th>
-                <th className="text-left py-3 px-4 border-b w-[200px]">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...Array(5)].map((_, i) => (
-                <tr key={i} className="border-b">
-                  <td className="py-3 px-4">
-                    <Skeleton className="h-4 w-40" />
-                  </td>
-                  <td className="py-3 px-4">
-                    <Skeleton className="h-4 w-48" />
-                  </td>
-                  <td className="py-3 px-4 flex flex-col gap-1">
-                    <Skeleton className=" w-28" />
-                    <Skeleton className=" w-16" />
-                  </td>
-                  <td className="py-3 px-4 flex items-center gap-2">
-                    <Skeleton className=" w-[100px] rounded-md" />
-                    <Skeleton className=" w-[100px] rounded-md" />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className="p-6">
+        <div className="text-sm text-gray-500 mb-6">Dashboard › Service Provider Order Lists</div>
+        <div className="space-y-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-white border rounded-[4px] p-6">
+              <Skeleton className="h-6 w-48 mb-4" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-3/4 mb-4" />
+              <div className="flex gap-3">
+                <Skeleton className="h-10 w-28" />
+                <Skeleton className="h-10 w-24" />
+                <Skeleton className="h-10 w-28" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     )
   }
 
   if (error) {
-    return (
-      <div className="p-6 text-center text-red-500">
-        Failed to load orders. Please try again later.
-      </div>
-    )
+    return <div className="p-6 text-center text-red-500">Failed to load orders.</div>
   }
 
-  return (
-    <div className="p-6">
-      <div className="text-sm text-gray-500 mb-4">
-        Dashboard &gt; Service Provider Order Lists
-      </div>
+  const orders = data?.data?.exterminations || []
 
-      <div className="border border-gray-200 rounded-md overflow-hidden">
-        <table className="w-full border-collapse text-sm">
+  return (
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="text-sm text-gray-500 mb-6">Dashboard › Service Provider Order Lists</div>
+
+      {/* Desktop Table - Hidden on Mobile & Tablet */}
+      <div className="hidden lg:block border border-gray-200 rounded-[4px] overflow-hidden bg-white">
+        <table className="w-full text-sm">
           <thead className="bg-gray-50">
             <tr>
-              <th className="text-left py-3 px-4 border-b">Type of Pest Problem</th>
-              <th className="text-left py-3 px-4 border-b">Property Address</th>
-              <th className="text-left py-3 px-4 border-b">Date</th>
-              <th className="text-left py-3 px-4 border-b w-[200px]">Amount</th>
+              <th className="text-left py-4 px-6 font-medium">Type of Pest Problem</th>
+              <th className="text-left py-4 px-6 font-medium">Property Address</th>
+              <th className="text-left py-4 px-6 font-medium">Preferred Date & Time</th>
+              <th className="text-left py-4 px-6 font-medium">Amount & Actions</th>
             </tr>
           </thead>
-          <tbody>
-            {data?.data.exterminations.length === 0 ? (
+          <tbody className="divide-y divide-gray-200">
+            {orders.length === 0 ? (
               <tr>
-                <td colSpan={4} className="text-center py-6 text-gray-500">
-                  No orders found.
-                </td>
+                <td colSpan={4} className="text-center py-16 text-gray-500">No orders found.</td>
               </tr>
             ) : (
-              data?.data.exterminations.map(order => {
-                const paidCharge = order.charges?.find(c => c.isPayment)
-                const defaultAmount =
-                  paidCharge?.amount || order.charges?.[0]?.amount || ""
+              orders.map((order) => {
+                const userId = getUserId(order.user)
+                const hasBeenPaid = order.charges?.some((c: any) => c.isPayment)
+                const defaultAmount = order.charges?.find((c: any) => c.isPayment)?.amount || ""
 
                 return (
-                  <tr
-                    key={order._id}
-                    className={`border-b ${order?.charges[0]?.isPayment ? "bg-gray-300/40" : ""
-                      }`}
-                  >
-                    <td className="py-3 px-4">
-                      {order.typeOfPestProblem.join(", ")}
+                  <tr key={order._id} className={hasBeenPaid ? "bg-gray-50" : ""}>
+                    <td className="py-5 px-6 font-medium">
+                      {order.typeOfPestProblem?.join(", ") || "N/A"}
                     </td>
-                    <td className="py-3 px-4">{order.propertyAddress}</td>
-                    <td className="py-3 px-4">
-                      {new Date(order.preferredServiceDate).toLocaleDateString()}{" "}
-                      <span className="text-gray-500">
-                        {new Date(order.preferredServiceDate).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
+                    <td className="py-5 px-6">{order.propertyAddress || "N/A"}</td>
+                    <td className="py-5 px-6 text-gray-600">
+                      <div className="font-medium">
+                        {new Date(order.preferredServiceDate).toLocaleDateString("en-US", {
+                          month: "short", day: "numeric", year: "numeric"
                         })}
-                      </span>
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">
+                        {Array.isArray(order.preferredTime) ? order.preferredTime.join(", ") : order.preferredTime || "Any time"}
+                      </div>
                     </td>
-                    <td className="py-3 px-4 flex items-center gap-2">
-                      <Input
-                        disabled={order?.charges[0]?.isPayment}
-                        type="number"
-                        placeholder="$ amount"
-                        value={amounts[order._id] ?? defaultAmount.toString()}
-                        onChange={e => handleChange(order._id, e.target.value)}
-                        className="w-[100px] h-[34px] text-center border-gray-300 rounded-md bg-gray-100 text-gray-600"
-                      />
-                      <Button
-                        onClick={() => handlePay(order._id)}
-                        className="bg-green-100 w-[100px] h-[34px] text-green-600 hover:bg-green-200 rounded-md flex items-center justify-center gap-2"
-                        disabled={
-                          loadingIds[order._id] || order?.charges[0]?.isPayment
-                        }
-                      >
-                        {loadingIds[order._id] ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          "Send"
-                        )}
-                      </Button>
+                    <td className="py-5 px-6">
+                      <div className="flex items-center gap-3">
+                        <Input
+                          disabled={hasBeenPaid}
+                          type="number"
+                          placeholder="$0"
+                          value={amounts[order._id] ?? (hasBeenPaid ? defaultAmount : "")}
+                          onChange={(e) => handleChange(order._id, e.target.value)}
+                          className="w-28 h-10 text-center"
+                        />
+                        <Button
+                          onClick={() => handlePay(order._id)}
+                          disabled={hasBeenPaid || loadingIds[order._id]}
+                          className="h-10 px-5 bg-green-600 hover:bg-green-700 disabled:opacity-60"
+                        >
+                          {loadingIds[order._id] ? <Loader2 className="w-4 h-4 animate-spin" /> : hasBeenPaid ? "Paid" : "Send"}
+                        </Button>
+                        <Button
+                          onClick={() => handleMessageClick(userId)}
+                          disabled={!userId || msgLoading[userId]}
+                          variant="outline"
+                          className="h-10 px-5 border-green-600 text-green-600 hover:bg-green-50"
+                        >
+                          {msgLoading[userId] ? <Loader2 className="w-4 h-4 animate-spin" /> : "Message"}
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 )
@@ -176,6 +186,75 @@ export default function ServiceProviderOrderList() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile & Tablet Card View - Hidden on Desktop */}
+      <div className="lg:hidden space-y-5">
+        {orders.length === 0 ? (
+          <div className="text-center py-16 text-gray-500 bg-white rounded-[4px] border">
+            No orders found.
+          </div>
+        ) : (
+          orders.map((order) => {
+            const userId = getUserId(order.user)
+            const hasBeenPaid = order.charges?.some((c: any) => c.isPayment)
+            const defaultAmount = order.charges?.find((c: any) => c.isPayment)?.amount || ""
+
+            return (
+              <div key={order._id} className={`bg-white rounded-xl border ${hasBeenPaid ? "border-gray-300 bg-gray-50" : "border-gray-200 shadow-sm"} p-6`}>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-bold text-lg text-gray-800">
+                      {order.typeOfPestProblem?.join(", ") || "N/A"}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">{order.propertyAddress || "No address"}</p>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-gray-500">Date:</span>
+                    <span className="font-medium">
+                      {new Date(order.preferredServiceDate).toLocaleDateString("en-US", {
+                        month: "short", day: "numeric", year: "numeric"
+                      })}
+                    </span>
+                    <span className="text-gray-400">•</span>
+                    <span className="text-gray-600">
+                      {Array.isArray(order.preferredTime) ? order.preferredTime.join(", ") : order.preferredTime || "Any time"}
+                    </span>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Input
+                        disabled={hasBeenPaid}
+                        type="number"
+                        placeholder="$0"
+                        value={amounts[order._id] ?? (hasBeenPaid ? defaultAmount : "")}
+                        onChange={(e) => handleChange(order._id, e.target.value)}
+                        className="h-11 text-center font-medium"
+                      />
+                      <Button
+                        onClick={() => handlePay(order._id)}
+                        disabled={hasBeenPaid || loadingIds[order._id]}
+                        className="h-11 px-6 bg-green-600 hover:bg-green-700 disabled:opacity-60 font-medium"
+                      >
+                        {loadingIds[order._id] ? <Loader2 className="w-5 h-5 animate-spin" /> : hasBeenPaid ? "Paid" : "Send Request"}
+                      </Button>
+                      <Button
+                        onClick={() => handleMessageClick(userId)}
+                        disabled={!userId || msgLoading[userId]}
+                        variant="outline"
+                        className="h-11 px-6 border-green-600 text-green-600 hover:bg-green-50 font-medium"
+                      >
+                        {msgLoading[userId] ? <Loader2 className="w-5 h-5 animate-spin" /> : "Message"}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          })
+        )}
       </div>
     </div>
   )

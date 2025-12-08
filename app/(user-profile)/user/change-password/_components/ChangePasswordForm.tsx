@@ -97,7 +97,7 @@ export function ChangePasswordForm() {
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-lg p-6 md:p-8 w-full h-full"
+        className="bg-white rounded-[4px] p-6 md:p-8 w-full h-full"
       >
         <h2 className="text-xl font-semibold text-[#0F3D61] mb-6">
           Change Password
