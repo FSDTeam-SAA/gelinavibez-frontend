@@ -1,7 +1,4 @@
-
-
 "use client";
-
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -267,6 +264,9 @@ export default function PropertyListing() {
                   onClick={handleApplyNow}
                 >
                   Apply Now
+                </Button>
+                <Button className="w-full bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[48px] rounded-[8px] text-[#F5F5F5]">
+                  Message
                 </Button>
               </div>
             </div>
