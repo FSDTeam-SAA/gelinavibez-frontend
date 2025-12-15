@@ -360,7 +360,7 @@ export default function ServiceProviderOrderList() {
       }
 
       toast.success("Chat opened successfully")
-      router.push("/contractor/message")
+      router.push("/contractor/message?conversationId=" + result.data._id)
     } catch (err: any) {
       toast.error(err?.message || "Could not start chat")
     } finally {

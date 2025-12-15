@@ -1,6 +1,11 @@
+
+
+
+
 "use client";
+
 import { useState, useEffect, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MapPin, Play } from "lucide-react";
@@ -51,12 +56,37 @@ type ApartmentDetailsResponse = {
   data: ApartmentDetails;
 };
 
-// === Fetch Function ===
+// === Fetch Apartment ===
 const fetchApartment = async (id: string): Promise<ApartmentDetailsResponse> => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/apartment/${id}`);
   if (!response.ok) {
     throw new Error("Failed to fetch apartment data");
   }
+  return response.json();
+};
+
+// === Create Conversation API ===
+const createConversation = async ({
+  receiverId,
+  accessToken,
+}: {
+  receiverId: string;
+  accessToken: string;
+}) => {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/conversation`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ receiverId }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to start conversation");
+  }
+
   return response.json();
 };
 
@@ -66,19 +96,63 @@ export default function PropertyListing() {
   const router = useRouter();
 
   const { data: session, status } = useSession();
-  const ids = session?.user?.userId as string | undefined;
+  const userId = session?.user?.userId as string | undefined;
   const userRole = session?.user?.role as string | undefined;
+  const accessToken = session?.accessToken as string | undefined; // Adjust if your token has a different name
+
   const { data, isLoading, error } = useQuery<ApartmentDetailsResponse>({
     queryKey: ["apartment", id],
     queryFn: () => fetchApartment(id),
   });
+
+  // Mutation for starting conversation
+  // const createConversationMutation = useMutation({
+  //   mutationFn: createConversation,
+  //   onSuccess: (response) => {
+  //     // Adjust based on your actual API response structure
+  //     // Common patterns: response.data._id, response.data.conversationId, etc.
+  //     const conversationId = response.data?._id || response.data?.id || response.data?.conversation?._id;
+
+  //     toast.success("Conversation started!");
+
+  //     if (conversationId) {
+  //       router.push(`/user/message?conversationId=${conversationId}`);
+  //     } else {
+  //       router.push("/user/message"); // Fallback to messages list page
+  //     }
+  //   },
+  //   onError: (err: any) => {
+  //     toast.error(err.message || "Failed to start conversation. Please try again.");
+  //   },
+  // });
+
+  const queryClient = useQueryClient();
+
+const createConversationMutation = useMutation({
+  mutationFn: createConversation,
+  onSuccess: (response) => {
+    queryClient.invalidateQueries({ queryKey: ["conversations"] });
+
+    const conversationId =
+      response.data?._id ||
+      response.data?.conversation?._id;
+
+    toast.success("Conversation started");
+
+    router.push(`/user/message?conversationId=${conversationId}`);
+  },
+  onError: (err) => {
+    toast.error(err.message || "Failed to start conversation");
+  },
+});
+
 
   const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
   const [selectedGalleryMedia, setSelectedGalleryMedia] = useState<MediaItem | null>(null);
   const [isCallRequestOpen, setIsCallRequestOpen] = useState(false);
   const [isTenantApplicationOpen, setIsTenantApplicationOpen] = useState(false);
 
-  // useMemo for images
+  // Images memo
   const imageItems: MediaItem[] = useMemo(() => {
     return (
       data?.data.images.map((src, index) => ({
@@ -91,7 +165,7 @@ export default function PropertyListing() {
     );
   }, [data?.data.images]);
 
-  // useMemo for videos
+  // Videos memo
   const galleryItems: MediaItem[] = useMemo(() => {
     return (
       data?.data.videos.map((src, index) => ({
@@ -104,7 +178,7 @@ export default function PropertyListing() {
     );
   }, [data?.data.videos, data?.data.images]);
 
-  // Initialize selected media safely
+  // Set default media
   useEffect(() => {
     if (!selectedMedia && imageItems.length > 0) {
       setSelectedMedia(imageItems[0]);
@@ -116,25 +190,23 @@ export default function PropertyListing() {
 
   const availableDate = data?.data
     ? new Date(data.data.availableFrom.time).toLocaleDateString("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    })
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      })
     : "";
 
-  // === Handle Apply Now Click ===
+  // Handle Apply Now
   const handleApplyNow = () => {
-    // 1. Not logged in → redirect to login
     if (status !== "authenticated" || !userRole) {
       router.push("/login");
       return;
     }
 
-    // 2. Contractor or Admin → show toast
     if (userRole === "contractor" || userRole === "admin") {
       toast.error("Only users can apply.", {
         duration: 4000,
@@ -143,10 +215,38 @@ export default function PropertyListing() {
       return;
     }
 
-    // 3. Tenant (role = user) → open modal
     if (userRole === "user") {
       setIsTenantApplicationOpen(true);
     }
+  };
+
+  // Handle Message Button Click
+  const handleMessage = () => {
+    if (status !== "authenticated") {
+      router.push("/login");
+      return;
+    }
+
+    if (!accessToken) {
+      toast.error("Authentication error. Please log in again.");
+      router.push("/login");
+      return;
+    }
+
+    if (!data?.data?.ownerId) {
+      toast.error("Owner information not available.");
+      return;
+    }
+
+    if (userId === data.data.ownerId) {
+      toast.error("You cannot message yourself.");
+      return;
+    }
+
+    createConversationMutation.mutate({
+      receiverId: data.data.ownerId,
+      accessToken,
+    });
   };
 
   if (isLoading) {
@@ -179,8 +279,9 @@ export default function PropertyListing() {
                 <button
                   key={item.id}
                   onClick={() => setSelectedMedia(item)}
-                  className={`relative flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 lg:w-full lg:h-[55px] rounded-[8px] overflow-hidden border-2 transition-all hover:border-[#0F3D61] ${selectedMedia?.id === item.id ? "border-[#0F3D61]" : "border-border"
-                    }`}
+                  className={`relative flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 lg:w-full lg:h-[55px] rounded-[8px] overflow-hidden border-2 transition-all hover:border-[#0F3D61] ${
+                    selectedMedia?.id === item.id ? "border-[#0F3D61]" : "border-border"
+                  }`}
                 >
                   <Image
                     src={item.thumbnail || "/placeholder.svg"}
@@ -219,7 +320,7 @@ export default function PropertyListing() {
 
             <div className="flex items-center gap-1 text-base text-[#68706A] mb-4">
               <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#A60000]" />
-              <span className="">
+              <span>
                 {`${apartment.address.street}, ${apartment.address.city} ${apartment.address.state} ${apartment.address.zipCode} | `}
                 <span className="text-[#131313]">{availableDate}</span> | {apartment.bedrooms} Bed With{" "}
                 {apartment.bathrooms} Bath
@@ -249,7 +350,7 @@ export default function PropertyListing() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Button
                   variant="outline"
-                  disabled={ids == apartment.ownerId ? true : false}
+                  disabled={userId === apartment.ownerId}
                   size="lg"
                   className="w-full h-[48px] rounded-[8px] text-[#0F3D61] bg-transparent"
                   onClick={() => setIsCallRequestOpen(true)}
@@ -259,14 +360,20 @@ export default function PropertyListing() {
 
                 <Button
                   size="lg"
-                  disabled={ids == apartment.ownerId ? true : false}
+                  disabled={userId === apartment.ownerId}
                   className="w-full bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[48px] rounded-[8px] text-[#F5F5F5]"
                   onClick={handleApplyNow}
                 >
                   Apply Now
                 </Button>
-                <Button className="w-full bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[48px] rounded-[8px] text-[#F5F5F5]">
-                  Message
+
+                <Button
+                  size="lg"
+                  disabled={userId === apartment.ownerId || createConversationMutation.isPending}
+                  className="w-full sm:col-span-2 bg-[#0F3D61] hover:bg-[#0F3D61]/90 h-[48px] rounded-[8px] text-[#F5F5F5]"
+                  onClick={handleMessage}
+                >
+                  {createConversationMutation.isPending ? "Starting Chat..." : "Message"}
                 </Button>
               </div>
             </div>
@@ -282,6 +389,9 @@ export default function PropertyListing() {
               <video
                 key={selectedGalleryMedia.id}
                 autoPlay
+                muted
+                loop
+                playsInline
                 className="w-full h-full object-cover"
                 poster={selectedGalleryMedia.thumbnail}
               >
@@ -306,7 +416,7 @@ export default function PropertyListing() {
                 height={1000}
                 className="w-full h-[120px] sm:h-[140px] md:h-[157px] object-cover rounded-[8px]"
               />
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                 <Play className="w-8 h-8 text-white fill-white" />
               </div>
             </button>
