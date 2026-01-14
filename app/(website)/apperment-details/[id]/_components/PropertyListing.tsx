@@ -207,13 +207,14 @@ const createConversationMutation = useMutation({
       return;
     }
 
-    if (userRole === "contractor" || userRole === "admin") {
+    if (userRole === "contractor" || userRole === "admin" || userRole === "exterminator" || userRole === "broker" || userRole === "superadmin" || userRole === "landlord") {
       toast.error("Only users can apply.", {
         duration: 4000,
         style: { background: "#fef", color: "#b91c1c" },
       });
       return;
     }
+
 
     if (userRole === "user") {
       setIsTenantApplicationOpen(true);

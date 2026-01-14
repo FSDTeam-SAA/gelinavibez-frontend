@@ -1,10 +1,11 @@
-import { ContractorFetchResponse } from "@/types/orderDataType"
+
 
 export async function getOrder(
     token: string,
-): Promise<ContractorFetchResponse> {
+    //eslint-disable-next-line 
+): Promise<any> { 
     const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/contractor/my-assign-extermination`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/contractor/my-assign-contractor`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -13,17 +14,10 @@ export async function getOrder(
         }
     )
     if (!response.ok) {
-        let errorMessage = "Failed to get contractor"
-        try {
-            const errorData = await response.json()
-            errorMessage = errorData.message || errorMessage
-        } catch {
-        }
-        throw new Error(errorMessage)
+        throw new Error("Failed to fetch contractor services");
     }
 
-    const resData: ContractorFetchResponse = await response.json()
-
+    const resData = await response.json()
     return resData
 }
 

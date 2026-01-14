@@ -19,11 +19,24 @@ export default withAuth(
       return NextResponse.redirect(new URL("/", req.url));
     }
 
+     // Exterminator/Service Provider dashboard protection
+    if (path.startsWith("/exterminator") && role !== "exterminator") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+       // broker/Service Provider dashboard protection
+    if (path.startsWith("/broker") && role !== "broker") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+
     // Admin dashboard protection 
     if (path.startsWith("/admin") && role !== "admin") {
       return NextResponse.redirect(new URL("/", req.url));
     }
 
+        // landlord dashboard protection
+    if (path.startsWith("/landlord") && role !== "landlord") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
     return NextResponse.next();
   },
   {
@@ -39,5 +52,8 @@ export const config = {
     "/user/:path*",
     "/contractor/:path*",
     "/admin/:path*",
+    "/exterminator/:path*",
+    "/broker/:path*",
+    "/landlord/:path*",
   ],
 };

@@ -131,7 +131,7 @@ export function ApartmentSearch() {
       const delay = setTimeout(() => triggerSearch(searchQuery, location), 800);
       return () => clearTimeout(delay);
     }
-  }, [searchQuery, location]);
+  }, [searchQuery, location,]);
 
   // Manual search (button)
   const handleSearch = () => {

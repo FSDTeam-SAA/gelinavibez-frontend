@@ -24,7 +24,7 @@ interface UserProfile {
   lastName: string;
   email: string;
   password: string;
-  role: "user" | "contractor" | "admin" | "superadmin";
+  role: "user" | "contractor" | "admin" | "superadmin" | "exterminator" | "broker" | "landlord";
   profileImage: string;
   verified: boolean;
   createdAt: string;
@@ -45,10 +45,10 @@ interface ApiResponse<T = unknown> {
 }
 
 /* ------------ STRIPE CREATE ACCOUNT ---------------------------------------- */
-interface StripeCreateResponse {
-  accountId: string;
-  url: string;
-}
+// interface StripeCreateResponse {
+//   accountId: string;
+//   url: string;
+// }
 
 /* ------------ STRIPE DASHBOARD LINK ---------------------------------------- */
 interface StripeDashboardResponse {
@@ -91,40 +91,40 @@ export function Navbar() {
   const hasStripe = !!userProfile?.data?.stripeAccountId;
 
   /* --------------------- CREATE STRIPE ACCOUNT --------------------- */
-  const createStripeAccount = async (): Promise<
-    ApiResponse<StripeCreateResponse>
-  > => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/contractor/create-stripe-account`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      }
-    );
+  // const createStripeAccount = async (): Promise<
+  //   ApiResponse<StripeCreateResponse>
+  // > => {
+  //   const res = await fetch(
+  //     `${process.env.NEXT_PUBLIC_API_BASE_URL}/contractor/create-stripe-account`,
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       credentials: "include",
+  //     }
+  //   );
 
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.message ?? "Failed to create Stripe account");
-    }
-    return res.json();
-  };
+  //   if (!res.ok) {
+  //     const err = await res.json().catch(() => ({}));
+  //     throw new Error(err.message ?? "Failed to create Stripe account");
+  //   }
+  //   return res.json();
+  // };
 
-  const { mutate: startStripeOnboarding, isPending: stripeLoading } =
-    useMutation({
-      mutationFn: createStripeAccount,
-      onSuccess: (response) => {
-        const url = response.data.url;
-        window.open(url, "_blank", "noopener,noreferrer");
-        toast.success("Stripe onboarding link opened");
-      },
-      onError: (error: Error) => {
-        toast.error(error.message);
-      },
-    });
+  // const { mutate: startStripeOnboarding, isPending: stripeLoading } =
+  //   useMutation({
+  //     mutationFn: createStripeAccount,
+  //     onSuccess: (response) => {
+  //       const url = response.data.url;
+  //       window.open(url, "_blank", "noopener,noreferrer");
+  //       toast.success("Stripe onboarding link opened");
+  //     },
+  //     onError: (error: Error) => {
+  //       toast.error(error.message);
+  //     },
+  //   });
 
   /* --------------------- GET STRIPE DASHBOARD LINK --------------------- */
   const getStripeDashboardLink = async (): Promise<
@@ -212,7 +212,7 @@ export function Navbar() {
 
     switch (role) {
       case "user":
-        router.push("/user/property");
+        router.push("/user/applied-apartments");
         break;
       case "contractor":
         router.push("/contractor/order-list");
@@ -318,7 +318,7 @@ export function Navbar() {
                       </DropdownMenuItem>
 
                       {/* CREATE ACCOUNT (if no stripe) */}
-                      {!hasStripe && (
+                      {/* {!hasStripe && (
                         <DropdownMenuItem
                           onClick={() => startStripeOnboarding()}
                           disabled={stripeLoading}
@@ -326,9 +326,78 @@ export function Navbar() {
                         >
                           {stripeLoading ? "Creating…" : "Add Stripe Account"}
                         </DropdownMenuItem>
-                      )}
+                      )} */}
 
                       {/* DASHBOARD (if stripe exists) */}
+                      {hasStripe && (
+                        <DropdownMenuItem
+                          onClick={() => openStripeDashboard()}
+                          disabled={dashboardLoading}
+                          className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md flex items-center justify-between"
+                        >
+                          {dashboardLoading ? "Opening…" : "Stripe Dashboard"}
+                        </DropdownMenuItem>
+                      )}
+                    </>
+                  )}
+
+                   {/* examminitor only */}
+                  {role === "exterminator" && (
+                    <>
+                      <DropdownMenuItem
+                        onClick={() => router.push("/exterminator/order-list")}
+                        className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
+                      >
+                        Exterminator Profile
+                      </DropdownMenuItem>
+
+                    
+                      {hasStripe && (
+                        <DropdownMenuItem
+                          onClick={() => openStripeDashboard()}
+                          disabled={dashboardLoading}
+                          className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md flex items-center justify-between"
+                        >
+                          {dashboardLoading ? "Opening…" : "Stripe Dashboard"}
+                        </DropdownMenuItem>
+                      )}
+                    </>
+                  )}
+
+                     {/* Broker only */}
+                  {role === "broker" && (
+                    <>
+                      <DropdownMenuItem
+                        onClick={() => router.push("/broker/my-apartment")}
+                        className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
+                      >
+                        Broker Profile
+                      </DropdownMenuItem>
+
+                    
+                      {hasStripe && (
+                        <DropdownMenuItem
+                          onClick={() => openStripeDashboard()}
+                          disabled={dashboardLoading}
+                          className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md flex items-center justify-between"
+                        >
+                          {dashboardLoading ? "Opening…" : "Stripe Dashboard"}
+                        </DropdownMenuItem>
+                      )}
+                    </>
+                  )}
+
+                      {/* landlord only */}
+                  {role === "landlord" && (
+                    <>
+                      <DropdownMenuItem
+                        onClick={() => router.push("/landlord/my-apartment")}
+                        className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
+                      >
+                        Landlord Profile
+                      </DropdownMenuItem>
+
+                    
                       {hasStripe && (
                         <DropdownMenuItem
                           onClick={() => openStripeDashboard()}
@@ -345,20 +414,20 @@ export function Navbar() {
                   {role === "user" && (
                     <>
                       <DropdownMenuItem
-                        onClick={() => router.push("/user/property")}
+                        onClick={() => router.push("/user/applied-apartments")}
                         className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
                       >
                         View Profile
                       </DropdownMenuItem>
 
                       {/* APPLY AS ADMIN - ✅ updated */}
-                      <DropdownMenuItem
+                      {/* <DropdownMenuItem
                         onClick={handleApplyAdmin}
                         disabled={adminRequestLoading}
                         className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md flex items-center justify-between"
                       >
                         {adminRequestLoading ? "Sending…" : "Apply as Admin"}
-                      </DropdownMenuItem>
+                      </DropdownMenuItem> */}
                     </>
                   )}
 
@@ -488,7 +557,7 @@ export function Navbar() {
                   {/* Stripe actions for contractor (mobile) */}
                   {role === "contractor" && (
                     <>
-                      {!hasStripe && (
+                      {/* {!hasStripe && (
                         <button
                           onClick={() => {
                             startStripeOnboarding();
@@ -499,7 +568,7 @@ export function Navbar() {
                         >
                           {stripeLoading ? "Creating…" : "Add Stripe Account"}
                         </button>
-                      )}
+                      )} */}
 
                       {hasStripe && (
                         <button

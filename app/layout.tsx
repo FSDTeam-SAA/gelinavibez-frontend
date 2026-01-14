@@ -55,7 +55,7 @@ export default function RootLayout({
               background: "#0F3D61",
               color: "white",
             },
-          }}
+          }} 
         />
         {children}
         </SessionProvider>
