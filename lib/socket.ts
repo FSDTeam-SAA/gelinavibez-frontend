@@ -19,7 +19,7 @@ export const connectSocket = (userId: string) => {
   socket.on("connect", () => {
     console.log("Socket connected:", socket?.id);
 
-    // এইটাই তোমার ব্যাকেন্ডে "addUser" event ট্রিগার করে
+    // Emit the user ID to the server
     socket?.emit("addUser", userId);
   });
 
@@ -31,7 +31,7 @@ export const connectSocket = (userId: string) => {
     console.error("Connection error:", err.message);
   });
 
-  return socket;
+  return socket;  
 };
 
 // Optional: Disconnect when logout

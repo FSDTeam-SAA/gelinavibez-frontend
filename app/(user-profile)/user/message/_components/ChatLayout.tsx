@@ -6,7 +6,7 @@
 
 import { useState } from 'react';
 import ChatSidebar from './ChatSidebar';
-import ChatWindow from '@/app/(service-provider)/contractor/message/_components/ChatWindow';
+import ChatWindow from './ChatWindow';
 
 
 export type SelectedChatType = {

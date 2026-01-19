@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Building2, Settings, LogOut, X,  MessageSquare } from "lucide-react";
+import { Building2, Settings, LogOut, X,  MessageSquare, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import React from "react";
 import Image from "next/image";
@@ -13,6 +13,7 @@ import { signOut } from "next-auth/react";
 const navigation = [
   { name: "My Assigned Apartments", href: "/broker/my-apartment", icon: Building2 },
   { name: "Message", href: "/broker/message", icon: MessageSquare },
+  { name: "All Admins", href: "/broker/all-admin", icon: User },
   { name: "Settings", href: "/broker/broker-profile", icon: Settings },
 ];
 

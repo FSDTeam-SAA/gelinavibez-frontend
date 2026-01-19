@@ -1,3 +1,8 @@
+
+
+
+
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
@@ -25,7 +30,7 @@ async function updateExterminationCharge(
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ amount }),
+      body: JSON.stringify({ charges: amount }),
     }
   )
 
@@ -111,7 +116,7 @@ export default function MyAssignedExterminationServices() {
       if (!res.ok || !result.success) throw new Error(result.message || "Failed")
 
       toast.success("Opening chat...")
-      router.push(`/message?conversationId=${result.data._id}`)
+      router.push(`/exterminator/message?conversationId=${result.data._id}`)
       // Change path if needed: /contractor/message, /dashboard/messages etc.
     } catch (err: any) {
       toast.error(err?.message || "Could not start chat")
