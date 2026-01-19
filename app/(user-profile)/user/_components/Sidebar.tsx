@@ -159,7 +159,8 @@ const navigation = [
   { name: "Applied Apartments", href: "/user/applied-apartments", icon: EqualApproximately },
   { name: "Contractor Services Request", href: "/user/contactor-request", icon: Building2 },
   { name: "Extermination Services Request", href: "/user/extermination-request", icon: Building2 },
-  { name: "Payment", href: "/user/payment", icon: CreditCard },
+  { name: "Contactor Payment", href: "/user/payment", icon: CreditCard },
+  { name: "Extermination Payment", href: "/user/extermination-payment", icon: CreditCard },
   { name: "Message", href: "/user/message", icon: MessageSquare },
   { name: "Settings", href: "/user/profile", icon: Settings },
 ];

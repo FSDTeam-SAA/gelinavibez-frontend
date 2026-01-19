@@ -1,10 +1,10 @@
 import React from 'react'
-import { PaymentTable } from './_components/PaymentTable'
+import { ContractorChargesTable } from './_components/PaymentTable'
 
 const page = () => {
   return (
     <div>
-        <PaymentTable/>
+        <ContractorChargesTable/>
     </div>
   )
 }

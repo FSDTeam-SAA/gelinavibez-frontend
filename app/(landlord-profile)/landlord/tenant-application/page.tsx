@@ -87,6 +87,7 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-0">
       <div className="w-full">
+       
         <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h1 className="text-4xl font-extrabold text-[#0F3D61] tracking-tight">Tenant Applications</h1>
