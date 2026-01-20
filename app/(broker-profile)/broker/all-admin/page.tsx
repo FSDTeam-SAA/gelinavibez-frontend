@@ -4,6 +4,8 @@ import React from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
+import Image from 'next/image';
 
 // Types
 interface AdminUser {
@@ -82,7 +84,7 @@ export default function AdminListPage() {
   const { data, isLoading, isError, error } = useQuery<ApiResponse, Error>({
     queryKey: ['admins', 'all'],
     queryFn: () => fetchAllAdmins(token),
-    enabled: !!token && status === 'authenticated', // only run when we have token
+    enabled: !!token && status === 'authenticated', 
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
@@ -94,14 +96,13 @@ export default function AdminListPage() {
 
     },
     onError: (err) => {
-      console.error('Failed to create conversation:', err);
-      alert(err.message || 'Could not start chat. Please try again.');
+      toast.error(err.message || 'Could not start chat. Please try again.');
     },
   });
 
   const handleChatClick = (adminId: string) => {
     if (!token) {
-      alert('Please login to start a conversation');
+      toast.error('Please login to start a conversation');
       return;
     }
     createConvMutation.mutate(adminId);
@@ -132,7 +133,7 @@ export default function AdminListPage() {
 
   return (
     <div className="p-6 w-full mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Admin Users</h1>
+      <h1 className="text-2xl font-bold mb-6">ALL Admin</h1>
 
       {admins.length === 0 ? (
         <p className="text-gray-500 text-center py-10">No admin users found</p>
@@ -162,13 +163,13 @@ export default function AdminListPage() {
               {admins.map((admin) => (
                 <tr key={admin._id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <img
+                    <Image
                       src={admin.profileImage}
                       alt={`${admin.firstName} ${admin.lastName}`}
+                      width={1000}
+                      height={1000}
                       className="h-10 w-10 rounded-full object-cover border border-gray-200"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://via.placeholder.com/40?text=?';
-                      }}
+                   
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -195,11 +196,11 @@ export default function AdminListPage() {
                       onClick={() => handleChatClick(admin._id)}
                       disabled={createConvMutation.isPending}
                       className={`
-                        px-4 py-2 rounded-md text-white text-sm font-medium transition-colors
+                        px-4 py-2 rounded-[4px] text-white text-sm font-medium transition-colors
                         ${
                           createConvMutation.isPending
                             ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-indigo-600 hover:bg-indigo-700'
+                            : 'bg-green-600 hover:bg-green-700'
                         }
                       `}
                     >
