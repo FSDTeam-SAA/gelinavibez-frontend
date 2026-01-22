@@ -79,7 +79,7 @@ export function Sidebar({ isMobileMenuOpen = false, onClose }: SidebarProps) {
           <Link href="/">
             <Image
               src="/assets/logo.png"
-              width={200} // Fixed large width/height for optimization
+              width={200} 
               height={200}
               alt="logo"
               className="w-auto h-auto"

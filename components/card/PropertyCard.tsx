@@ -54,7 +54,7 @@ export function PropertyCard({
         {/* Title and Price */}
         <div className="flex flex-wrap items-center justify-between mb-2 gap-1 sm:gap-2">
           <h4 className="text-[#0F3D61] text-lg sm:text-xl md:text-2xl lg:text-[28px] font-bold">
-            {title}
+             {title?.length > 17? title.slice(0, 17) + "..." : title}
           </h4>
           <span className="text-[#766346] text-sm sm:text-base font-semibold whitespace-nowrap">
             {price}
