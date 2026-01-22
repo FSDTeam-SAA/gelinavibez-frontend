@@ -75,7 +75,7 @@ export default function AdminListPage() {
 
   const createConvMutation = useMutation({
     mutationFn: (receiverId: string) => createConversation(token, receiverId),
-    onSuccess: () => router.push('/broker/message'),
+    onSuccess: () => router.push('/user/message'),
     onError: (err) => toast.error(err.message || 'Could not start chat.'),
   });
 
