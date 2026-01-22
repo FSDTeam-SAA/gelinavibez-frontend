@@ -14,6 +14,7 @@ import { useProfileQuery } from "@/hooks/ApiClling";
 const navigation = [
   { name: "My Orders", href: "/exterminator/order-list", icon: Building2 },
   { name: "Message", href: "/exterminator/message", icon: MessageSquare },
+  { name: "All Admins", href: "/exterminator/admin", icon: MessageSquare },
   { name: "Settings", href: "/exterminator/examinator-profile", icon: Settings },
 ];
 
