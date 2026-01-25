@@ -138,7 +138,7 @@ const SubscribePlan = () => {
                 <CardContent className="flex flex-col gap-6 flex-1">
                   <div>
                     <div className="text-4xl font-bold">
-                      ${(plan.price / 100).toFixed(2)}
+                      ${(plan.price ).toFixed(2)}
                     </div>
                     <p className="text-white/70 text-sm">per {plan.type}</p>
                   </div>
