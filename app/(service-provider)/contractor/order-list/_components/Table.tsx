@@ -1,453 +1,4 @@
 
-
-
-
-
-
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// "use client"
-
-// import { useState } from "react"
-// import { useSession } from "next-auth/react"
-// import { useRouter } from "next/navigation"
-// import { Button } from "@/components/ui/button"
-// import { Input } from "@/components/ui/input"
-// import { Skeleton } from "@/components/ui/skeleton"
-// import { Loader2, MessageSquare, Send, Eye } from "lucide-react"
-// import { toast } from "sonner"
-// import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogTrigger,
-// } from "@/components/ui/dialog"
-// import Image from "next/image"
-
-// // ── API Function to update charge/price ───────────────────────────────
-// async function updateContractorCharge(
-//   token: string,
-//   orderId: string,
-//   amount: number
-// ) {
-//   const response = await fetch(
-//     `${process.env.NEXT_PUBLIC_API_BASE_URL}/contractor/charges/${orderId}`,
-//     {
-//       method: "PUT",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify({ amount }),
-//     }
-//   )
-
-//   const data = await response.json()
-
-//   if (!response.ok) {
-//     throw new Error(data.message || "Failed to update price")
-//   }
-
-//   return data
-// }
-
-// export default function ServiceProviderOrderList() {
-//   const { data: session, status } = useSession()
-//   const router = useRouter()
-//   const queryClient = useQueryClient()
-
-//   const token = session?.accessToken ?? ""
-
-//   const [amounts, setAmounts] = useState<Record<string, string>>({})
-//   const [loadingIds, setLoadingIds] = useState<Record<string, boolean>>({})
-//   const [msgLoading, setMsgLoading] = useState<Record<string, boolean>>({})
-
-//   // Fetch my assigned orders
-//   const { data, isLoading, error } = useQuery({
-//     queryKey: ["my-assigned-orders"],
-//     queryFn: async () => {
-//       const res = await fetch(
-//         `${process.env.NEXT_PUBLIC_API_BASE_URL}/contractor/my-assign-contractor`,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         }
-//       )
-//       if (!res.ok) throw new Error("Failed to load assigned orders")
-//       return res.json()
-//     },
-//     enabled: status === "authenticated" && !!token,
-//   })
-
-//   const orders = data?.data || []
-
-//   // Mutation for setting/updating price
-//   const setPriceMutation = useMutation({
-//     mutationFn: ({ orderId, amount }: { orderId: string; amount: number }) =>
-//       updateContractorCharge(token, orderId, amount),
-
-//     onMutate: ({ orderId }) => {
-//       setLoadingIds((prev) => ({ ...prev, [orderId]: true }))
-//     },
-
-//     onSuccess: (_, { orderId }) => {
-//       toast.success("Price updated successfully!")
-//       setAmounts((prev) => {
-//         const newAmounts = { ...prev }
-//         delete newAmounts[orderId]
-//         return newAmounts
-//       })
-//       queryClient.invalidateQueries({ queryKey: ["my-assigned-orders"] })
-//     },
-
-//     onError: (err: any) => {
-//       toast.error(err?.message || "Failed to update price")
-//     },
-
-//     onSettled: (_, __, { orderId }) => {
-//       setLoadingIds((prev) => ({ ...prev, [orderId]: false }))
-//     },
-//   })
-
-//   const handleMessageClick = async (receiverId?: string) => {
-//     if (!receiverId) return toast.error("User not found")
-
-//     setMsgLoading((prev) => ({ ...prev, [receiverId]: true }))
-
-//     try {
-//       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/conversation`, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${token}`,
-//         },
-//         body: JSON.stringify({ receiverId }),
-//       })
-
-//       const result = await res.json()
-//       if (!res.ok || !result.success) throw new Error(result.message || "Failed")
-
-//       toast.success("Opening chat...")
-//       router.push(`/contractor/message?conversationId=${result.data._id}`)
-//     } catch (err: any) {
-//       toast.error(err?.message || "Could not start chat")
-//     } finally {
-//       setMsgLoading((prev) => ({ ...prev, [receiverId]: false }))
-//     }
-//   }
-
-//   if (status === "loading" || isLoading) {
-//     return (
-//       <div className="p-6 space-y-4">
-//         {[...Array(3)].map((_, i) => (
-//           <Skeleton key={i} className="h-40 w-full rounded-xl" />
-//         ))}
-//       </div>
-//     )
-//   }
-
-//   if (error) {
-//     return (
-//       <div className="p-10 text-center text-red-500 font-medium">
-//         Failed to load orders. Please try again later.
-//       </div>
-//     )
-//   }
-
-//   return (
-//     <div className="p-4 sm:p-6 lg:p-8 w-full mx-auto">
-//       <div className="mb-6">
-//         <h1 className="text-2xl font-bold tracking-tight">My Assigned Orders</h1>
-//         <p className="text-sm text-gray-500 mt-1">
-//           Dashboard › Service Provider Order Lists
-//         </p>
-//       </div>
-
-//       {/* DESKTOP VIEW - Table */}
-//       <div className="hidden lg:block bg-white border rounded-xl shadow-sm overflow-hidden">
-//         <table className="w-full text-sm text-left">
-//           <thead className="bg-gray-50 border-b text-gray-600 font-medium uppercase tracking-wider">
-//             <tr>
-//               <th className="px-6 py-4">Project / Company</th>
-//               <th className="px-6 py-4">Location</th>
-//               <th className="px-6 py-4 text-center">Work Media</th>
-//               <th className="px-6 py-4 text-right">Actions</th>
-//             </tr>
-//           </thead>
-//           <tbody className="divide-y divide-gray-100">
-//             {orders.length === 0 ? (
-//               <tr>
-//                 <td colSpan={4} className="py-20 text-center text-gray-400">
-//                   No assigned orders yet
-//                 </td>
-//               </tr>
-//             ) : (
-//               orders.map((order: any) => {
-//                 const userId = order.user?._id || order.user
-//                 const hasPriceSet = order.charges !== undefined && order.charges !== null
-
-//                 return (
-//                   <tr key={order._id} className="hover:bg-gray-50 transition-colors">
-//                     <td className="px-6 py-4">
-//                       <div className="font-semibold text-gray-900">
-//                         {order.companyName || "Unnamed Project"}
-//                       </div>
-//                       <div className="text-xs text-emerald-600 font-medium mt-0.5">
-//                         {order.serviceCategory?.join(", ") || "—"}
-//                       </div>
-//                     </td>
-
-//                     <td className="px-6 py-4 text-gray-500 max-w-[200px] truncate">
-//                       {order.CompanyAddress || order.serviceAreas || "—"}
-//                     </td>
-
-//                     <td className="px-6 py-4 text-center">
-//                       {(order.images?.length > 0 || order.videos?.length > 0) ? (
-//                         <Dialog>
-//                           <DialogTrigger asChild>
-//                             <Button variant="outline" size="sm" className="h-8 gap-2">
-//                               <Eye className="w-3.5 h-3.5" /> View
-//                             </Button>
-//                           </DialogTrigger>
-//                           <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
-//                             <DialogHeader>
-//                               <DialogTitle>Project Files - {order.companyName}</DialogTitle>
-//                             </DialogHeader>
-//                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-//                               {order.images?.map((url: string, i: number) => (
-//                                 <Image
-//                                   key={i}
-//                                   src={url}
-//                                   width={1000}
-//                                   height={800}
-//                                   alt={`Project image ${i + 1}`}
-//                                   className="rounded-lg w-full h-56 object-cover border"
-//                                 />
-//                               ))}
-//                               {order.videos?.map((url: string, i: number) => (
-//                                 <video
-//                                   key={i}
-//                                   controls
-//                                   className="rounded-lg w-full h-56 bg-black border"
-//                                 >
-//                                   <source src={url} type="video/mp4" />
-//                                 </video>
-//                               ))}
-//                             </div>
-//                           </DialogContent>
-//                         </Dialog>
-//                       ) : (
-//                         <span className="text-gray-400 text-xs">No media</span>
-//                       )}
-//                     </td>
-
-//                     <td className="px-6 py-4">
-//                       <div className="flex justify-end items-center gap-3">
-//                         <div className="flex items-center bg-gray-50 border rounded-md px-2 focus-within:ring-1 focus-within:ring-emerald-500">
-//                           <span className="text-gray-400 font-medium">$</span>
-//                           <Input
-//                             type="number"
-//                             placeholder={hasPriceSet ? order.charges.toString() : "Price"}
-//                             className="bg-transparent border-none focus:ring-0 w-20 py-1 text-sm"
-//                             value={amounts[order._id] ?? (hasPriceSet ? order.charges : "")}
-//                             onChange={(e) =>
-//                               setAmounts((prev) => ({
-//                                 ...prev,
-//                                 [order._id]: e.target.value,
-//                               }))
-//                             }
-//                             disabled={loadingIds[order._id]}
-//                           />
-//                         </div>
-
-//                         <Button
-//                           size="sm"
-//                           onClick={() => {
-//                             const value = Number(amounts[order._id])
-//                             if (!amounts[order._id] || isNaN(value) || value <= 0) {
-//                               toast.error("Please enter a valid amount")
-//                               return
-//                             }
-//                             setPriceMutation.mutate({
-//                               orderId: order._id,
-//                               amount: value,
-//                             })
-//                           }}
-//                           disabled={loadingIds[order._id] || !amounts[order._id]}
-//                           className="bg-emerald-600 hover:bg-emerald-700 h-9 px-4"
-//                         >
-//                           {loadingIds[order._id] ? (
-//                             <Loader2 className="w-4 h-4 animate-spin" />
-//                           ) : (
-//                             <>
-//                               <Send className="w-4 h-4 mr-1.5" />
-//                               Set Price
-//                             </>
-//                           )}
-//                         </Button>
-
-//                         <Button
-//                           size="icon"
-//                           variant="outline"
-//                           className="h-9 w-9"
-//                           onClick={() => handleMessageClick(userId)}
-//                           disabled={msgLoading[userId] || !userId}
-//                         >
-//                           {msgLoading[userId] ? (
-//                             <Loader2 className="w-4 h-4 animate-spin" />
-//                           ) : (
-//                             <MessageSquare className="w-4 h-4" />
-//                           )}
-//                         </Button>
-//                       </div>
-//                     </td>
-//                   </tr>
-//                 )
-//               })
-//             )}
-//           </tbody>
-//         </table>
-//       </div>
-
-//       {/* MOBILE VIEW - Cards */}
-//       <div className="lg:hidden space-y-4">
-//         {orders.length === 0 ? (
-//           <div className="text-center py-12 text-gray-500">
-//             No assigned orders yet
-//           </div>
-//         ) : (
-//           orders.map((order: any) => {
-//             const userId = order.user?._id || order.user
-//             const hasPriceSet = order.charges !== undefined && order.charges !== null
-
-//             return (
-//               <div
-//                 key={order._id}
-//                 className="bg-white border rounded-xl p-5 shadow-sm space-y-4"
-//               >
-//                 <div className="flex justify-between items-start">
-//                   <div>
-//                     <h3 className="font-semibold text-lg text-gray-900">
-//                       {order.companyName || "Unnamed Project"}
-//                     </h3>
-//                     <p className="text-sm text-emerald-600">
-//                       {order.serviceCategory?.join(", ") || "—"}
-//                     </p>
-//                   </div>
-
-//                   <Button
-//                     size="icon"
-//                     variant="outline"
-//                     className="h-9 w-9"
-//                     onClick={() => handleMessageClick(userId)}
-//                     disabled={msgLoading[userId] || !userId}
-//                   >
-//                     {msgLoading[userId] ? (
-//                       <Loader2 className="w-4 h-4 animate-spin" />
-//                     ) : (
-//                       <MessageSquare className="w-4 h-4" />
-//                     )}
-//                   </Button>
-//                 </div>
-
-//                 <div className="text-sm text-gray-600">
-//                   {order.CompanyAddress || order.serviceAreas || "—"}
-//                 </div>
-
-//                 {(order.images?.length > 0 || order.videos?.length > 0) && (
-//                   <Dialog>
-//                     <DialogTrigger asChild>
-//                       <Button variant="outline" className="w-full justify-start gap-2">
-//                         <Eye className="w-4 h-4" /> View Project Media
-//                       </Button>
-//                     </DialogTrigger>
-//                     <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
-//                       <DialogHeader>
-//                         <DialogTitle>Project Files - {order.companyName}</DialogTitle>
-//                       </DialogHeader>
-//                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-//                         {order.images?.map((url: string, i: number) => (
-//                           <Image
-//                             key={i}
-//                             src={url}
-//                             alt={`Project image ${i + 1}`}
-//                             width={1000}
-//                             height={1000}
-//                             className="rounded-lg w-full h-56 object-cover border"
-//                           />
-//                         ))}
-//                         {order.videos?.map((url: string, i: number) => (
-//                           <video
-//                             key={i}
-//                             controls
-//                             className="rounded-lg w-full h-56 bg-black border"
-//                           >
-//                             <source src={url} type="video/mp4" />
-//                           </video>
-//                         ))}
-//                       </div>
-//                     </DialogContent>
-//                   </Dialog>
-//                 )}
-
-//                 <div className="flex flex-col sm:flex-row gap-3">
-//                   <div className="flex-1 flex items-center bg-gray-50 border rounded-md px-3 focus-within:ring-1 focus-within:ring-emerald-500">
-//                     <span className="text-gray-400 font-medium">$</span>
-//                     <Input
-//                       type="number"
-//                       placeholder={hasPriceSet ? order.charges.toString() : "Price"}
-//                       className="bg-transparent border-none focus:ring-0 flex-1 py-2 text-sm"
-//                       value={amounts[order._id] ?? (hasPriceSet ? order.charges : "")}
-//                       onChange={(e) =>
-//                         setAmounts((prev) => ({
-//                           ...prev,
-//                           [order._id]: e.target.value,
-//                         }))
-//                       }
-//                       disabled={loadingIds[order._id]}
-//                     />
-//                   </div>
-
-//                   <Button
-//                     onClick={() => {
-//                       const value = Number(amounts[order._id])
-//                       if (!amounts[order._id] || isNaN(value) || value <= 0) {
-//                         toast.error("Please enter a valid amount")
-//                         return
-//                       }
-//                       setPriceMutation.mutate({
-//                         orderId: order._id,
-//                         amount: value,
-//                       })
-//                     }}
-//                     disabled={loadingIds[order._id] || !amounts[order._id]}
-//                     className="bg-emerald-600 hover:bg-emerald-700 flex-1 h-11"
-//                   >
-//                     {loadingIds[order._id] ? (
-//                       <Loader2 className="w-5 h-5 animate-spin" />
-//                     ) : (
-//                       <>
-//                         <Send className="w-4 h-4 mr-2" />
-//                         Set Price
-//                       </>
-//                     )}
-//                   </Button>
-//                 </div>
-//               </div>
-//             )
-//           })
-//         )}
-//       </div>
-//     </div>
-//   )
-// }
-
-
-
-
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
@@ -469,7 +20,8 @@ import {
 } from "@/components/ui/dialog"
 import Image from "next/image"
 
-// ── API Function to update charge/price ───────────────────────────────
+// ── API Functions ────────────────────────────────────────
+
 async function updateContractorCharge(
   token: string,
   orderId: string,
@@ -496,6 +48,44 @@ async function updateContractorCharge(
   return data
 }
 
+async function createOrGetConversation(token: string, receiverId: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/conversation`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ receiverId }),
+  })
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: "Failed to start chat" }))
+    throw new Error(err.message || "Failed to start conversation")
+  }
+
+  return res.json()
+}
+
+async function requestMessagingPermission(token: string, targetId: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/messaging-request/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ targetId }),
+  })
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ message: "Failed to send request" }))
+    throw new Error(err.message || "Failed to request messaging permission")
+  }
+
+  return res.json()
+}
+
+// ── Main Component ───────────────────────────────────────
+
 export default function ServiceProviderOrderList() {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -505,11 +95,15 @@ export default function ServiceProviderOrderList() {
 
   const [amounts, setAmounts] = useState<Record<string, string>>({})
   const [loadingIds, setLoadingIds] = useState<Record<string, boolean>>({})
-  const [msgLoading, setMsgLoading] = useState<Record<string, boolean>>({})
+  const [msgLoadingIds, setMsgLoadingIds] = useState<Set<string>>(new Set())
+
+  // Modal states for permission request
+  const [showRequestModal, setShowRequestModal] = useState(false)
+  const [selectedReceiverId, setSelectedReceiverId] = useState<string | null>(null)
 
   // Fetch my assigned orders
   const { data, isLoading, error } = useQuery({
-    queryKey: ["my-assigned-orders"],
+    queryKey: ["my-assigned-orders", token],
     queryFn: async () => {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/contractor/my-assign-contractor`,
@@ -517,6 +111,7 @@ export default function ServiceProviderOrderList() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          cache: "no-store",
         }
       )
       if (!res.ok) throw new Error("Failed to load assigned orders")
@@ -527,7 +122,8 @@ export default function ServiceProviderOrderList() {
 
   const orders = data?.data || []
 
-  // Mutation for setting/updating price
+  // ── Mutations ────────────────────────────────────────────
+
   const setPriceMutation = useMutation({
     mutationFn: ({ orderId, charges }: { orderId: string; charges: number }) =>
       updateContractorCharge(token, orderId, charges),
@@ -555,32 +151,80 @@ export default function ServiceProviderOrderList() {
     },
   })
 
-  const handleMessageClick = async (receiverId?: string) => {
+  const conversationMutation = useMutation({
+    mutationFn: ({ receiverId }: { receiverId: string }) =>
+      createOrGetConversation(token, receiverId),
+
+    onSuccess: (data) => {
+      const conversationId = data?.data?._id || data?.data?.[0]?._id
+      if (conversationId) {
+        toast.success("Opening chat...")
+        router.push(`/contractor/message?conversationId=${conversationId}`)
+      } else {
+        toast.error("Conversation created but no ID returned")
+      }
+    },
+
+    onError: (err: any) => {
+      const errorMessage = (err.message || "").toLowerCase()
+      if (
+        errorMessage.includes("permission not granted") ||
+        errorMessage.includes("admin approval") ||
+        errorMessage.includes("messaging permission") ||
+        errorMessage.includes("not allowed") ||
+        errorMessage.includes("requires approval")
+      ) {
+        setSelectedReceiverId(conversationMutation.variables?.receiverId || null)
+        setShowRequestModal(true)
+      } else {
+        toast.error(err.message || "Failed to open chat")
+      }
+    },
+
+    onSettled: (_, __, variables) => {
+      setMsgLoadingIds((prev) => {
+        const next = new Set(prev)
+        next.delete(variables.receiverId)
+        return next
+      })
+    },
+  })
+
+  const requestPermissionMutation = useMutation({
+    mutationFn: ({ targetId }: { targetId: string }) =>
+      requestMessagingPermission(token, targetId),
+
+    onSuccess: () => {
+      toast.success("Messaging permission request sent successfully!")
+      setShowRequestModal(false)
+      setSelectedReceiverId(null)
+    },
+
+    onError: (err: any) => {
+      toast.error(err.message || "Failed to send permission request")
+    },
+  })
+
+  // ── Handlers ─────────────────────────────────────────────
+
+  const handleMessageClick = (receiverId?: string) => {
     if (!receiverId) return toast.error("User not found")
 
-    setMsgLoading((prev) => ({ ...prev, [receiverId]: true }))
+    setMsgLoadingIds((prev) => {
+      const next = new Set(prev)
+      next.add(receiverId)
+      return next
+    })
 
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/conversation`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ receiverId }),
-      })
-
-      const result = await res.json()
-      if (!res.ok || !result.success) throw new Error(result.message || "Failed")
-
-      toast.success("Opening chat...")
-      router.push(`/contractor/message?conversationId=${result.data._id}`)
-    } catch (err: any) {
-      toast.error(err?.message || "Could not start chat")
-    } finally {
-      setMsgLoading((prev) => ({ ...prev, [receiverId]: false }))
-    }
+    conversationMutation.mutate({ receiverId })
   }
+
+  const handleConfirmRequest = () => {
+    if (!selectedReceiverId) return
+    requestPermissionMutation.mutate({ targetId: selectedReceiverId })
+  }
+
+  // ── Render ───────────────────────────────────────────────
 
   if (status === "loading" || isLoading) {
     return (
@@ -592,10 +236,10 @@ export default function ServiceProviderOrderList() {
     )
   }
 
-  if (error) {
+  if (error || !token) {
     return (
       <div className="p-10 text-center text-red-500 font-medium">
-        Failed to load orders. Please try again later.
+        {token ? "Failed to load orders. Please try again later." : "Please login to view assigned orders."}
       </div>
     )
   }
@@ -655,7 +299,7 @@ export default function ServiceProviderOrderList() {
                               <Eye className="w-3.5 h-3.5" /> View
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+                          <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto bg-white">
                             <DialogHeader>
                               <DialogTitle>Project Files - {order.companyName}</DialogTitle>
                             </DialogHeader>
@@ -737,9 +381,9 @@ export default function ServiceProviderOrderList() {
                           variant="outline"
                           className="h-9 w-9"
                           onClick={() => handleMessageClick(userId)}
-                          disabled={msgLoading[userId] || !userId}
+                          disabled={msgLoadingIds.has(userId) || !userId}
                         >
-                          {msgLoading[userId] ? (
+                          {msgLoadingIds.has(userId) ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
                           ) : (
                             <MessageSquare className="w-4 h-4" />
@@ -786,9 +430,9 @@ export default function ServiceProviderOrderList() {
                     variant="outline"
                     className="h-9 w-9"
                     onClick={() => handleMessageClick(userId)}
-                    disabled={msgLoading[userId] || !userId}
+                    disabled={msgLoadingIds.has(userId) || !userId}
                   >
-                    {msgLoading[userId] ? (
+                    {msgLoadingIds.has(userId) ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       <MessageSquare className="w-4 h-4" />
@@ -884,6 +528,37 @@ export default function ServiceProviderOrderList() {
           })
         )}
       </div>
+
+      {/* ── Permission Request Modal ─────────────────────────────── */}
+      {showRequestModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold mb-4">Request Messaging Permission</h2>
+            <p className="text-gray-600 mb-6">
+              You need admin approval to message this user.  
+              Would you like to send a request for messaging permission?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowRequestModal(false)
+                  setSelectedReceiverId(null)
+                }}
+                className="px-5 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmRequest}
+                disabled={requestPermissionMutation.isPending}
+                className="px-5 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 disabled:opacity-60 transition flex items-center gap-2"
+              >
+                {requestPermissionMutation.isPending ? "Sending..." : "Send Request"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

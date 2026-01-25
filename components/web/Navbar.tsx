@@ -17,7 +17,7 @@ import {
 import { toast } from "sonner";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
-/* ------- TYPE DEFINITIONS ------------------- */
+/* ------- TYPE DEFINITIONS -------------- */
 interface UserProfile {
   _id: string;
   firstName: string;
@@ -44,13 +44,7 @@ interface ApiResponse<T = unknown> {
   data: T;
 }
 
-/* ------------ STRIPE CREATE ACCOUNT ---------------------------------------- */
-// interface StripeCreateResponse {
-//   accountId: string;
-//   url: string;
-// }
-
-/* ------------ STRIPE DASHBOARD LINK ---------------------------------------- */
+/* ------------ STRIPE DASHBOARD LINK ----------------- */
 interface StripeDashboardResponse {
   url: string;
 }
@@ -58,7 +52,7 @@ interface StripeDashboardResponse {
 /* -----------------  NAVBAR COMPONENT  ------------------------------- */
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [adminRequested, setAdminRequested] = useState(false); // ✅ new state
+  const [adminRequested, setAdminRequested] = useState(false); 
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
@@ -90,41 +84,7 @@ export function Navbar() {
   const role = userProfile?.data?.role;
   const hasStripe = !!userProfile?.data?.stripeAccountId;
 
-  /* --------------------- CREATE STRIPE ACCOUNT --------------------- */
-  // const createStripeAccount = async (): Promise<
-  //   ApiResponse<StripeCreateResponse>
-  // > => {
-  //   const res = await fetch(
-  //     `${process.env.NEXT_PUBLIC_API_BASE_URL}/contractor/create-stripe-account`,
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       credentials: "include",
-  //     }
-  //   );
 
-  //   if (!res.ok) {
-  //     const err = await res.json().catch(() => ({}));
-  //     throw new Error(err.message ?? "Failed to create Stripe account");
-  //   }
-  //   return res.json();
-  // };
-
-  // const { mutate: startStripeOnboarding, isPending: stripeLoading } =
-  //   useMutation({
-  //     mutationFn: createStripeAccount,
-  //     onSuccess: (response) => {
-  //       const url = response.data.url;
-  //       window.open(url, "_blank", "noopener,noreferrer");
-  //       toast.success("Stripe onboarding link opened");
-  //     },
-  //     onError: (error: Error) => {
-  //       toast.error(error.message);
-  //     },
-  //   });
 
   /* --------------------- GET STRIPE DASHBOARD LINK --------------------- */
   const getStripeDashboardLink = async (): Promise<
@@ -218,10 +178,10 @@ export function Navbar() {
         router.push("/contractor/order-list");
         break;
       case "admin":
-        router.push("/admin");
+        router.push("https://admin.mybridgepointsolutions.com");
         break;
       case "superadmin":
-        router.push("/superadmin");
+        router.push("https://admin.mybridgepointsolutions.com");
         break;
       default:
         toast.error("Unknown role");
@@ -300,7 +260,7 @@ export function Navbar() {
                   {/* Superadmin Dashboard */}
                   {role === "superadmin" && (
                     <DropdownMenuItem
-                      onClick={() => router.push("/superadmin")}
+                      onClick={() => router.push("https://admin.mybridgepointsolutions.com")}
                       className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
                     >
                       Superadmin Dashboard
@@ -316,17 +276,6 @@ export function Navbar() {
                       >
                         Contractor Profile
                       </DropdownMenuItem>
-
-                      {/* CREATE ACCOUNT (if no stripe) */}
-                      {/* {!hasStripe && (
-                        <DropdownMenuItem
-                          onClick={() => startStripeOnboarding()}
-                          disabled={stripeLoading}
-                          className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md flex items-center justify-between"
-                        >
-                          {stripeLoading ? "Creating…" : "Add Stripe Account"}
-                        </DropdownMenuItem>
-                      )} */}
 
                       {/* DASHBOARD (if stripe exists) */}
                       {hasStripe && (
@@ -419,22 +368,13 @@ export function Navbar() {
                       >
                         View Profile
                       </DropdownMenuItem>
-
-                      {/* APPLY AS ADMIN - ✅ updated */}
-                      {/* <DropdownMenuItem
-                        onClick={handleApplyAdmin}
-                        disabled={adminRequestLoading}
-                        className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md flex items-center justify-between"
-                      >
-                        {adminRequestLoading ? "Sending…" : "Apply as Admin"}
-                      </DropdownMenuItem> */}
                     </>
                   )}
 
                   {/* Admin */}
                   {role === "admin" && (
                     <DropdownMenuItem
-                      onClick={() => router.push("/admin")}
+                      onClick={() => router.push("https://admin.mybridgepointsolutions.com")}
                       className="cursor-pointer h-[40px] hover:bg-[#EFDACB] transition-colors px-3 rounded-md"
                     >
                       Admin Dashboard
@@ -508,19 +448,6 @@ export function Navbar() {
                     </div>
                   </div>
 
-                  {/* Superadmin Mobile Link */}
-                  {role === "superadmin" && (
-                    <button
-                      onClick={() => {
-                        router.push("/superadmin");
-                        handleMenuItemClick();
-                      }}
-                      className="w-full text-left px-2 py-2 text-white hover:text-[#d4b896] transition-colors"
-                    >
-                      Superadmin Dashboard
-                    </button>
-                  )}
-
                   {/* Profile link */}
                   <button
                     onClick={() => {
@@ -540,7 +467,7 @@ export function Navbar() {
                       : "Profile"}
                   </button>
 
-                  {/* USER: Apply as Admin (Mobile) ✅ updated */}
+                  {/* USER: Apply as Admin (Mobile)  updated */}
                   {role === "user" && (
                     <button
                       onClick={() => {
@@ -557,19 +484,6 @@ export function Navbar() {
                   {/* Stripe actions for contractor (mobile) */}
                   {role === "contractor" && (
                     <>
-                      {/* {!hasStripe && (
-                        <button
-                          onClick={() => {
-                            startStripeOnboarding();
-                            handleMenuItemClick();
-                          }}
-                          disabled={stripeLoading}
-                          className="w-full text-left px-2 py-2 text-white hover:text-[#d4b896] transition-colors disabled:opacity-50"
-                        >
-                          {stripeLoading ? "Creating…" : "Add Stripe Account"}
-                        </button>
-                      )} */}
-
                       {hasStripe && (
                         <button
                           onClick={() => {
